@@ -13,7 +13,7 @@
 | `title` | Yes | Document title (should include project prefix for discoverability) |
 | `body_content` | Yes | Markdown content for the document body |
 | `project_id` | No | Linear project ID to associate the document with. If omitted, uses `workspace_project_id` from module.yaml. |
-| `key_map_id` | No | Identifier to store the document ID under in `.linear-key-map.yaml` (e.g., `prd`, `architecture`, `brief`) |
+| `key_map_id` | No | Identifier to store the document ID under in `.key-map.yaml` (e.g., `prd`, `architecture`, `brief`) |
 | `icon` | No | Emoji icon for the document |
 
 ---

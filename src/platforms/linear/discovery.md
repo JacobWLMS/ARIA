@@ -57,7 +57,7 @@ Which team should ARIA use?
 <action>Auto-detect the current user from the API key owner, or if unclear, ask the user to confirm their identity from the list</action>
 <action>Record `user_name` and set `default_assignee` to the current user</action>
 
-**Update config:** Set `linear_team_name`, `linear_team_id`, `user_name`, and `default_assignee` in module.yaml
+**Update config:** Set `team_name`, `team_id`, `user_name`, and `default_assignee` in module.yaml
 </step>
 
 <step n="2" goal="Auto-discover and map team statuses">
@@ -185,11 +185,11 @@ This will store documents until they're assigned to specific epic projects.
 <action>Write all discovered and derived values to module.yaml:</action>
 
 - `project_name` — from user answer
-- `linear_team_name` — from team discovery
+- `team_name` — from team discovery
 - `user_skill_level` — from user answer
 - `git_enabled` — from user answer
 - `user_name` — from user identity discovery
-- `linear_team_id` — from team discovery
+- `team_id` — from team discovery
 - `status_names` — from status mapping
 - `workspace_project_id` — from workspace project creation
 - `autonomy_level` — derived from user_skill_level
@@ -198,9 +198,9 @@ This will store documents until they're assigned to specific epic projects.
 <action>If autonomy_level is "interactive", ask user to confirm before writing</action>
 </step>
 
-<step n="7" goal="Initialize .linear-key-map.yaml from template">
-<action>Read the template from `{project-root}/src/linear/data/.linear-key-map.yaml.template`</action>
-<action>Create `{project-root}/_aria/linear/.linear-key-map.yaml` with:</action>
+<step n="7" goal="Initialize .key-map.yaml from template">
+<action>Read the template from `{project-root}/src/core/data/.key-map.yaml.template`</action>
+<action>Create `{project-root}/_aria/core/data/.key-map.yaml` with:</action>
 
 ```yaml
 team_name: "{discovered_team_name}"
@@ -223,7 +223,7 @@ labels:
 pull_requests: {}
 ```
 
-<action>Ensure the `_aria/linear/` directory exists (create if needed)</action>
+<action>Ensure the `_aria/core/` directory exists (create if needed)</action>
 </step>
 
 <step n="8" goal="Report what was configured">

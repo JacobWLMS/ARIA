@@ -17,7 +17,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - LOAD workflow config: {project-root}/_aria/core/workflows/1-analysis/create-product-brief/workflow.yaml
    - READ and FOLLOW: {project-root}/_aria/core/workflows/1-analysis/create-product-brief/instructions.md
    - Use template: {project-root}/_aria/shared/templates/product-brief-template.md
-   - Output product brief to Linear Document via write-to-linear-doc task
+   - Output product brief to Linear Document via write-document task
    - Post handoff to PM via post-handoff task
 
    **Context mode:**
@@ -25,7 +25,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - READ and FOLLOW: {project-root}/_aria/core/workflows/1-analysis/generate-project-context/instructions.md
    - Use template: {project-root}/_aria/shared/templates/project-context-template.md
    - Scan codebase to create LLM-optimized context document
-   - Output to Linear Document via write-to-linear-doc task
+   - Output to Linear Document via write-document task
 </steps>
 
 User input: $ARGUMENTS

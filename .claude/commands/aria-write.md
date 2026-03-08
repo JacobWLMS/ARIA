@@ -17,7 +17,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - Engage in multi-turn conversation to understand document requirements: audience, purpose, scope, format
    - Research any referenced code, APIs, or systems
    - Author the document following documentation best practices
-   - Output to Linear Document via write-to-linear-doc task at {project-root}/_aria/core/tasks/write-to-linear-doc.md
+   - Output to Linear Document via write-document task at {project-root}/_aria/core/tasks/write-document.md
    - Perform a self-review pass for quality
 
    **Explain mode:**

@@ -23,8 +23,8 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - READ and FOLLOW: {project-root}/_aria/core/workflows/2-plan-workflows/create-prd/instructions.md
    - Use template: {project-root}/_aria/shared/templates/prd-template.md
    - Use checklist: {project-root}/_aria/shared/checklists/prd-checklist.md
-   - Load existing brief/research from Linear via read-linear-context task
-   - Output PRD to Linear Document via write-to-linear-doc task
+   - Load existing brief/research from Linear via read-context task
+   - Output PRD to Linear Document via write-document task
    - Post handoff to UX Designer via post-handoff task
 
    **Edit mode:**

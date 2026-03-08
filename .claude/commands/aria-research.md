@@ -14,7 +14,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - **market**: market analysis, competitive landscape, customer needs and trends
    - **domain**: industry domain deep dive, subject matter expertise and terminology
    - **technical**: technical feasibility, architecture options and implementation approaches
-7. Output research report to a Linear Document via the write-to-linear-doc task
+7. Output research report to a Linear Document via the write-document task
 8. Post a handoff to PM when complete via the post-handoff task
 </steps>
 

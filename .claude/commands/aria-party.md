@@ -12,7 +12,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 5. Load the selected agent persona files from {project-root}/_aria/core/agents/
 6. Facilitate the multi-agent discussion, keeping each agent in character
 7. When the user says "wrap up": compile a summary of key insights
-8. If the user wants: save the summary to a Linear Document via the write-to-linear-doc task
+8. If the user wants: save the summary to a Linear Document via the write-document task
 </steps>
 
 User input: $ARGUMENTS

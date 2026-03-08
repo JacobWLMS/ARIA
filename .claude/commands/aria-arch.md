@@ -9,7 +9,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 2. LOAD the workflow config: {project-root}/_aria/core/workflows/3-solutioning/create-architecture/workflow.yaml
 3. READ and FOLLOW the workflow instructions: {project-root}/_aria/core/workflows/3-solutioning/create-architecture/instructions.md
 4. Use the template: {project-root}/_aria/shared/templates/architecture-decision-template.md
-5. Output the architecture document to a Linear Document via the write-to-linear-doc task
+5. Output the architecture document to a Linear Document via the write-document task
 6. Post a handoff to SM when complete via the post-handoff task
 </steps>
 

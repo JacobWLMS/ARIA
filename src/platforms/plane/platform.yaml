@@ -5,7 +5,7 @@
 platform:
   name: plane
   display_name: "Plane"
-  mcp_server: "plane-mcp"
+  mcp_server: "plane"
 
 terminology:
   work_item: "Work Item"

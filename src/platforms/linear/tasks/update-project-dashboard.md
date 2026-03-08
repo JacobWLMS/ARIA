@@ -120,7 +120,7 @@ description: 'Create or update a Linear Document dashboard showing project progr
 </step>
 
 <step n="4" goal="Write dashboard to Linear Document">
-<action>Invoke `write-to-linear-doc` task with:</action>
+<action>Invoke `write-document` task with:</action>
 
 ```
 title: "{project_name} -- Project Dashboard"
@@ -137,4 +137,4 @@ icon: "chart_with_upwards_trend"
 
 ## Return Value
 
-Returns the dashboard document ID. Can be called repeatedly -- the write-to-linear-doc task handles idempotent updates.
+Returns the dashboard document ID. Can be called repeatedly -- the write-document task handles idempotent updates.

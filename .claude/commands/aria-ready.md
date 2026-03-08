@@ -9,7 +9,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 2. LOAD the workflow config: {project-root}/_aria/core/workflows/3-solutioning/check-implementation-readiness/workflow.yaml
 3. READ and FOLLOW the workflow instructions: {project-root}/_aria/core/workflows/3-solutioning/check-implementation-readiness/instructions.md
 4. Use the template: {project-root}/_aria/shared/templates/readiness-report-template.md
-5. Load all artefacts from Linear via the read-linear-context task
+5. Load all artefacts from Linear via the read-context task
 6. Output readiness report to a Linear Document
 </steps>
 

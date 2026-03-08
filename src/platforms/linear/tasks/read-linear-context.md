@@ -70,7 +70,7 @@
 
 **Used by:** Any agent needing a specific Linear document
 
-<action>Look up `{scope_id}` in `.linear-key-map.yaml` under `documents`</action>
+<action>Look up `{scope_id}` in `.key-map.yaml` under `documents`</action>
 <action>If found, call `get_document` with `id: "{document_id}"`</action>
 <action>If not found, call `list_documents` with `query: "{scope_id}"` to search by title</action>
 <action>If a match is found, call `get_document` with `id: "{matched_document_id}"` to load content</action>

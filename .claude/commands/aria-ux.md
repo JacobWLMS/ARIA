@@ -22,7 +22,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - LOAD workflow config: {project-root}/_aria/core/workflows/2-plan-workflows/create-ux-design/workflow.yaml
    - READ and FOLLOW: {project-root}/_aria/core/workflows/2-plan-workflows/create-ux-design/instructions.md
    - Use template: {project-root}/_aria/shared/templates/ux-design-template.md
-   - Output UX design to Linear Document via write-to-linear-doc task
+   - Output UX design to Linear Document via write-document task
    - Post handoff to Architect via post-handoff task
 
    **Edit mode:**

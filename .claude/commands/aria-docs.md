@@ -18,7 +18,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - READ and FOLLOW: {project-root}/_aria/core/workflows/1-analysis/document-project/instructions.md
    - Use checklist: {project-root}/_aria/shared/checklists/document-project-checklist.md
    - Scan the project codebase and produce documentation
-   - Output to Linear Document(s) via write-to-linear-doc task
+   - Output to Linear Document(s) via write-document task
 
    **Validate mode:**
    - Load the target document from Linear via get_document

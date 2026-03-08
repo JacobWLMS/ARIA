@@ -9,7 +9,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 2. Invoke the update-project-dashboard task at {project-root}/_aria/core/tasks/update-project-dashboard.md
 3. Query all Linear Projects, Issues, Milestones, and Cycles
 4. Build a comprehensive status dashboard
-5. Output to a Linear Document via the write-to-linear-doc task
+5. Output to a Linear Document via the write-document task
 </steps>
 
 User input: $ARGUMENTS

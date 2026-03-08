@@ -8,7 +8,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 1. LOAD the agent persona from {project-root}/_aria/core/agents/devops.agent.yaml — adopt this identity fully
 2. LOAD the workflow config: {project-root}/_aria/core/workflows/5-release/deploy-strategy/workflow.yaml
 3. READ and FOLLOW the workflow instructions: {project-root}/_aria/core/workflows/5-release/deploy-strategy/instructions.md
-4. Output the deployment strategy to a Linear Document via the write-to-linear-doc task
+4. Output the deployment strategy to a Linear Document via the write-document task
 </steps>
 
 User input: $ARGUMENTS

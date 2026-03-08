@@ -33,7 +33,7 @@ Description: Create, edit, or validate the Product Requirements Document
 
 <action>Read project config: `{project-root}/src/linear/module.yaml`</action>
 <action>Read workflow manifest (if exists): `{project-root}/src/linear/data/workflow-manifest.csv`</action>
-<action>Read key map if it exists: `{project-root}/_aria/linear/.linear-key-map.yaml`</action>
+<action>Read key map if it exists: `{project-root}/_aria/linear/.key-map.yaml`</action>
 <action>Extract `communication_language` -- present all output in this language</action>
 
 ### Step 2 -- Check setup completeness
@@ -42,8 +42,8 @@ Verify the Linear configuration is ready:
 
 | Check | How to verify |
 |---|---|
-| `linear_team_name` | Non-empty in module.yaml |
-| `linear_team_id` | Non-empty in module.yaml (UUID format) |
+| `team_name` | Non-empty in module.yaml |
+| `team_id` | Non-empty in module.yaml (UUID format) |
 | `status_names` | At least `in_progress` and `done` populated |
 
 <check if="any check fails">
@@ -83,7 +83,7 @@ Add to your Claude Code MCP settings (.claude/settings.json):
 Generate a Linear API key at: https://linear.app/settings/api
 ```
 
-**If `linear_team_name` or `linear_team_id` is missing:**
+**If `team_name` or `team_id` is missing:**
 ```
 Step 1: Run /aria-setup
 This will auto-discover your Linear team, statuses, labels, and users.
@@ -119,29 +119,29 @@ Use Linear MCP tools to check what exists. Run these searches **in parallel**:
 
 2. **Linear projects (epics)** -- Check if projects exist:
    ```
-   list_projects: team: "{linear_team_name}"
+   list_projects: team: "{team_name}"
    ```
 
 3. **Linear issues by status** -- Check implementation progress:
    ```
-   list_issues: team: "{linear_team_name}", state: "Done", limit: 5
-   list_issues: team: "{linear_team_name}", state: "In Progress", limit: 5
-   list_issues: team: "{linear_team_name}", state: "In Review", limit: 5
+   list_issues: team: "{team_name}", state: "Done", limit: 5
+   list_issues: team: "{team_name}", state: "In Progress", limit: 5
+   list_issues: team: "{team_name}", state: "In Review", limit: 5
    ```
 
 4. **Pending handoffs** -- Check for handoff signals:
    ```
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-analyst"
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-pm"
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-architect"
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-sm"
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-dev"
-   list_issues: team: "{linear_team_name}", label: "aria-handoff-qa"
+   list_issues: team: "{team_name}", label: "aria-handoff-analyst"
+   list_issues: team: "{team_name}", label: "aria-handoff-pm"
+   list_issues: team: "{team_name}", label: "aria-handoff-architect"
+   list_issues: team: "{team_name}", label: "aria-handoff-sm"
+   list_issues: team: "{team_name}", label: "aria-handoff-dev"
+   list_issues: team: "{team_name}", label: "aria-handoff-qa"
    ```
 
 5. **Review-failed issues** -- Check for stuck issues:
    ```
-   list_issues: team: "{linear_team_name}", label: "aria-review-failed"
+   list_issues: team: "{team_name}", label: "aria-review-failed"
    ```
 
 Build a completion map:
@@ -175,7 +175,7 @@ If any `aria-handoff-*` labels found: these are the highest priority. Tell the u
 If any issues have `aria-review-failed` label: recommend `/aria-dev` to address review findings.
 
 **Phase 0 -- Setup**
-- If `linear_team_id` not populated --> `/aria-setup`
+- If `team_id` not populated --> `/aria-setup`
 
 **Phase 1 -- Analysis** (all optional)
 - If NO artifacts exist at all --> **This is a fresh project.** Present two paths:
@@ -217,7 +217,7 @@ Format output clearly:
 ## Project Status: {project_name}
 
 **Current Phase:** {detected_phase}
-**Linear Team:** {linear_team_name}
+**Linear Team:** {team_name}
 
 ### Completed
 - [x] {completed items with checkmarks}
