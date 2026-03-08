@@ -146,7 +146,35 @@ plane_work_item_types:
   review_finding: "{type_id}"
 ```
 
-### Step 6 — Display summary
+### Step 6 — Update project overview
+
+<action>Call `update_project` with `description` to set the project overview text:</action>
+
+```
+description: |
+  # {project_name} — ARIA Managed Project
+
+  This project is managed by ARIA (AI-driven development workflow).
+
+  ## Workflow States
+  Backlog → Todo → In Progress → In Review → Done (+ Cancelled)
+
+  ## Agent Coordination
+  - **Locking:** `aria:locked` label + `[ARIA:LOCK]` comments
+  - **Handoffs:** `[ARIA:HANDOFF]` comments with `[ARIA:META]` routing
+  - **Reviews:** `aria:review-pending/passed/failed` labels
+  - **Attention:** `aria:attention` label for items needing user input
+
+  ## Work Item Types
+  Story, Tech Spec, Bug, Spike, Review Finding
+
+  ## Configuration
+  See `_aria/platform/platform.yaml` (module.yaml) for IDs and settings.
+```
+
+> **Note:** The `description` field updates the project's plain-text description. The rich-text `description_html` (visible in Plane's overview editor) is a separate field that may not be writable via the current MCP tools.
+
+### Step 7 — Display summary
 
 <action>Present a summary to the user:</action>
 
@@ -158,7 +186,8 @@ States: Backlog, Todo, In Progress, In Review, Done, Cancelled
 Labels: aria:locked, aria:attention, aria:review-pending, aria:review-passed, aria:review-failed, aria-quick-flow
 Work Item Types: Story, Tech Spec, Bug, Spike, Review Finding
 
-Note: ARIA uses labels + comments for agent coordination on Plane.
+Project overview updated with ARIA configuration summary.
+ARIA uses labels + comments for agent coordination on Plane.
 Custom properties are not used due to a Plane MCP serialization bug.
 
 Next steps:
