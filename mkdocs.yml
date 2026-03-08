@@ -62,6 +62,7 @@ nav:
     - Workflow Manifest: reference/workflow-manifest.md
   - Guides:
     - guides/index.md
+    - Supported AI Tools: guides/ai-tools.md
     - Git/GitHub Integration: guides/git-integration.md
     - Orchestrator: guides/orchestrator.md
     - Autonomy Configuration: guides/autonomy.md

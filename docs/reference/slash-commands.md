@@ -2,6 +2,9 @@
 
 Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-help` for context-aware guidance.
 
+!!! note "Using a different AI tool?"
+    Slash commands are Claude Code's native trigger mechanism. In Cursor, Windsurf, or Cline, describe the workflow you want instead (e.g., "Run the brainstorm workflow"). See [Supported AI Tools](../guides/ai-tools.md) for details.
+
 ## Setup
 
 | Command | Code | Agent | Description |
