@@ -101,6 +101,14 @@ TARGET_DIR="${1:-.}"
 # Resolve to absolute path
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
+# Detect self-install: if running from inside the ARIA repo with no target arg,
+# install to the parent directory (the actual project) instead of into ARIA itself
+if [ -z "${1:-}" ] && [ "$TARGET_DIR" = "$SCRIPT_DIR" ]; then
+  TARGET_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+  echo -e "  ${YELLOW}Detected: running from inside ARIA repo — installing to parent directory${RESET}"
+  echo ""
+fi
+
 # Cleanup temp dir on exit if we created one
 if [ -n "$CLEANUP_TEMP" ]; then
   trap 'rm -rf "$CLEANUP_TEMP"' EXIT
@@ -143,7 +151,12 @@ fi
 echo "    [1] Plane (recommended)"
 echo "    [2] Linear"
 echo ""
-read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE < /dev/tty
+# If stdin is a terminal, read from it; otherwise (curl | bash) read from /dev/tty
+if [ -t 0 ]; then
+  read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE
+else
+  read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE < /dev/tty
+fi
 echo ""
 echo ""
 
@@ -314,7 +327,9 @@ install_claude_code() {
   for OLD_CMD in aria-attack aria-edges aria-edit-prose aria-edit-struct aria-prd-edit aria-prd-check aria-doc-check aria-explain aria-context aria-review aria-status; do
     rm -f "$TARGET_DIR/.claude/commands/$OLD_CMD.md"
   done
-  cp "$SCRIPT_DIR/.claude/commands/"*.md "$TARGET_DIR/.claude/commands/"
+  if [ "$SCRIPT_DIR" != "$TARGET_DIR" ]; then
+    cp "$SCRIPT_DIR/.claude/commands/"*.md "$TARGET_DIR/.claude/commands/"
+  fi
   COMMAND_COUNT=$(ls -1 "$TARGET_DIR/.claude/commands/aria-"*.md 2>/dev/null | wc -l)
   echo -e "         ${DIM}$COMMAND_COUNT commands installed${RESET}"
 }
