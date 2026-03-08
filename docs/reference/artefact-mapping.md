@@ -41,7 +41,7 @@ Every artefact ARIA produces is stored on the platform. This mapping shows where
 | Code review findings | Work Item comments | `post-comment` | -- |
 | Test summaries | Work Item comments | `post-comment` | -- |
 | Test reports | Work Item attachments | `attach-report` | -- |
-| PR links | Work Item links | `link-pr-to-issue` | -- |
+| PR links | Work Item links | `link-pr-to-work-item` | -- |
 | Retrospective | Document | `write-document` | `documents.retrospective` |
 
 ## Key Map

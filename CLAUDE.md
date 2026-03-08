@@ -89,7 +89,7 @@ Sprint Retrospective (velocity tracking) -> Next Sprint
 1. **All output to platform** -- never write artefacts to local files
 2. **Platform detection** -- read `_aria/platform` marker file to determine the active platform (linear or plane) and load the corresponding platform.yaml
 3. **Team/workspace required** -- all platform MCP tool calls need the team or workspace name from module.yaml
-4. **Lock before work** -- invoke `lock-issue` task before modifying any issue
+4. **Lock before work** -- invoke `lock-work-item` task before modifying any issue
 5. **State changes** -- use the platform-appropriate method for state transitions (Linear: `save_issue` with `state`; Plane: state update API)
 6. **Structured handoffs** -- invoke `post-handoff` task with mandatory `context_details` (decisions, open questions, artefact refs)
 7. **Read context first** -- use `read-context` task; use `handoff_context` type to inherit previous agent's decisions

@@ -22,7 +22,7 @@ An automated **orchestrator** polls platform state to determine which agent shou
 
 ## Key Features
 
-- **36 slash commands** -- type `/aria` in Claude Code and autocomplete to any workflow
+- **38 slash commands** -- type `/aria` in Claude Code and autocomplete to any workflow
 - **12 musical agent personas** -- each with distinct capabilities, communication styles, and workflows
 - **Multi-platform tracking** -- Epics, Stories, Sprints, Milestones, and Documents managed via Plane or Linear MCP tools
 - **Scrum practices** -- Fibonacci estimation, velocity tracking, sprint capacity, backlog refinement

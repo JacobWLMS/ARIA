@@ -390,7 +390,7 @@ phase_4_implementation:
           orderBy: "priority"
       - step: 2
         action: "Lock the work item"
-        invoke_task: "lock-issue"
+        invoke_task: "lock-work-item"
         parameters:
           issue_id: "{issue_id}"
           action: "lock"
@@ -412,7 +412,7 @@ phase_4_implementation:
             - Completion Notes: {completion_notes}
       - step: 5
         action: "Link PR if git_enabled"
-        invoke_task: "link-pr-to-issue"
+        invoke_task: "link-pr-to-work-item"
         parameters:
           issue_id: "{issue_id}"
           pr_url: "{pr_url}"
@@ -425,7 +425,7 @@ phase_4_implementation:
           state: "{status_names.in_review}"
       - step: 7
         action: "Unlock the work item"
-        invoke_task: "lock-issue"
+        invoke_task: "lock-work-item"
         parameters:
           issue_id: "{issue_id}"
           action: "unlock"
@@ -672,7 +672,7 @@ cross_agent:
   lock:
     destination: work_item_label
     description: "Agent lock/unlock via label on work items"
-    task: "tasks/lock-issue.md"
+    task: "tasks/lock-work-item.md"
     tasks: ["tasks/read-context.md", "platform-specific", "tasks/post-handoff.md"]
     label: "{lock_label}"
     notes: "Prevents multiple agents from working on the same work item simultaneously"
@@ -680,7 +680,7 @@ cross_agent:
   dashboard:
     destination: document
     description: "Project status dashboard as a document"
-    task: "tasks/update-project-dashboard.md"
+    task: "tasks/update-dashboard.md"
     tasks: ["tasks/read-context.md", "tasks/create-epic.md", "tasks/write-document.md"]
     key_map_id: "documents.dashboard"
     notes: "Idempotent — updates existing dashboard document if one exists"

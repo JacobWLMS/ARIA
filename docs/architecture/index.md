@@ -68,7 +68,7 @@ _aria/
 
 ### Agent Locking
 
-Before modifying an issue, agents apply the `aria-active` label via the `lock-issue` task. This prevents concurrent agents from working on the same issue. The label is removed when work completes.
+Before modifying an issue, agents apply the `aria-active` label via the `lock-work-item` task. This prevents concurrent agents from working on the same issue. The label is removed when work completes.
 
 ### Handoff Labels
 

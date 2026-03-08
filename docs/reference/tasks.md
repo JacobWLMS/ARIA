@@ -8,16 +8,16 @@ Located in `_aria/core/tasks/` (dispatch to platform-specific implementations):
 
 | Task | Purpose |
 |---|---|
-| **lock-issue** | Prevent concurrent agent work on the same work item (labels on Linear, properties on Plane) |
-| **set-issue-state** | Transition a work item to a new state |
+| **lock-work-item** | Prevent concurrent agent work on the same work item (labels on Linear, properties on Plane) |
+| **set-work-item-state** | Transition a work item to a new state |
 | **post-handoff** | Post structured handoff comment with decisions, questions, and artefact refs. Signal next agent. |
 | **read-context** | Load project context from the platform: PRD, architecture, stories, handoff history |
 | **write-document** | Create or update a document. Register ID in key map. |
 | **refine-backlog** | List unestimated backlog work items, prompt for Fibonacci estimates, update |
-| **link-pr-to-issue** | Attach a PR URL to a work item |
+| **link-pr-to-work-item** | Attach a PR URL to a work item |
 | **attach-report** | Attach file (test report, review findings) to a work item |
 | **create-epic** | Create an epic with standard fields and register in key map |
-| **update-project-dashboard** | Create or update a project status dashboard document |
+| **update-dashboard** | Create or update a project status dashboard document |
 | **help** | Context-aware guidance: inspect platform state and recommend next workflow |
 | **log-work** | Log effort on a work item for velocity tracking (Plane) |
 | **create-intake** | Submit an idea to the intake/triage queue (Plane) |

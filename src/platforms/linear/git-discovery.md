@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- The project should already have ARIA installed (`_aria/linear/module.yaml` exists)
+- The project should already have ARIA installed (`_aria/core/module.yaml` exists)
 - Linear discovery should already be completed (team name configured)
 - Git must be installed on the system
 
@@ -67,12 +67,12 @@
 </step>
 
 <step n="5" goal="Configure branch naming convention">
-<action>Read `linear_team_name` from module.yaml</action>
+<action>Read `team_name` from module.yaml</action>
 
 Present the default branch naming convention:
 
 ```
-Branch name format: {linear_team_name}-{issue_number}/{kebab-case-summary}
+Branch name format: {team_name}-{issue_number}/{kebab-case-summary}
 Example: TEAM-42/add-user-authentication
 ```
 
@@ -114,7 +114,7 @@ Explain to the user:
 "When a PR is created, ARIA can automatically link it to the Linear issue using `save_issue` with the `links` field. This creates a clickable link on the Linear issue."
 
 - Ask: "Enable automatic PR-to-Linear linking?" (default: yes)
-- This uses the `link-pr-to-issue` task from `{project-root}/_aria/linear/tasks/link-pr-to-issue.md`
+- This uses the `link-pr-to-issue` task from `{project-root}/_aria/platform/tasks/link-pr-to-issue.md`
 </step>
 
 <step n="9" goal="Output configuration">
@@ -136,7 +136,7 @@ git_pr_auto_merge: "false"
 
 <action>Present the config to the user and ask: "Update your module.yaml with these git settings?"</action>
 
-**If yes:** Update the git settings section in `{project-root}/_aria/linear/module.yaml`.
+**If yes:** Update the git settings section in `{project-root}/_aria/core/module.yaml`.
 
 **If no:** Print the YAML block for manual addition.
 

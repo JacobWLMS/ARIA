@@ -31,9 +31,9 @@ Description: Create, edit, or validate the Product Requirements Document
 
 ### Step 1 -- Load configuration and manifest
 
-<action>Read project config: `{project-root}/src/linear/module.yaml`</action>
-<action>Read workflow manifest (if exists): `{project-root}/src/linear/data/workflow-manifest.csv`</action>
-<action>Read key map if it exists: `{project-root}/_aria/linear/.key-map.yaml`</action>
+<action>Read project config: `{project-root}/_aria/core/module.yaml`</action>
+<action>Read workflow manifest (if exists): `{project-root}/_aria/core/data/workflow-manifest.csv`</action>
+<action>Read key map if it exists: `{project-root}/_aria/core/data/.key-map.yaml`</action>
 <action>Extract `communication_language` -- present all output in this language</action>
 
 ### Step 2 -- Check setup completeness
