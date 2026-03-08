@@ -7,7 +7,7 @@
 ### `project_overview`
 <action>Call `list_modules` to get all ARIA-managed modules (epics)</action>
 <action>Call `list_work_items` to get work item summary</action>
-<action>Call `list_work_item_properties` to check ARIA custom properties exist</action>
+<action>Call `list_labels` to verify ARIA operational labels exist</action>
 
 **Returns:** List of modules with statuses, work item counts by state
 
@@ -46,8 +46,8 @@
 
 ### `handoff_context`
 <action>Call `list_work_item_comments` with `work_item_id: "{scope_id}"`</action>
-<action>Find most recent comment containing "## Agent Handoff:"</action>
+<action>Find most recent comment containing "[ARIA:HANDOFF]"</action>
+<action>Parse the `[ARIA:META]` line for `from` and `to` agent names</action>
 <action>Parse handoff context (decisions, open_questions, artefact_refs)</action>
-<action>Check `aria_handoff_target` property value on the work item</action>
 
 **Returns:** Parsed handoff context with pre-loaded artefacts

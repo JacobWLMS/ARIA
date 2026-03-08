@@ -1,6 +1,6 @@
 # Post Handoff — Plane Implementation
 
-**Purpose:** Post structured handoff using Plane's Work Item Properties for signal routing and comments for context.
+**Purpose:** Post structured handoff using comments for context. Handoff target and last-agent are tracked via structured comment markers that the orchestrator can parse.
 
 ## Execution
 
@@ -15,7 +15,7 @@
 ```
 work_item_id: "{target_work_item_id}"
 comment_html: |
-  <h2>Agent Handoff: {current_agent} → {handoff_to}</h2>
+  <h2>[ARIA:HANDOFF] {current_agent} → {handoff_to}</h2>
   <p><strong>Completed:</strong> {handoff_type}</p>
   <p><strong>Summary:</strong> {summary}</p>
   <p><strong>Next Action:</strong> {recommended_next_workflow}</p>
@@ -27,20 +27,14 @@ comment_html: |
   <p><strong>Referenced Artefacts:</strong></p>
   <ul>{artefact_refs as list items}</ul>
   <hr/>
-  <p><em>Posted by ARIA Agent System</em></p>
+  <p><em>[ARIA:META] from={current_agent_lowercase} to={handoff_to_lowercase}</em></p>
 ```
 </step>
 
-<step n="3" goal="Set handoff property">
-<action>For each target work item, call `update_work_item` to set:</action>
-- `aria_handoff_target` property → `"{handoff_to_lowercase}"`
-- `aria_last_agent` property → `"{current_agent_lowercase}"`
-</step>
-
-<step n="4" goal="Update key map">
+<step n="3" goal="Update key map">
 <action>If `document_id` was provided, ensure it is recorded in `.key-map.yaml`</action>
 </step>
 
-<step n="5" goal="Log completion">
-<action>Report: "Handoff posted: {current_agent} → {handoff_to} on {work_item_count} work items. Property aria_handoff_target set."</action>
+<step n="4" goal="Log completion">
+<action>Report: "Handoff posted: {current_agent} → {handoff_to} on {work_item_count} work items."</action>
 </step>

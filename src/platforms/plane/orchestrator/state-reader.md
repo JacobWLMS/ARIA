@@ -16,10 +16,11 @@ Use this path when `last_poll_timestamp` is available from the previous orchestr
 
 <step n="2" goal="Fetch changed work items">
 <action>For each unique work item ID in the activities, call `retrieve_work_item` to get current state</action>
-<action>Check `aria_handoff_target` property — if set, record as pending handoff</action>
-<action>Check `aria_locked_by` property — if set, record as locked (check staleness via updated_at)</action>
-<action>Check `aria_attention` property — if true, record as needing user attention</action>
-<action>Check `aria_review_status` property — if "failed", record as review-failed</action>
+<action>Look up ARIA label IDs from `plane_labels` in module.yaml</action>
+<action>Check if `aria:locked` label is present — if so, record as locked</action>
+<action>Check if `aria:attention` label is present — if so, record as needing user attention</action>
+<action>Check if `aria:review-failed` label is present — if so, record as review-failed</action>
+<action>Call `list_work_item_comments` and find most recent `[ARIA:HANDOFF]` comment — parse `[ARIA:META]` line for `to=` field to determine pending handoff target</action>
 </step>
 
 <step n="3" goal="Check for pending intakes">
@@ -33,13 +34,17 @@ Use this path when `last_poll_timestamp` is available from the previous orchestr
 Use on first run or when activity-driven path returns no results.
 
 <step n="1" goal="Scan all work items">
-<action>Call `list_work_items` to get all work items with their properties</action>
-<action>Scan in-memory for:</action>
-- Items with `aria_handoff_target` set → pending handoffs
-- Items with `aria_locked_by` set → locked items (check staleness)
-- Items with `aria_attention` = true → attention needed
-- Items with `aria_review_status` = "failed" → review failures
+<action>Call `list_work_items` to get all work items</action>
+<action>Look up ARIA label IDs from `plane_labels` in module.yaml</action>
+<action>Scan each work item's labels for:</action>
+- Items with `aria:locked` label → locked items (check staleness via updated_at)
+- Items with `aria:attention` label → attention needed
+- Items with `aria:review-pending` label → reviews in progress
+- Items with `aria:review-failed` label → review failures
 - Items in each state → state distribution counts
+
+<action>For items with `aria:locked` label, call `list_work_item_comments` and find the most recent `[ARIA:LOCK]` comment to identify which agent holds the lock</action>
+<action>For items needing handoff detection, find the most recent `[ARIA:HANDOFF]` comment and parse `[ARIA:META]` for `to=` field</action>
 </step>
 
 <step n="2" goal="Scan epics and sprints">

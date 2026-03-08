@@ -16,7 +16,7 @@
 - Call `update_work_item` with estimate value
 
 <action>Identify dependencies between items via `list_work_item_relations`</action>
-<action>Flag items needing clarification by setting `aria_attention` property to true</action>
+<action>Flag items needing clarification by adding the `aria:attention` label (look up ID from `plane_labels.aria_attention` in module.yaml)</action>
 </step>
 
 <step n="3" goal="Report summary">

@@ -1,6 +1,6 @@
 # Plane Discovery — Setup Workflow
 
-**Purpose:** Auto-discover Plane workspace configuration and set up ARIA workflow states, custom properties, work item types, and labels.
+**Purpose:** Auto-discover Plane workspace configuration and set up ARIA workflow states, operational labels, and work item types.
 
 ---
 
@@ -8,6 +8,14 @@
 
 - Plane MCP server must be configured and accessible
 - User must have admin access to the target Plane project
+
+---
+
+## Known Issues
+
+> **Plane MCP serialization bug:** The `list_work_item_properties`, `create_work_item_property`, and related property tools have a serialization bug — the API call succeeds but the MCP response fails with `"None is not of type 'string'"`. Additionally, `update_work_item` has no custom property parameter, making properties unreadable and unwritable via MCP. **ARIA uses labels instead of custom properties on Plane.** This is transparent to agents — the core task dispatchers abstract the mechanism.
+
+> **Parallel MCP call cancellation:** When one MCP call errors, all concurrent calls are cancelled. **Create resources ONE AT A TIME** (sequentially, not in parallel). Always wait for each creation to complete before starting the next.
 
 ---
 
@@ -50,70 +58,59 @@ Suggested colors:
 
 <action>Record all state IDs in a mapping for module.yaml</action>
 
-### Step 3 — Create ARIA custom properties
+### Step 3 — Create ARIA operational labels
 
-> **Known issue:** The Plane MCP tools `list_work_item_properties` and `create_work_item_property` have a serialization bug — the API call succeeds but the MCP response fails with `"None is not of type 'string'"`. **Workaround:** If you get this error after calling `create_work_item_property`, the property WAS created successfully. Continue to the next property. For `list_work_item_properties`, if it errors, skip the existence check and create all properties (duplicates will error harmlessly).
+ARIA uses labels for agent coordination (locking, attention flags, review status). Labels are fully supported by the Plane MCP and visible on boards.
 
-> **Important:** Create properties ONE AT A TIME (sequentially, not in parallel). When one parallel MCP call errors, all concurrent calls are cancelled. Always wait for each property creation to complete before starting the next.
+<action>Call `list_labels` to check for existing ARIA labels</action>
 
-<action>Call `list_work_item_properties` to check for existing ARIA properties (if this errors due to the serialization bug, proceed to create all properties)</action>
+Create these labels ONE AT A TIME if they don't exist via `create_label`:
 
-Create these properties if they don't exist via `create_work_item_property`:
+1. **aria:locked** (color: #EF4444 red)
+   - Work item is being worked on by an ARIA agent
+   - Agent name is recorded in a lock comment
 
-1. **aria_locked_by** (type: text)
-   - Description: "ARIA agent lock — name of the agent currently working on this item"
-   - Default: "" (empty = unlocked)
+2. **aria:attention** (color: #F59E0B amber)
+   - Orchestrator needs user input on this item
 
-2. **aria_handoff_target** (type: select)
-   - Description: "ARIA handoff target — which agent should work on this item next"
-   - Options: analyst, pm, architect, ux, sm, dev, qa, security, devops, data, tech-writer
-   - Default: "" (empty = no handoff pending)
+3. **aria:review-pending** (color: #3B82F6 blue)
+   - Code review in progress
 
-3. **aria_last_agent** (type: select)
-   - Description: "ARIA audit trail — which agent last modified this item"
-   - Options: analyst, pm, architect, ux, sm, dev, qa, security, devops, data, tech-writer
-   - Default: ""
+4. **aria:review-passed** (color: #22C55E green)
+   - Code review passed
 
-4. **aria_review_status** (type: select)
-   - Description: "ARIA review status"
-   - Options: pending, passed, failed
-   - Default: ""
+5. **aria:review-failed** (color: #EF4444 red)
+   - Code review failed, needs rework
 
-5. **aria_attention** (type: checkbox)
-   - Description: "ARIA attention flag — set when orchestrator needs user input"
-   - Default: false
+6. **aria-quick-flow** (color: #8B5CF6 purple)
+   - Visual indicator for quick-flow items on boards
 
-<action>Record all property IDs in module.yaml</action>
+<action>Record all label IDs in module.yaml</action>
+
+**Note:** Handoff target and last-agent tracking use structured comments (posted by the `post-handoff` task), not labels. This provides richer context than a label could.
 
 ### Step 4 — Enable and create ARIA work item types
 
 > **Prerequisite:** Work item types must be enabled as a project feature before they can be created. This is off by default in new Plane projects.
 
 <action>Call `get_project_features` to check if work item types are enabled</action>
-<action>If `is_work_item_type_enabled` is false, call `update_project_features` with `is_work_item_type_enabled: true`</action>
+<action>If `is_work_item_type_enabled` is false, call `update_project_features` with `work_item_types: true`</action>
 
-> **Important:** Create work item types ONE AT A TIME (sequentially). Same parallel cancellation issue as with properties above.
+Create types ONE AT A TIME:
 
 <action>Call `list_work_item_types` to check for existing types</action>
 
 Create these types if they don't exist via `create_work_item_type`:
 
 1. **Story** — standard user stories from PRD
-2. **Tech Spec** — quick-spec items (replaces aria-quick-flow label)
+2. **Tech Spec** — quick-spec items
 3. **Bug** — defects found during QA/code review
 4. **Spike** — research/investigation items
 5. **Review Finding** — code review sub-issues
 
 <action>Record type IDs in module.yaml</action>
 
-### Step 5 — Create minimal labels
-
-Only labels that still serve as board-level visual filters (not replaced by properties):
-
-<action>Call `create_label` for:</action>
-- `aria-quick-flow` (color: #8B5CF6 purple) — visual indicator for quick-flow items on boards
-
-### Step 6 — Update module.yaml
+### Step 5 — Update module.yaml
 
 <action>Write the discovered values to module.yaml:</action>
 
@@ -131,13 +128,14 @@ status_names:
   done: "{done_state_id}"
   cancelled: "{cancelled_state_id}"
 
-# Plane custom properties (IDs)
-plane_properties:
-  aria_locked_by: "{property_id}"
-  aria_handoff_target: "{property_id}"
-  aria_last_agent: "{property_id}"
-  aria_review_status: "{property_id}"
-  aria_attention: "{property_id}"
+# Plane operational labels (IDs)
+plane_labels:
+  aria_locked: "{label_id}"
+  aria_attention: "{label_id}"
+  aria_review_pending: "{label_id}"
+  aria_review_passed: "{label_id}"
+  aria_review_failed: "{label_id}"
+  aria_quick_flow: "{label_id}"
 
 # Plane work item types (IDs)
 plane_work_item_types:
@@ -148,7 +146,7 @@ plane_work_item_types:
   review_finding: "{type_id}"
 ```
 
-### Step 7 — Display summary
+### Step 6 — Display summary
 
 <action>Present a summary to the user:</action>
 
@@ -157,9 +155,11 @@ ARIA Plane Setup Complete!
 
 Project: {project_name} ({project_id})
 States: Backlog, Todo, In Progress, In Review, Done, Cancelled
-Properties: aria_locked_by, aria_handoff_target, aria_last_agent, aria_review_status, aria_attention
+Labels: aria:locked, aria:attention, aria:review-pending, aria:review-passed, aria:review-failed, aria-quick-flow
 Work Item Types: Story, Tech Spec, Bug, Spike, Review Finding
-Labels: aria-quick-flow
+
+Note: ARIA uses labels + comments for agent coordination on Plane.
+Custom properties are not used due to a Plane MCP serialization bug.
 
 Next steps:
 1. Run /aria-git to configure Git/GitHub integration (optional)
