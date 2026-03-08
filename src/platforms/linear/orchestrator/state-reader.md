@@ -137,8 +137,12 @@ STATE SUMMARY:
   Review-failed: {identifiers} [or "none"]
   Cycle: {cycle_name} ({issue_count} issues) [or "none"]
   Git: {branch}, {clean|dirty}, {n} open PR(s) [or "disabled"]
+  Parallel: {enabled|disabled} — {active_count}/{max} agents active [or omit if disabled]
+    - [{category}] {agent_name} on {identifier} ({elapsed_time} ago)
 
 RECOMMENDED DISPATCH: evaluate against agent-dispatch-rules.md
 ```
+
+> **Note:** The `Parallel` line is populated from the orchestrator's in-memory concurrency tracker, not from API calls. The state reader formats it for display. When `parallel_agents` is `false` in module.yaml, omit the Parallel line entirely.
 
 **API call budget:** 3-5 calls per cycle (key map read is local, git checks are local).

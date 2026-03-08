@@ -201,3 +201,21 @@ These values are read from the `git:` section of the module's `module.yaml`:
 | `git.pr_draft` | `create_pr` | `true` |
 | `git.pr_auto_approve` | `approve_pr` | `true` |
 | `git.pr_auto_merge` | (reserved for future use) | `false` |
+
+---
+
+## Worktree Compatibility
+
+When the agent runs inside a Claude Code worktree (dispatched with `isolation: "worktree"` on the Agent tool), all git operations automatically target the worktree's working directory. No code changes are needed — operations are path-agnostic.
+
+- **`create_branch`** — Creates the feature branch inside the worktree. The worktree starts on the default branch, so `git checkout -b` works normally. The branch is visible to the main repo.
+- **`commit_and_push`** — Commits and pushes from the worktree. The push goes to the same remote.
+- **`create_pr`** — Creates a PR from the worktree's branch. Works identically to non-worktree operation.
+- **`get_pr_diff`** — Reads diffs from the worktree or via `gh pr diff`. Works identically.
+
+### Concurrent Safety
+
+When two agents run in separate worktrees simultaneously:
+- Each worktree has its own working directory, index, and HEAD
+- Issue-specific branch naming prevents branch conflicts between agents
+- Issue locks (enforced by the orchestrator) prevent two agents from working on the same story

@@ -45,6 +45,77 @@ Post a handoff comment when done.
 
 **Context loading:** Look up document IDs and issue IDs from the key map file. Pass them as identifiers in the prompt (e.g., "PRD doc ID: abc123"). The subagent calls `get_document` / `get_issue` to load the actual content.
 
+### Parallel Dispatch (when `parallel_agents` is enabled)
+
+When dispatching a background agent in parallel mode, use these Agent tool parameters:
+
+```
+Agent tool call:
+  prompt: "{standard template above}"
+  isolation: "worktree"        # For DEV/REVIEW categories only (git-touching workflows)
+  run_in_background: true      # Always true for parallel dispatches
+```
+
+Platform-only agents (PLATFORM category) use `run_in_background: true` but do NOT need `isolation: "worktree"` since they only make API calls.
+
+---
+
+## Parallel Dispatch Protocol
+
+> This section only applies when `parallel_agents` is `true` in module.yaml. When `false`, the orchestrator uses simple first-match sequential dispatch (see Orchestrator Loop below).
+
+### Rule Categories
+
+Each dispatch rule is tagged with a concurrency category:
+
+| Category | Description | Isolation | Max per category |
+|---|---|---|---|
+| `SEQUENTIAL` | Project-wide state changes. Must run alone. | none | 1 (exclusive) |
+| `DEV` | Git-touching implementation. Needs worktree. | `worktree` | 1 |
+| `REVIEW` | Git-reading review. Needs worktree. | `worktree` | 1 |
+| `PLATFORM` | Platform API only. No git. | none | 1 |
+
+**Max total concurrent agents:** Read from `max_concurrent_agents` in module.yaml (default: 3).
+
+### Valid Concurrent Combinations
+
+- DEV + PLATFORM (Dev implements Story A while SM preps Story B)
+- DEV + REVIEW (Dev implements Story A while QA reviews Story C)
+- DEV + PLATFORM + REVIEW (maximum parallelism — all three simultaneously)
+- PLATFORM + REVIEW (SM preps while QA reviews)
+
+**Never concurrent:**
+- DEV + DEV (shared files could conflict)
+- REVIEW + REVIEW (one review at a time)
+- SEQUENTIAL + anything (always runs alone)
+
+### Concurrency Tracker
+
+The orchestrator maintains an in-memory tracker (NOT persisted to disk):
+
+```yaml
+active_agents:
+  dev: { issue_key: "PROJ-12", agent: "Riff", dispatched_at: "..." }    # or null
+  review: { issue_key: "PROJ-10", agent: "Pitch", dispatched_at: "..." } # or null
+  platform: { issue_key: "PROJ-15", agent: "Tempo", dispatched_at: "..." } # or null
+completed_this_cycle: []  # cleared after processing
+```
+
+### Parallel Dispatch Logic
+
+1. Check for completed background agents (Claude Code sends notifications automatically)
+   - For each completion: record outcome, free the category slot
+   - For each failure: free the slot, unlock the issue, add `aria-attention` label
+2. Run state reader (includes parallel status line from tracker)
+3. Evaluate dispatch rules in priority order:
+   - If a **SEQUENTIAL** rule matches AND no background agents are active → dispatch foreground, wait
+   - If a **SEQUENTIAL** rule matches AND background agents ARE active → WAIT for them to complete first
+   - If a **non-SEQUENTIAL** rule matches → check: is its category slot available? Is `total_active < max`?
+     - Yes → dispatch as background agent (with `isolation: "worktree"` for DEV/REVIEW)
+     - No → skip this rule, continue evaluating lower-priority rules
+4. After dispatching all eligible rules (up to max), wait for the next completion notification
+5. On notification → return to step 1
+
 ---
 
 ## Dispatch Priority
@@ -58,6 +129,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 <rules>
 
 <rule n="0" name="Handoff Signal Detected">
+<category>SEQUENTIAL</category>
 <condition>State summary shows Handoffs is not "none"</condition>
 <action>DELEGATE to the agent indicated by the handoff label</action>
 <agent_yaml>{project-root}/_aria/core/agents/{target_agent}.agent.yaml</agent_yaml>
@@ -79,19 +151,26 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="1" name="Attention Required">
+<category>SEQUENTIAL</category>
 <condition>State summary shows Attention is not "none"</condition>
 <action>ASK_USER</action>
 <message>Issue {identifier} needs attention: {title}. Please review and decide how to proceed.</message>
 </rule>
 
 <rule n="2" name="Blocked — Agent Active">
-<condition>State summary shows Locks is not "none" (and not stale)</condition>
-<action>WAIT — another agent is currently working</action>
+<category>SEQUENTIAL</category>
+<condition>
+  When parallel_agents is FALSE: State summary shows Locks is not "none" (and not stale)
+  When parallel_agents is TRUE: ALL eligible rules' target issues are locked (no dispatchable work available)
+</condition>
+<action>WAIT — agents are active on all available work</action>
 <message>Agent is active on: {locked_identifiers}. Waiting for completion.</message>
 <retry>Poll again in 30 seconds</retry>
+<notes>In parallel mode, locks are respected per-issue — the orchestrator skips locked issues but can still dispatch to unlocked issues via other rules.</notes>
 </rule>
 
 <rule n="3" name="Phase 1 — Product Brief Needed">
+<category>SEQUENTIAL</category>
 <condition>brief=NO</condition>
 <agent>Analyst (Cadence)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/analyst.agent.yaml</agent_yaml>
@@ -101,6 +180,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="4" name="Phase 2 — PRD Needed">
+<category>SEQUENTIAL</category>
 <condition>brief=YES AND prd=NO</condition>
 <agent>PM (Maestro)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/pm.agent.yaml</agent_yaml>
@@ -113,6 +193,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="5" name="Phase 2 — UX Design Needed">
+<category>SEQUENTIAL</category>
 <condition>prd=YES AND ux=NO</condition>
 <agent>UX Designer (Lyric)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/ux-designer.agent.yaml</agent_yaml>
@@ -126,6 +207,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="6" name="Phase 2/3 — Epics and Stories Needed">
+<category>SEQUENTIAL</category>
 <condition>prd=YES AND Projects total == 0</condition>
 <agent>PM (Maestro)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/pm.agent.yaml</agent_yaml>
@@ -138,6 +220,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="7" name="Phase 3 — Architecture Needed">
+<category>SEQUENTIAL</category>
 <condition>Projects total > 0 AND arch=NO</condition>
 <agent>Architect (Opus)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/architect.agent.yaml</agent_yaml>
@@ -151,6 +234,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="7.5" name="Phase 3 — Security Review Needed">
+<category>SEQUENTIAL</category>
 <condition>arch=YES AND no threat model document exists (check key map for `threat_model` key, or scan documents for "[{project_key}] Threat Model")</condition>
 <agent>Security (Forte)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/security.agent.yaml</agent_yaml>
@@ -164,6 +248,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="8" name="Phase 3 — Implementation Readiness Check">
+<category>SEQUENTIAL</category>
 <condition>arch=YES AND Issues todo == 0 AND Issues in_progress == 0 AND Issues backlog > 0 AND Cycle is "none"</condition>
 <agent>Architect (Opus)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/architect.agent.yaml</agent_yaml>
@@ -179,6 +264,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="9" name="Phase 4 — Sprint Planning Needed">
+<category>SEQUENTIAL</category>
 <condition>arch=YES AND Cycle is "none" AND Issues backlog > 0</condition>
 <agent>SM (Tempo)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/sm.agent.yaml</agent_yaml>
@@ -191,6 +277,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="10" name="Phase 4 — Story Preparation Needed">
+<category>PLATFORM</category>
 <condition>Issues backlog > 0 AND Issues todo == 0 AND Issues in_progress == 0</condition>
 <agent>SM (Tempo)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/sm.agent.yaml</agent_yaml>
@@ -203,6 +290,8 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="11" name="Phase 4 — Development">
+<category>DEV</category>
+<isolation>worktree</isolation>
 <condition>Issues todo > 0</condition>
 <agent>Dev (Riff)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/dev.agent.yaml</agent_yaml>
@@ -216,6 +305,8 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="12" name="Phase 4 — Review Failed Re-implementation">
+<category>DEV</category>
+<isolation>worktree</isolation>
 <condition>Review-failed is not "none"</condition>
 <agent>Dev (Riff)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/dev.agent.yaml</agent_yaml>
@@ -229,6 +320,8 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="13" name="Phase 4 — Code Review">
+<category>REVIEW</category>
+<isolation>worktree</isolation>
 <condition>Issues in_review > 0</condition>
 <agent>QA (Pitch)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/qa.agent.yaml</agent_yaml>
@@ -242,6 +335,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="14" name="Phase 4 — More Stories to Prepare">
+<category>PLATFORM</category>
 <condition>Issues backlog > 0 AND (Issues in_progress > 0 OR Issues in_review > 0)</condition>
 <agent>SM (Tempo)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/sm.agent.yaml</agent_yaml>
@@ -251,9 +345,11 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
   - Architecture doc ID from key map
 </context_to_load>
 <message>Dev is busy. Delegating story preparation in parallel.</message>
+<notes>In parallel mode, this rule fires concurrently with DEV/REVIEW rules. SM runs without worktree isolation (platform API only). In sequential mode, this rule only fires when no higher-priority rule matches.</notes>
 </rule>
 
 <rule n="15" name="Project Retrospective">
+<category>SEQUENTIAL</category>
 <condition>Any project where all issues are Done AND project state is "started"</condition>
 <agent>SM (Tempo)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/sm.agent.yaml</agent_yaml>
@@ -267,6 +363,7 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="15.5" name="Phase 5 — Release Planning Needed">
+<category>SEQUENTIAL</category>
 <condition>All issues in a project are Done AND no release plan document exists (check key map for `release_plan` key, or scan documents for "[{project_key}] Release Plan")</condition>
 <agent>DevOps (Coda)</agent>
 <agent_yaml>{project-root}/_aria/core/agents/devops.agent.yaml</agent_yaml>
@@ -281,12 +378,14 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 </rule>
 
 <rule n="16" name="Project Complete">
+<category>SEQUENTIAL</category>
 <condition>All projects completed AND Projects total > 0</condition>
 <action>COMPLETE</action>
 <message>All projects (epics) are complete. Project implementation is done!</message>
 </rule>
 
 <rule n="17" name="No Action — Fallback">
+<category>SEQUENTIAL</category>
 <condition>No other rule matched</condition>
 <action>ASK_USER</action>
 <message>Unable to determine next action. Current state: {state_summary}. What would you like to do?</message>
@@ -298,11 +397,13 @@ Rules are evaluated in order. The **first matching rule fires.** If no rule matc
 
 ## Orchestrator Loop
 
-When running in automated mode, the orchestrator repeats:
+**The orchestrator NEVER loads agent YAMLs, workflow YAMLs, or artefact documents into its own context.** It only reads: module.yaml, the key map file, and the compact state summary. Everything else is delegated.
+
+### Sequential Mode (`parallel_agents` is `false` — default)
 
 ```
 1. Run state-reader to get compact state summary (3-5 API calls)
-2. Evaluate dispatch rules against state summary
+2. Evaluate dispatch rules against state summary — first match fires
 3. If an agent should be dispatched:
    a. Look up context identifiers from key map (doc IDs, issue IDs) — local file read only
    b. Spawn subagent via Agent tool with: agent_yaml path, workflow_yaml path, issue details, context IDs
@@ -314,7 +415,28 @@ When running in automated mode, the orchestrator repeats:
 5. If COMPLETE or ASK_USER: stop and report to user
 ```
 
-**The orchestrator NEVER loads agent YAMLs, workflow YAMLs, or artefact documents into its own context.** It only reads: module.yaml, the key map file, and the compact state summary. Everything else is delegated.
+### Parallel Mode (`parallel_agents` is `true`)
+
+```
+1. Check for completed background agents (Claude Code sends notifications)
+   - For each completion: summarize outcome (1-2 sentences), free the category slot
+   - For each failure: free the slot, spawn unlock agent for the issue, add aria-attention label
+   - Increment cycle counter for each completion
+2. Run state-reader to get compact state summary (include Parallel line from tracker)
+3. Evaluate dispatch rules in priority order — collect ALL eligible dispatches:
+   a. If a SEQUENTIAL rule matches:
+      - If no background agents active → dispatch foreground, wait, return to step 1
+      - If background agents active → WAIT for all to complete first, then dispatch
+   b. If a DEV/REVIEW/PLATFORM rule matches:
+      - Check: is its category slot available? Is total_active < max_concurrent_agents?
+      - Yes → dispatch as background agent (with isolation: "worktree" for DEV/REVIEW)
+      - No → skip, continue evaluating lower-priority rules for other category slots
+4. After dispatching all eligible background agents:
+   - Wait for the next completion notification (do NOT poll — Claude Code notifies you)
+   - On notification → return to step 1
+5. If no rules matched and no background agents active: COMPLETE or ASK_USER
+6. If cycle counter > 20: STOP and report
+```
 
 ---
 

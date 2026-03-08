@@ -99,3 +99,4 @@ Sprint Retrospective (velocity tracking) -> Next Sprint
 11. **Git is recommended** -- git operations gated on `git_enabled`; git failures never block platform operations
 12. **Autonomy levels** -- derived from `user_skill_level` (beginner->interactive, intermediate->balanced, expert->yolo). Course corrections always require approval.
 13. **Workflow inheritance** -- all workflow YAMLs inherit from `base-workflow.yaml`; only declare unique fields
+14. **Parallel agents** -- when `parallel_agents` is enabled in module.yaml, the orchestrator dispatches concurrent agents using Claude Code's Agent tool with `run_in_background` and `isolation: "worktree"`. Git-touching workflows (dev, code-review) get worktree isolation; platform-only workflows (story prep) don't. Max 3 concurrent agents. Issue locks prevent conflicts.

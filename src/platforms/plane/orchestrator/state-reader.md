@@ -93,4 +93,8 @@ Attention Needed: {list of item_ids}
 Review Failures: {list of item_ids}
 Pending Intakes: {count} ideas awaiting triage
 Git: {clean/dirty} {branch_name}
+Parallel: {enabled|disabled} — {active_count}/{max} agents active [or omit if disabled]
+  - [{category}] {agent_name} on {item_id} ({elapsed_time} ago)
 ```
+
+> **Note:** The `Parallel` line is populated from the orchestrator's in-memory concurrency tracker, not from API calls. When `parallel_agents` is `false` in module.yaml, omit the Parallel line entirely.
