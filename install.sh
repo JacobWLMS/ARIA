@@ -10,6 +10,22 @@ set -euo pipefail
 #   ./install.sh /path/to/project          (from cloned repo)
 #   bash <(curl -fsSL .../install.sh) .    (pipe-to-shell — clones repo to temp dir)
 
+# Shell compatibility check
+if [ -z "${BASH_VERSION:-}" ]; then
+  echo ""
+  echo "  Error: ARIA requires a bash-compatible shell."
+  echo ""
+  echo "  You appear to be running this in a different shell."
+  echo "  Try one of:"
+  echo "    bash install.sh /path/to/project"
+  echo "    ./install.sh /path/to/project  (if bash is your default shell)"
+  echo ""
+  echo "  On Windows, use WSL or Git Bash (https://gitforwindows.org)."
+  echo "  PowerShell and CMD are not supported."
+  echo ""
+  exit 1
+fi
+
 REPO_URL="https://github.com/JacobWLMS/ARIA.git"
 CLEANUP_TEMP=""
 

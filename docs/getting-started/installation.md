@@ -1,29 +1,68 @@
 # Installation
 
-ARIA installs into your project directory as a set of YAML configurations, workflow instructions, and slash commands.
+ARIA installs into your project directory as a set of YAML configurations, workflow instructions, and slash commands. The installer requires a bash-compatible shell.
 
-## One-Liner (Pipe to Shell)
+## Install Methods
 
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
-```
+=== "macOS / Linux"
 
-## Clone and Install
+    **Pipe to shell (quickest):**
 
-```bash
-git clone https://github.com/JacobWLMS/ARIA.git
-cd ARIA
-./install.sh /path/to/your/project
-```
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
+    ```
+
+    **Or clone and install:**
+
+    ```bash
+    git clone https://github.com/JacobWLMS/ARIA.git
+    cd ARIA
+    ./install.sh /path/to/your/project
+    ```
+
+=== "Windows (WSL)"
+
+    Run these commands inside your WSL terminal (Ubuntu, Debian, etc.):
+
+    **Pipe to shell:**
+
+    ```bash
+    bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
+    ```
+
+    **Or clone and install:**
+
+    ```bash
+    git clone https://github.com/JacobWLMS/ARIA.git
+    cd ARIA
+    ./install.sh /path/to/your/project
+    ```
+
+    Your project path should be a WSL path (e.g., `/home/user/projects/myapp`), not a Windows path.
+
+=== "Windows (Git Bash)"
+
+    If you're not using WSL, install via [Git for Windows](https://gitforwindows.org) which includes Git Bash:
+
+    ```bash
+    git clone https://github.com/JacobWLMS/ARIA.git
+    cd ARIA
+    bash install.sh /path/to/your/project
+    ```
+
+    The pipe-to-shell method may not work in all Git Bash configurations. Clone-and-install is recommended.
+
+    !!! note
+        PowerShell and CMD are not supported for installation. Once installed, ARIA runs entirely through Claude Code which works on any terminal.
 
 ## What Gets Installed
 
 | Directory | Contents |
 |---|---|
 | `_aria/core/` | Agent definitions, workflows, tasks, orchestrator, configuration |
-| `_aria/platforms/` | Platform-specific task implementations (Plane, Linear) |
+| `_aria/platform/` | Platform-specific task implementations (Plane or Linear) |
 | `_aria/shared/` | Templates, checklists, data files (brainstorming techniques, complexity matrices) |
-| `.claude/commands/` | 27 slash command files (`aria-*.md`) |
+| `.claude/commands/` | 38 slash command files (`aria-*.md`) |
 | `CLAUDE.md` | Project instructions with command reference and critical rules |
 
 ## Re-Installing

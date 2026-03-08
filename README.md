@@ -74,6 +74,17 @@ An automated orchestrator polls platform state to determine which agent should w
 
 ## Quick Start
 
+### Operating Systems
+
+| OS | Status | Install Method |
+|---|---|---|
+| **macOS** | Fully supported | Pipe-to-shell or clone |
+| **Linux** | Fully supported | Pipe-to-shell or clone |
+| **Windows (WSL)** | Fully supported | Pipe-to-shell or clone (inside WSL) |
+| **Windows (native)** | Supported | Clone and install via Git Bash |
+
+ARIA is pure YAML + Markdown — no compilation, no native dependencies. It runs wherever Claude Code runs. The installer requires a bash-compatible shell (`bash`, `zsh`, Git Bash).
+
 ### Prerequisites
 
 - [Claude Code](https://claude.ai/claude-code) CLI installed
