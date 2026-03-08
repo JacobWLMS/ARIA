@@ -53,7 +53,7 @@ Then:
 2. Run `/aria-git` to configure Git/GitHub integration (optional)
 3. Run `/aria-help` to get started
 
-[Get Started :material-arrow-right:](getting-started/index.md){ .md-button .md-button--primary }
+[**Get Started →**](getting-started/index.md)
 
 ---
 

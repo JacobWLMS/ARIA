@@ -16,5 +16,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install mkdocs-material mkdocs-include-markdown-plugin
+      - run: pip install mkdocs-shadcn mkdocs-include-markdown-plugin pymdown-extensions
       - run: mkdocs gh-deploy --force
