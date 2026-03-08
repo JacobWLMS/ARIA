@@ -1,0 +1,8 @@
+name: dev-story
+description: 'Execute a story implementation with Linear status tracking. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/4-implementation/dev-story"
+instructions: "{installed_path}/instructions-linear.md"
+checklist: "{project-root}/_aria/shared/checklists/dev-story-checklist.md"

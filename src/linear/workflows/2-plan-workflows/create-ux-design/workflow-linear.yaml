@@ -1,0 +1,8 @@
+name: create-ux-design
+description: 'Create UX design specification with output to Linear Document. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/2-plan-workflows/create-ux-design"
+instructions: "{installed_path}/instructions-linear.md"
+template: "{project-root}/_aria/shared/templates/ux-design-template.md"

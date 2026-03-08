@@ -1,0 +1,7 @@
+name: edit-ux-design
+description: 'Update existing UX design based on feedback or new requirements. Output updates to Linear Document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/2-plan-workflows/edit-ux-design"
+instructions: "{installed_path}/instructions-linear.md"

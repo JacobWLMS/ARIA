@@ -1,0 +1,12 @@
+name: create-architecture
+description: 'Create architecture design with output to Linear Document. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/3-solutioning/create-architecture"
+instructions: "{installed_path}/instructions-linear.md"
+template: "{project-root}/_aria/shared/templates/architecture-decision-template.md"
+
+# Reference data
+project_types_data: "{project-root}/_aria/shared/data/project-types-arch.csv"
+domain_complexity_data: "{project-root}/_aria/shared/data/domain-complexity-arch.csv"

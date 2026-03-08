@@ -1,0 +1,8 @@
+name: data-model
+description: 'Data modeling — ERD, schema design, relationships, indexes. Output to Linear Document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/3-solutioning/data-model"
+instructions: "{installed_path}/instructions-linear.md"
+template: "{project-root}/_aria/shared/templates/data-model-template.md"

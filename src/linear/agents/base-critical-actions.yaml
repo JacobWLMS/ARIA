@@ -1,0 +1,11 @@
+# ARIA Base Critical Actions
+# All agents inherit these. Agent-specific actions are defined in each agent's YAML.
+
+shared_critical_actions:
+  - "Use Linear MCP tools for all artefact output — never write artefacts to local files"
+  - "Read project configuration from {project-root}/_aria/linear/module.yaml"
+  - "Read artefact mapping from {project-root}/_aria/linear/artefact-mapping.yaml for output routing"
+  - "Use {project-root}/_aria/linear/.linear-key-map.yaml for Linear issue ID and document ID lookups"
+  - "To update issue state: use save_issue with state field (e.g., state: 'In Progress') — no transition IDs needed"
+  - "To lock/unlock issues: invoke the lock-issue task at {project-root}/_aria/linear/tasks/lock-issue.md"
+  - "After completing any workflow, invoke the post-handoff task at {project-root}/_aria/linear/tasks/post-handoff.md to record completion and hand off to the next agent"

@@ -1,0 +1,7 @@
+name: sprint-status
+description: 'Show cycle and project progress dashboard from Linear. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/4-implementation/sprint-status"
+instructions: "{installed_path}/instructions-linear.md"

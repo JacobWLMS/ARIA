@@ -1,0 +1,92 @@
+site_name: ARIA
+site_url: https://jacobwlms.github.io/ARIA/
+site_description: "ARIA: Linear-native agentic development with musical-themed AI agents"
+repo_url: https://github.com/JacobWLMS/ARIA
+repo_name: JacobWLMS/ARIA
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - include-markdown:
+      opening_tag: "{%"
+      closing_tag: "%}"
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - getting-started/index.md
+    - Prerequisites: getting-started/prerequisites.md
+    - Installation: getting-started/installation.md
+    - Linear MCP Setup: getting-started/mcp-server-setup.md
+    - First Project Setup: getting-started/first-project-setup.md
+  - Agents:
+    - agents/index.md
+    - Cadence (Analyst): agents/analyst.md
+    - Maestro (PM): agents/pm.md
+    - Lyric (UX Designer): agents/ux-designer.md
+    - Opus (Architect): agents/architect.md
+    - Tempo (Scrum Master): agents/sm.md
+    - Riff (Developer): agents/dev.md
+    - Pitch (QA): agents/qa.md
+    - Forte (Security): agents/security.md
+    - Harmony (Data): agents/data.md
+    - Coda (DevOps): agents/devops.md
+    - Solo (Quick Flow): agents/quick-flow.md
+    - Verse (Tech Writer): agents/tech-writer.md
+  - Workflows:
+    - reference/slash-commands.md
+    - Workflow Guide: guides/workflows.md
+  - Reference:
+    - reference/index.md
+    - Configuration: reference/configuration.md
+    - Task Procedures: reference/tasks.md
+    - Templates: reference/templates.md
+    - Checklists: reference/checklists.md
+    - Artefact Mapping: reference/artefact-mapping.md
+    - Workflow Manifest: reference/workflow-manifest.md
+  - Guides:
+    - guides/index.md
+    - Git/GitHub Integration: guides/git-integration.md
+    - Orchestrator: guides/orchestrator.md
+    - Autonomy Configuration: guides/autonomy.md
+  - Architecture:
+    - architecture/index.md

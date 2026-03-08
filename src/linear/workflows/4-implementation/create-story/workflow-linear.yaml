@@ -1,0 +1,9 @@
+name: create-story
+description: 'Prepare a story with full dev context, writing to Linear. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/4-implementation/create-story"
+instructions: "{installed_path}/instructions-linear.md"
+checklist: "{project-root}/_aria/shared/checklists/create-story-checklist.md"
+template: "{project-root}/_aria/shared/templates/story-template.md"

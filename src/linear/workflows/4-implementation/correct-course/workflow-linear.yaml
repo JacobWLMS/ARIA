@@ -1,0 +1,8 @@
+name: correct-course
+description: 'Assess and execute mid-cycle course corrections via Linear. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/4-implementation/correct-course"
+instructions: "{installed_path}/instructions-linear.md"
+checklist: "{project-root}/_aria/shared/checklists/correct-course-checklist.md"

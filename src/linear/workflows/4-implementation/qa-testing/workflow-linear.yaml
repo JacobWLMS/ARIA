@@ -1,0 +1,7 @@
+name: qa-testing
+description: 'Generate tests for reviewed stories with results posted to Linear. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/4-implementation/qa-testing"
+instructions: "{installed_path}/instructions-linear.md"

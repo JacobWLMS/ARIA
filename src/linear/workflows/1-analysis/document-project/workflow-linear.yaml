@@ -1,0 +1,8 @@
+name: document-project
+description: 'Scan existing project and produce documentation to Linear Document. Use when tracking_system is "linear".'
+author: "ARIA"
+inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/linear/workflows/1-analysis/document-project"
+instructions: "{installed_path}/instructions-linear.md"
+checklist: "{project-root}/_aria/shared/checklists/document-project-checklist.md"
