@@ -62,6 +62,17 @@ _aria/
 
 ## Key Concepts
 
+### Cross-Phase Context Retrieval
+
+Every artefact an agent creates — PRDs, architecture documents, security reviews, data models, handoff notes — is stored on the platform and registered in the key map. Any agent at any phase can retrieve any of these artefacts on demand via the `read-context` task. This means:
+
+- **Riff** (dev) can read Opus's architecture decisions to understand *why* a design choice was made before implementing it
+- **Pitch** (QA) can check the original PRD acceptance criteria when reviewing a story
+- **Forte** (security) can review Harmony's data model when performing a threat assessment
+- **Tempo** (SM) can read all handoff history to understand blockers across the sprint
+
+No context is lost between phases. The platform serves as persistent institutional memory for the entire project lifecycle.
+
 ### Key Map
 
 `_aria/core/.key-map.yaml` is an auto-populated lookup file that maps logical names to platform entity IDs. When an agent creates a document (e.g., a PRD), it stores the entity ID in the key map. Subsequent agents look up that ID instead of re-querying the platform.

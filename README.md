@@ -26,6 +26,7 @@ An automated orchestrator polls platform state to determine which agent should w
 
 ## Why ARIA?
 
+- **Cross-phase context retrieval** — any agent can pull artefacts from any phase at any time. The dev reads the architect's rationale. QA checks the PRD's acceptance criteria. Security reviews the data model. Every decision made earlier in the lifecycle is available to every agent later — no context is ever lost between phases.
 - **No context switching** — agents read from and write to your project management platform directly
 - **Structured methodology** — 5-phase scrum workflow with built-in quality gates and handoffs
 - **Platform-native** — uses Plane/Linear MCP tools for zero-latency integration, not REST APIs
@@ -44,6 +45,7 @@ An automated orchestrator polls platform state to determine which agent should w
 | **Multi-platform** | Plane (recommended) and Linear with shared core logic |
 | **Scrum practices** | Fibonacci estimation, velocity tracking, sprint capacity, backlog refinement |
 | **Automated orchestrator** | Polls platform state and dispatches agents autonomously |
+| **Cross-phase memory** | Any agent can retrieve artefacts from any phase — architecture informs dev, PRD informs QA, nothing is lost |
 | **Structured handoffs** | Mandatory context passing with decisions, questions, and artefact references |
 | **Git/GitHub integration** | Branches, commits, and PRs aligned with work items (optional) |
 | **Configurable autonomy** | Interactive, balanced, or fully autonomous modes |

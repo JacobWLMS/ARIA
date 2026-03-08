@@ -22,6 +22,7 @@ An automated **orchestrator** polls platform state to determine which agent shou
 
 ## Key Features
 
+- **Cross-phase context retrieval** -- any agent can pull artefacts from any previous phase on demand. The developer reads the architect's design rationale. QA checks the PRD's acceptance criteria. Security reviews the data model. Every decision persists on the platform and is available to every agent throughout the entire project lifecycle.
 - **38 slash commands** -- type `/aria` in Claude Code and autocomplete to any workflow
 - **12 musical agent personas** -- each with distinct capabilities, communication styles, and workflows
 - **Multi-platform tracking** -- Epics, Stories, Sprints, Milestones, and Documents managed via Plane or Linear MCP tools
