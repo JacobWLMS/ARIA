@@ -1,15 +1,29 @@
 # Installation
 
-ARIA installs into your project directory as a set of YAML configurations, workflow instructions, and slash commands. The installer requires a bash-compatible shell.
+ARIA installs into your project directory as a set of YAML configurations, workflow instructions, and slash commands.
 
-## Install Methods
+## AI Agent Install (Recommended)
+
+Paste this into Claude Code, Cursor, Cline, Windsurf, or any AI coding tool:
+
+> Read the instructions at https://raw.githubusercontent.com/JacobWLMS/ARIA/main/agent-install.md and follow them to install ARIA into this project.
+
+The AI will clone ARIA, ask you a few setup questions (platform, team name), detect your tool, and configure everything automatically.
+
+## Shell Install
 
 === "macOS / Linux"
 
-    **Pipe to shell (quickest):**
+    **Install to current directory:**
 
     ```bash
-    bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
+    curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash
+    ```
+
+    **Install to a specific directory:**
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash -s -- /path/to/project
     ```
 
     **Or clone and install:**
@@ -17,43 +31,63 @@ ARIA installs into your project directory as a set of YAML configurations, workf
     ```bash
     git clone https://github.com/JacobWLMS/ARIA.git
     cd ARIA
-    ./install.sh /path/to/your/project
+    ./install.sh /path/to/project
+    ```
+
+=== "fish"
+
+    fish does not support `bash <(...)` process substitution. Use the pipe syntax:
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash
+    ```
+
+    **With a specific directory:**
+
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash -s -- /path/to/project
     ```
 
 === "Windows (WSL)"
 
-    Run these commands inside your WSL terminal (Ubuntu, Debian, etc.):
-
-    **Pipe to shell:**
+    Run inside your WSL terminal (Ubuntu, Debian, etc.):
 
     ```bash
-    bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
-    ```
-
-    **Or clone and install:**
-
-    ```bash
-    git clone https://github.com/JacobWLMS/ARIA.git
-    cd ARIA
-    ./install.sh /path/to/your/project
+    curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash
     ```
 
     Your project path should be a WSL path (e.g., `/home/user/projects/myapp`), not a Windows path.
 
 === "Windows (Git Bash)"
 
-    If you're not using WSL, install via [Git for Windows](https://gitforwindows.org) which includes Git Bash:
+    Clone-and-install is recommended for Git Bash:
 
     ```bash
     git clone https://github.com/JacobWLMS/ARIA.git
     cd ARIA
-    bash install.sh /path/to/your/project
+    bash install.sh /path/to/project
     ```
 
-    The pipe-to-shell method may not work in all Git Bash configurations. Clone-and-install is recommended.
-
     !!! note
-        PowerShell and CMD are not supported for installation. Once installed, ARIA runs entirely through Claude Code which works on any terminal.
+        PowerShell and CMD are not supported for installation. Once installed, ARIA runs entirely through your AI coding tool.
+
+## AI Tool Selection
+
+The installer defaults to Claude Code. Use `--tool` to install for a different AI coding tool:
+
+```bash
+./install.sh --tool cursor           # Cursor (.cursor/rules/aria.mdc)
+./install.sh --tool windsurf         # Windsurf (.windsurf/rules/aria.md)
+./install.sh --tool cline            # Cline / Roo Code (.clinerules/aria.md)
+./install.sh --tool all              # Install config for all tools
+```
+
+| Tool | Config Location | How to Trigger Workflows |
+|---|---|---|
+| **Claude Code** | `.claude/commands/` + `CLAUDE.md` | Type `/aria-` and autocomplete |
+| **Cursor** | `.cursor/rules/aria.mdc` | "Run the brainstorm workflow" |
+| **Windsurf** | `.windsurf/rules/aria.md` | "Run the brainstorm workflow" |
+| **Cline / Roo Code** | `.clinerules/aria.md` | "Run the brainstorm workflow" |
 
 ## What Gets Installed
 
@@ -62,8 +96,7 @@ ARIA installs into your project directory as a set of YAML configurations, workf
 | `_aria/core/` | Agent definitions, workflows, tasks, orchestrator, configuration |
 | `_aria/platform/` | Platform-specific task implementations (Plane or Linear) |
 | `_aria/shared/` | Templates, checklists, data files (brainstorming techniques, complexity matrices) |
-| `.claude/commands/` | 38 slash command files (`aria-*.md`) |
-| `CLAUDE.md` | Project instructions with command reference and critical rules |
+| Tool config | `.claude/commands/`, `.cursor/rules/`, `.windsurf/rules/`, or `.clinerules/` (depends on `--tool`) |
 
 ## Re-Installing
 
@@ -81,7 +114,7 @@ To remove ARIA from a project:
 ./uninstall.sh /path/to/your/project
 ```
 
-This removes the `_aria/` directory, `aria-*` slash commands, and the ARIA section from CLAUDE.md. It asks for confirmation before proceeding.
+This removes the `_aria/` directory, tool-specific config files, and the ARIA section from CLAUDE.md. It asks for confirmation before proceeding.
 
 ## Legacy Migration
 

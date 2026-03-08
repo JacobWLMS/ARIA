@@ -36,8 +36,14 @@ An automated **orchestrator** polls platform state to determine which agent shou
 
 ## Quick Start
 
+Paste into any AI coding tool:
+
+> Read the instructions at https://raw.githubusercontent.com/JacobWLMS/ARIA/main/agent-install.md and follow them to install ARIA into this project.
+
+Or install via shell:
+
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
+curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash
 ```
 
 Or clone and install:
@@ -45,7 +51,7 @@ Or clone and install:
 ```bash
 git clone https://github.com/JacobWLMS/ARIA.git
 cd ARIA
-./install.sh /path/to/your/project
+./install.sh
 ```
 
 Then:

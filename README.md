@@ -93,10 +93,23 @@ ARIA is pure YAML + Markdown — no compilation, no native dependencies. It runs
 
 ### Install
 
-**One-liner:**
+**AI Agent Install (any AI coding tool):**
+
+Paste this into Claude Code, Cursor, Cline, Windsurf, or any AI coding tool:
+
+> Read the instructions at https://raw.githubusercontent.com/JacobWLMS/ARIA/main/agent-install.md and follow them to install ARIA into this project.
+
+**Shell install:**
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh) /path/to/your/project
+# Install to current directory (default)
+curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash
+
+# Install to a specific directory
+curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash -s -- /path/to/project
+
+# Install for a specific AI tool (default: claude-code)
+curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.sh | bash -s -- --tool cursor
 ```
 
 **Or clone and install:**
@@ -104,7 +117,10 @@ bash <(curl -fsSL https://raw.githubusercontent.com/JacobWLMS/ARIA/main/install.
 ```bash
 git clone https://github.com/JacobWLMS/ARIA.git
 cd ARIA
-./install.sh /path/to/your/project
+./install.sh                          # install to current dir
+./install.sh /path/to/project         # install to specific dir
+./install.sh --tool cursor            # install for Cursor
+./install.sh --tool all               # install for all supported tools
 ```
 
 The installer prompts you to select your platform (Plane or Linear), then copies the appropriate files to `_aria/` in your project.
@@ -166,6 +182,22 @@ ARIA uses a platform abstraction layer — core agents and workflows are platfor
 | Intake/Triage Queue | ✅ Intake | ❌ Backlog fallback |
 | Custom Work Item Types | ✅ Native | ❌ Uses labels |
 | Workflow State Management | ✅ `create_state` | ✅ `list_issue_statuses` |
+
+---
+
+## Supported AI Tools
+
+ARIA's agents, workflows, and templates are tool-agnostic. The installer generates the appropriate config for your AI coding tool.
+
+| Tool | Support | Install Flag | Features |
+|---|---|---|---|
+| **[Claude Code](https://claude.ai/claude-code)** | Full | `--tool claude-code` (default) | 38 slash commands, orchestrator, subagent spawning |
+| **[Cursor](https://cursor.com)** | Core | `--tool cursor` | All workflows via `.cursor/rules/` |
+| **[Windsurf](https://windsurf.com)** | Core | `--tool windsurf` | All workflows via `.windsurf/rules/` |
+| **[Cline](https://cline.bot) / Roo Code** | Core | `--tool cline` | All workflows via `.clinerules/` |
+| **Other** | Manual | — | Install `_aria/`, reference workflow index manually |
+
+**Full** = orchestrator can autonomously dispatch agents via subagent spawning (Claude Code exclusive). **Core** = all individual agent workflows work; tell the agent which workflow to run (e.g., "Run the brainstorm workflow").
 
 ---
 

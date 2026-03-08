@@ -4,11 +4,16 @@ set -euo pipefail
 # ARIA Installer
 # Installs the ARIA module into a target project directory
 # Supports multiple platforms: Linear, Plane
+# Supports multiple AI tools: Claude Code, Cursor, Windsurf, Cline
 # Safe for re-installs: preserves module.yaml and data/.key-map.yaml config
 #
 # Usage:
-#   ./install.sh /path/to/project          (from cloned repo)
-#   bash <(curl -fsSL .../install.sh) .    (pipe-to-shell — clones repo to temp dir)
+#   ./install.sh [/path/to/project] [--tool <tool>]
+#   curl -fsSL .../install.sh | bash                     (install to current dir)
+#   curl -fsSL .../install.sh | bash -s -- /path         (install to specific dir)
+#   curl -fsSL .../install.sh | bash -s -- --tool cursor (install for Cursor)
+#
+# Tools: claude-code (default), cursor, windsurf, cline, all
 
 # Shell compatibility check
 if [ -z "${BASH_VERSION:-}" ]; then
@@ -28,6 +33,36 @@ fi
 
 REPO_URL="https://github.com/JacobWLMS/ARIA.git"
 CLEANUP_TEMP=""
+AI_TOOL="claude-code"
+
+# Parse arguments — positional arg is target dir, --tool sets AI tool
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --tool)
+      AI_TOOL="${2:-claude-code}"
+      shift 2
+      ;;
+    --tool=*)
+      AI_TOOL="${1#*=}"
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${POSITIONAL_ARGS[@]}"
+
+# Validate tool choice
+case "$AI_TOOL" in
+  claude-code|cursor|windsurf|cline|all) ;;
+  *)
+    echo "  Error: Unknown tool '$AI_TOOL'. Valid options: claude-code, cursor, windsurf, cline, all"
+    exit 1
+    ;;
+esac
 
 # Colors
 GREEN='\033[0;32m'
@@ -212,22 +247,21 @@ if [ -d "$LEGACY_LINEAR_DIR" ]; then
 fi
 
 # Create target directories
-echo -e "  ${BOLD}[1/7]${RESET} Creating directories..."
+echo -e "  ${BOLD}[1/8]${RESET} Creating directories..."
 mkdir -p "$CORE_DIR"
 mkdir -p "$PLATFORM_DIR"
 mkdir -p "$SHARED_DIR"
-mkdir -p "$TARGET_DIR/.claude/commands"
 
 # Copy shared content
-echo -e "  ${BOLD}[2/7]${RESET} Installing shared content -> _aria/shared/"
+echo -e "  ${BOLD}[2/8]${RESET} Installing shared content -> _aria/shared/"
 cp -r "$SCRIPT_DIR/src/shared/"* "$SHARED_DIR/"
 
 # Copy core module
-echo -e "  ${BOLD}[3/7]${RESET} Installing core module -> _aria/core/"
+echo -e "  ${BOLD}[3/8]${RESET} Installing core module -> _aria/core/"
 cp -r "$SCRIPT_DIR/src/core/"* "$CORE_DIR/"
 
 # Copy platform-specific content
-echo -e "  ${BOLD}[4/7]${RESET} Installing $PLATFORM_LABEL platform -> _aria/platform/"
+echo -e "  ${BOLD}[4/8]${RESET} Installing $PLATFORM_LABEL platform -> _aria/platform/"
 # Clear previous platform content (may be switching platforms)
 rm -rf "$PLATFORM_DIR/"*
 cp -r "$SCRIPT_DIR/src/platforms/$PLATFORM/"* "$PLATFORM_DIR/"
@@ -236,7 +270,7 @@ cp -r "$SCRIPT_DIR/src/platforms/$PLATFORM/"* "$PLATFORM_DIR/"
 echo "$PLATFORM" > "$TARGET_DIR/_aria/platform"
 
 # Copy VERSION file
-echo -e "  ${BOLD}[5/7]${RESET} Writing version file..."
+echo -e "  ${BOLD}[5/8]${RESET} Writing version file..."
 if [ -f "$SCRIPT_DIR/VERSION" ]; then
   cp "$SCRIPT_DIR/VERSION" "$CORE_DIR/VERSION"
 fi
@@ -251,35 +285,101 @@ if [ "$IS_REINSTALL" = true ] && [ -d "$CORE_DIR" ]; then
   done
 fi
 
-# Handle CLAUDE.md — replace ARIA section instead of appending
-echo -e "  ${BOLD}[6/7]${RESET} Installing CLAUDE.md..."
-ARIA_MARKER="# ARIA"
-if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
-  if grep -q "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md"; then
-    echo -e "         ${DIM}CLAUDE.md already has ARIA section -- replacing it${RESET}"
-    ARIA_LINE=$(grep -n "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md" | head -1 | cut -d: -f1)
-    head -n $((ARIA_LINE - 1)) "$TARGET_DIR/CLAUDE.md" > "$TARGET_DIR/CLAUDE.md.tmp"
-    echo "" >> "$TARGET_DIR/CLAUDE.md.tmp"
-    cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md.tmp"
-    mv "$TARGET_DIR/CLAUDE.md.tmp" "$TARGET_DIR/CLAUDE.md"
+# --- AI Tool Config Installation ---
+
+install_claude_code() {
+  # Handle CLAUDE.md — replace ARIA section instead of appending
+  echo -e "  ${BOLD}[6/8]${RESET} Installing CLAUDE.md..."
+  ARIA_MARKER="# ARIA"
+  if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
+    if grep -q "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md"; then
+      echo -e "         ${DIM}CLAUDE.md already has ARIA section -- replacing it${RESET}"
+      ARIA_LINE=$(grep -n "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md" | head -1 | cut -d: -f1)
+      head -n $((ARIA_LINE - 1)) "$TARGET_DIR/CLAUDE.md" > "$TARGET_DIR/CLAUDE.md.tmp"
+      echo "" >> "$TARGET_DIR/CLAUDE.md.tmp"
+      cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md.tmp"
+      mv "$TARGET_DIR/CLAUDE.md.tmp" "$TARGET_DIR/CLAUDE.md"
+    else
+      echo -e "         ${DIM}CLAUDE.md exists -- appending ARIA section${RESET}"
+      echo "" >> "$TARGET_DIR/CLAUDE.md"
+      cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md"
+    fi
   else
-    echo -e "         ${DIM}CLAUDE.md exists -- appending ARIA section${RESET}"
-    echo "" >> "$TARGET_DIR/CLAUDE.md"
-    cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md"
+    cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
   fi
-else
-  cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+
+  # Copy slash commands
+  echo -e "  ${BOLD}[7/8]${RESET} Installing slash commands -> .claude/commands/"
+  mkdir -p "$TARGET_DIR/.claude/commands"
+  for OLD_CMD in aria-attack aria-edges aria-edit-prose aria-edit-struct aria-prd-edit aria-prd-check aria-doc-check aria-explain aria-context aria-review aria-status; do
+    rm -f "$TARGET_DIR/.claude/commands/$OLD_CMD.md"
+  done
+  cp "$SCRIPT_DIR/.claude/commands/"*.md "$TARGET_DIR/.claude/commands/"
+  COMMAND_COUNT=$(ls -1 "$TARGET_DIR/.claude/commands/aria-"*.md 2>/dev/null | wc -l)
+  echo -e "         ${DIM}$COMMAND_COUNT commands installed${RESET}"
+}
+
+install_cursor() {
+  echo -e "  ${BOLD}[6/8]${RESET} Installing Cursor rules -> .cursor/rules/"
+  mkdir -p "$TARGET_DIR/.cursor/rules"
+  if [ -f "$SCRIPT_DIR/src/tools/cursor/aria.mdc" ]; then
+    cp "$SCRIPT_DIR/src/tools/cursor/aria.mdc" "$TARGET_DIR/.cursor/rules/aria.mdc"
+  else
+    echo -e "         ${YELLOW}Warning: Cursor config not found in source${RESET}"
+  fi
+}
+
+install_windsurf() {
+  echo -e "  ${BOLD}[6/8]${RESET} Installing Windsurf rules -> .windsurf/rules/"
+  mkdir -p "$TARGET_DIR/.windsurf/rules"
+  if [ -f "$SCRIPT_DIR/src/tools/windsurf/aria.md" ]; then
+    cp "$SCRIPT_DIR/src/tools/windsurf/aria.md" "$TARGET_DIR/.windsurf/rules/aria.md"
+  else
+    echo -e "         ${YELLOW}Warning: Windsurf config not found in source${RESET}"
+  fi
+}
+
+install_cline() {
+  echo -e "  ${BOLD}[6/8]${RESET} Installing Cline rules -> .clinerules/"
+  mkdir -p "$TARGET_DIR/.clinerules"
+  if [ -f "$SCRIPT_DIR/src/tools/cline/aria.md" ]; then
+    cp "$SCRIPT_DIR/src/tools/cline/aria.md" "$TARGET_DIR/.clinerules/aria.md"
+  else
+    echo -e "         ${YELLOW}Warning: Cline config not found in source${RESET}"
+  fi
+}
+
+# Install tool-specific config
+case "$AI_TOOL" in
+  claude-code)
+    install_claude_code
+    ;;
+  cursor)
+    install_cursor
+    ;;
+  windsurf)
+    install_windsurf
+    ;;
+  cline)
+    install_cline
+    ;;
+  all)
+    install_claude_code
+    install_cursor
+    install_windsurf
+    install_cline
+    ;;
+esac
+
+# Update .gitignore for tool-specific directories
+echo -e "  ${BOLD}[8/8]${RESET} Checking .gitignore..."
+if [ -f "$TARGET_DIR/.gitignore" ]; then
+  for PATTERN in "_aria/core/module.yaml" "_aria/core/data/.key-map.yaml"; do
+    if ! grep -q "$PATTERN" "$TARGET_DIR/.gitignore" 2>/dev/null; then
+      echo "$PATTERN" >> "$TARGET_DIR/.gitignore"
+    fi
+  done
 fi
-
-# Copy slash commands (and clean up old commands from previous versions)
-echo -e "  ${BOLD}[7/7]${RESET} Installing slash commands -> .claude/commands/"
-# Remove commands that were consolidated in Phase 3
-for OLD_CMD in aria-attack aria-edges aria-edit-prose aria-edit-struct aria-prd-edit aria-prd-check aria-doc-check aria-explain aria-context aria-review aria-status; do
-  rm -f "$TARGET_DIR/.claude/commands/$OLD_CMD.md"
-done
-cp "$SCRIPT_DIR/.claude/commands/"*.md "$TARGET_DIR/.claude/commands/"
-
-COMMAND_COUNT=$(ls -1 "$TARGET_DIR/.claude/commands/aria-"*.md 2>/dev/null | wc -l)
 
 echo ""
 echo -e "  ${GREEN}${BOLD}Installation complete!${RESET} ${DIM}(v${ARIA_VERSION})${RESET}"
@@ -289,19 +389,32 @@ echo "    - Shared content in _aria/shared/ (templates, checklists, data)"
 echo "    - Core module in _aria/core/"
 echo "    - $PLATFORM_LABEL platform in _aria/platform/"
 echo "    - Platform marker: _aria/platform ($PLATFORM)"
-echo "    - CLAUDE.md with ARIA context"
-echo "    - $COMMAND_COUNT slash commands in .claude/commands/"
+case "$AI_TOOL" in
+  claude-code)
+    echo "    - CLAUDE.md with ARIA context"
+    echo "    - $COMMAND_COUNT slash commands in .claude/commands/"
+    ;;
+  cursor)  echo "    - Cursor rules in .cursor/rules/aria.mdc" ;;
+  windsurf) echo "    - Windsurf rules in .windsurf/rules/aria.md" ;;
+  cline)   echo "    - Cline rules in .clinerules/aria.md" ;;
+  all)
+    echo "    - CLAUDE.md + $COMMAND_COUNT slash commands (Claude Code)"
+    echo "    - Cursor rules in .cursor/rules/aria.mdc"
+    echo "    - Windsurf rules in .windsurf/rules/aria.md"
+    echo "    - Cline rules in .clinerules/aria.md"
+    ;;
+esac
 if [ "$IS_REINSTALL" = true ]; then
   echo -e "    - ${GREEN}Config files preserved${RESET} (module.yaml, data/.key-map.yaml)"
 fi
 echo ""
 echo -e "  ${BOLD}Next steps:${RESET}"
 if [ "$PLATFORM" = "linear" ]; then
-  echo "    1. Configure the Linear MCP server in .claude/settings.json"
-  echo "    2. Run /aria-setup to auto-configure team, statuses, and labels"
+  echo "    1. Configure the Linear MCP server in your AI tool's settings"
+  echo "    2. Run /aria-setup (Claude Code) or say 'Run ARIA setup' to auto-configure"
 elif [ "$PLATFORM" = "plane" ]; then
-  echo "    1. Configure the Plane MCP server in .claude/settings.json"
-  echo "    2. Run /aria-setup to auto-configure workspace, projects, and states"
+  echo "    1. Configure the Plane MCP server in your AI tool's settings"
+  echo "    2. Run /aria-setup (Claude Code) or say 'Run ARIA setup' to auto-configure"
 fi
 echo "    3. Run /aria-git to configure git integration (optional)"
 echo "    4. Run /aria-doctor to verify your setup"
