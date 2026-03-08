@@ -1,8 +1,0 @@
-name: check-implementation-readiness
-description: 'Validate PRD, UX, Architecture, and Projects/Issues are complete. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/3-solutioning/check-implementation-readiness"
-instructions: "{installed_path}/instructions-linear.md"
-template: "{project-root}/_aria/shared/templates/readiness-report-template.md"

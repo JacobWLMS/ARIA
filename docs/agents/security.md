@@ -25,16 +25,16 @@ Forte thinks like an attacker to build better defenses. Senior security engineer
 | `/aria-audit` | SA | Code and dependency security audit with OWASP mapping |
 | `/aria-secure` | SR | Security architecture review with findings |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Key Map ID |
 |---|---|---|
-| Threat Model | Linear Document | `documents.threat_model` |
-| Security Audit | Issue Comments | -- |
-| Security Review | Issue Comments | -- |
+| Threat Model | Document | `documents.threat_model` |
+| Security Audit | Work Item Comments | -- |
+| Security Review | Work Item Comments | -- |
 
 ## Phase
 
 **Phase 3 -- Solutioning.** Forte works after the architecture is defined to identify security risks before implementation. Can also be invoked during implementation for security audits.
 
-**Source:** `_aria/linear/agents/security.agent.yaml`
+**Source:** `_aria/core/agents/security.agent.yaml`

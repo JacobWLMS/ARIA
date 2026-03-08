@@ -1,6 +1,6 @@
 # Workflow Guide
 
-ARIA follows a structured 5-phase scrum workflow. Each phase builds on the previous one, with agents handing off context through Linear.
+ARIA follows a structured 5-phase scrum workflow. Each phase builds on the previous one, with agents handing off context through the project management platform.
 
 ## Scrum Pipeline
 
@@ -24,7 +24,7 @@ Release Planning → CI/CD Design → Deployment Strategy
 
 Before starting any project work, configure ARIA:
 
-1. **`/aria-setup`** -- Auto-discovers your Linear team, workflow statuses, and labels. Asks 3-4 essential questions and derives everything else.
+1. **`/aria-setup`** -- Selects your platform (Plane or Linear) and auto-discovers your team, workflow statuses, and labels. Asks 3-4 essential questions and derives everything else.
 2. **`/aria-git`** (optional) -- Configures Git/GitHub integration: branch naming, commit format, PR behavior.
 
 Setup only needs to run once per project.
@@ -39,7 +39,7 @@ The analysis phase explores the problem space and establishes project direction.
 
 ### Brainstorming (`/aria-brainstorm`)
 
-Interactive brainstorming session using a library of 62 techniques across 11 categories. Targets 50-100+ ideas through structured facilitation. Output is a Linear Document.
+Interactive brainstorming session using a library of 62 techniques across 11 categories. Targets 50-100+ ideas through structured facilitation. Output is a document on the platform.
 
 ### Research (`/aria-research`)
 
@@ -73,7 +73,7 @@ Multi-mode command that auto-detects what to do:
 - **PRD exists + "edit"** → updates the existing PRD based on feedback
 - **"validate" or "check"** → reviews PRD quality and completeness
 
-The PRD is created as a Linear Document using the PRD template and checklist.
+The PRD is created as a document on the platform using the PRD template and checklist.
 
 ### UX Design (`/aria-ux`)
 
@@ -81,13 +81,13 @@ Creates a UX design specification covering user flows, wireframe descriptions, i
 
 ### Epics & Stories (`/aria-epics`)
 
-Breaks the PRD into Linear Projects (Epics) and Issues (Stories):
+Breaks the PRD into epics and stories:
 
-- Creates Linear Projects with descriptions linking back to the PRD
-- Creates Issues within each Project with acceptance criteria (Given/When/Then)
+- Creates epics with descriptions linking back to the PRD
+- Creates work items within each epic with acceptance criteria (Given/When/Then)
 - Sets story point estimates using Fibonacci scale (1, 2, 3, 5, 8, 13)
-- Establishes dependency relations via `blocks`/`blockedBy`
-- Creates Milestones for release tracking
+- Establishes dependency relations
+- Creates milestones for release tracking
 
 ---
 
@@ -149,7 +149,7 @@ Plans the next sprint cycle:
 2. **Backlog refinement** -- invokes `/aria-story` for unestimated issues
 3. **Story selection** -- picks stories for the sprint based on priority and capacity
 4. **Capacity check** -- compares selected story points against average velocity
-5. **Cycle assignment** -- assigns selected issues to a Linear Cycle
+5. **Sprint assignment** -- assigns selected work items to a sprint cycle
 
 ### Story Preparation (`/aria-story`)
 
@@ -170,7 +170,7 @@ Implements the next story:
 3. Transitions to "In Progress"
 4. Implements code with full test coverage (TDD)
 5. Creates branch, commits, and PR (if git enabled)
-6. Posts dev agent record as Linear comment
+6. Posts dev agent record as a comment
 7. Transitions to "In Review"
 8. Posts handoff for code review
 
@@ -180,7 +180,7 @@ Comprehensive adversarial code review:
 
 - Reads the PR diff (if git enabled) and story requirements
 - Reviews against code review checklist
-- Posts structured findings as Linear comment
+- Posts structured findings as a comment
 - Approves or requests changes on PR
 - On pass: transitions to Done
 - On fail: transitions back to In Progress with findings
@@ -191,7 +191,7 @@ Generates tests for reviewed stories:
 
 - Creates API and E2E tests using standard framework patterns
 - Runs tests to verify they pass
-- Posts test summary as Linear comment
+- Posts test summary as a comment
 - Attaches test reports to issue
 
 ### Retrospective (`/aria-retro`)
@@ -205,7 +205,7 @@ Sprint retrospective with velocity metrics:
 - **Estimation accuracy** -- estimated vs. actual effort
 - **Velocity trend** -- comparison across last 3-5 sprints
 
-Output is a Linear Document that feeds into future sprint capacity planning.
+Output is a document that feeds into future sprint capacity planning.
 
 ### Course Correction (`/aria-course`)
 
@@ -229,7 +229,7 @@ Creates a release plan covering:
 
 - Versioning strategy (semver)
 - Changelog generation from completed stories
-- Linear Milestone creation for release tracking
+- Milestone creation for release tracking
 - Go/no-go checklist
 
 ### CI/CD Design (`/aria-cicd`)
@@ -260,7 +260,7 @@ Quick Flow bypasses the full planning pipeline for small, well-understood tasks.
 
 ### Quick Spec (`/aria-quick`)
 
-Creates a single Linear Issue with an embedded tech spec. No PRD, architecture, or epic required.
+Creates a single work item with an embedded tech spec. No PRD, architecture, or epic required.
 
 ### Quick Dev (`/aria-quick-dev`)
 
@@ -286,7 +286,7 @@ These can be invoked at any point regardless of project phase:
 
 ## Story Lifecycle
 
-Issues flow through these Linear states during implementation:
+Work items flow through these states during implementation:
 
 ```
 Backlog → Todo → In Progress → In Review → Done

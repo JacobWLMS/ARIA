@@ -1,6 +1,6 @@
 # Git/GitHub Integration
 
-ARIA optionally integrates with Git and GitHub to manage branches, commits, and pull requests alongside Linear issue tracking.
+ARIA optionally integrates with Git and GitHub to manage branches, commits, and pull requests alongside work item tracking.
 
 ## Setup
 
@@ -25,12 +25,12 @@ Run `/aria-git` to configure Git integration. The workflow detects your reposito
 Branches follow the pattern:
 
 ```
-{linear_team_name}-{issue_number}/{kebab-case-summary}
+{team_name}-{issue_number}/{kebab-case-summary}
 ```
 
 Example: `ENG-42/add-user-authentication`
 
-The issue identifier in the branch name enables Linear's automatic issue linking.
+The issue identifier in the branch name enables automatic work item linking.
 
 ## Commit Messages
 
@@ -49,7 +49,7 @@ When `git_enabled` is `true`, the dev agent (Riff) automatically:
 1. Creates a feature branch from the default branch
 2. Implements the story with commits prefixed by issue identifier
 3. Pushes to remote
-4. Creates a draft PR linking back to the Linear issue
+4. Creates a draft PR linking back to the work item
 5. Records branch, commit SHA, and PR URL in the dev agent record
 
 ## Code Review Integration
@@ -60,12 +60,12 @@ When `git_enabled` is `true`, the QA agent (Pitch) also:
 - Approves the PR when code review passes (if `pr_auto_approve` is enabled)
 - Requests changes when review fails with findings
 
-## PR-to-Linear Linking
+## PR-to-Work-Item Linking
 
-ARIA links PRs to Linear issues via `save_issue` with the `links` field. This creates a clickable link on the Linear issue that points to the GitHub PR.
+ARIA links PRs to work items via platform-specific mechanisms. This creates a clickable link on the work item that points to the GitHub PR.
 
 ## Safety
 
-- Git failures never block Linear operations -- if a push or PR creation fails, the agent logs the error and continues with Linear tracking
+- Git failures never block platform operations -- if a push or PR creation fails, the agent logs the error and continues with platform tracking
 - Auto-merge is disabled by default since merging is destructive
 - Set `git_enabled` to `"false"` in module.yaml to disable all git operations at any time

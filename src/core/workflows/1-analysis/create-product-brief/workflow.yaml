@@ -1,0 +1,8 @@
+name: brief
+description: 'Guided product brief creation with output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/1-analysis/create-product-brief"
+instructions: "{installed_path}/instructions.md"
+template: "{project-root}/_aria/shared/templates/product-brief-template.md"

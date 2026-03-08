@@ -6,7 +6,7 @@ Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-
 
 | Command | Code | Agent | Description |
 |---|---|---|---|
-| `/aria-setup` | FS | -- | Auto-discover Linear team, statuses, and labels |
+| `/aria-setup` | FS | -- | Select platform, auto-discover team, statuses, and labels |
 | `/aria-git` | FG | -- | Configure Git/GitHub integration |
 | `/aria-doctor` | DC | -- | Health check: validate MCP, config, version |
 
@@ -24,7 +24,7 @@ Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-
 |---|---|---|---|
 | `/aria-prd` | CP | Maestro | Create, edit, or validate PRD (auto-detects mode) |
 | `/aria-ux` | CU | Lyric | Create UX design specification |
-| `/aria-epics` | CE | Maestro | Create Projects (Epics) and Issues (Stories) in Linear |
+| `/aria-epics` | CE | Maestro | Create Epics and Stories |
 
 ## Phase 3 -- Solutioning
 
@@ -45,8 +45,8 @@ Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-
 |---|---|---|---|
 | `/aria-sprint` | SP | Tempo | Sprint planning with capacity checks |
 | `/aria-story` | CS | Tempo | Refine story with Fibonacci estimation |
-| `/aria-dev` | DS | Riff | Implement the next story with Linear status tracking |
-| `/aria-cr` | CR | Pitch | Code review with findings posted to Linear |
+| `/aria-dev` | DS | Riff | Implement the next story with status tracking |
+| `/aria-cr` | CR | Pitch | Code review with findings posted as comments |
 | `/aria-test` | QA | Pitch | Generate tests for reviewed stories |
 | `/aria-retro` | ER | Tempo | Sprint retrospective with velocity tracking |
 | `/aria-course` | CC | Tempo | Mid-implementation course correction |
@@ -63,7 +63,7 @@ Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-
 
 | Command | Code | Agent | Description |
 |---|---|---|---|
-| `/aria-quick` | QS | Solo | Create a one-off tech spec as a Linear Issue |
+| `/aria-quick` | QS | Solo | Create a one-off tech spec as a work item |
 | `/aria-quick-dev` | QD | Solo | Implement a quick-spec story directly |
 
 ## Tech Writing
@@ -81,12 +81,12 @@ Type `/aria` in Claude Code and autocomplete to browse all commands. Run `/aria-
 | `/aria-critique` | RV | -- | Review: adversarial, edge cases, prose, or structure |
 | `/aria-dash` | PD | -- | Project status dashboard |
 | `/aria-party` | PMD | -- | Multi-agent discussion |
-| `/aria-go` | ORC | Orchestrator | Auto-dispatch agents based on Linear state |
+| `/aria-go` | ORC | Orchestrator | Auto-dispatch agents based on platform state |
 | `/aria-help` | AH | -- | Context-aware help and next steps |
 
 ## Mode Detection
 
-Several commands auto-detect their mode from arguments or Linear state:
+Several commands auto-detect their mode from arguments or platform state:
 
 | Command | Modes | How Detected |
 |---|---|---|

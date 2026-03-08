@@ -1,6 +1,6 @@
 site_name: ARIA
 site_url: https://jacobwlms.github.io/ARIA/
-site_description: "ARIA: Linear-native agentic development with musical-themed AI agents"
+site_description: "ARIA: Multi-platform agentic development with musical-themed AI agents"
 repo_url: https://github.com/JacobWLMS/ARIA
 repo_name: JacobWLMS/ARIA
 
@@ -56,7 +56,7 @@ nav:
     - getting-started/index.md
     - Prerequisites: getting-started/prerequisites.md
     - Installation: getting-started/installation.md
-    - Linear MCP Setup: getting-started/mcp-server-setup.md
+    - MCP Setup: getting-started/mcp-server-setup.md
     - First Project Setup: getting-started/first-project-setup.md
   - Agents:
     - agents/index.md

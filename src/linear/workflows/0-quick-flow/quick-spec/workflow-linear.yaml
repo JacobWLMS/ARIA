@@ -1,7 +1,0 @@
-name: quick-spec
-description: 'One-off tech spec for small tasks, skips full planning. Creates a single Linear issue. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/0-quick-flow/quick-spec"
-instructions: "{installed_path}/instructions-linear.md"

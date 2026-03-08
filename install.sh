@@ -2,8 +2,9 @@
 set -euo pipefail
 
 # ARIA Installer
-# Installs the ARIA Linear module into a target project directory
-# Safe for re-installs: preserves module.yaml and .linear-key-map.yaml config
+# Installs the ARIA module into a target project directory
+# Supports multiple platforms: Linear, Plane
+# Safe for re-installs: preserves module.yaml and data/.key-map.yaml config
 #
 # Usage:
 #   ./install.sh /path/to/project          (from cloned repo)
@@ -63,34 +64,112 @@ echo -e "  Target:  ${BOLD}$TARGET_DIR${RESET}"
 echo ""
 
 # Check source has what we need
-if [ ! -d "$SCRIPT_DIR/src/linear" ]; then
-  echo -e "  ${RED}Error:${RESET} src/linear/ not found in $SCRIPT_DIR"
+if [ ! -d "$SCRIPT_DIR/src/core" ]; then
+  echo -e "  ${RED}Error:${RESET} src/core/ not found in $SCRIPT_DIR"
   echo "  Make sure you're running this from the ARIA repository root."
   exit 1
 fi
 
-# Detect re-install (check both new and legacy paths)
-IS_REINSTALL=false
-ARIA_DIR="$TARGET_DIR/_aria/linear"
-SHARED_DIR="$TARGET_DIR/_aria/shared"
-LEGACY_DIR="$TARGET_DIR/_bmad/linear"
+if [ ! -d "$SCRIPT_DIR/src/platforms" ]; then
+  echo -e "  ${RED}Error:${RESET} src/platforms/ not found in $SCRIPT_DIR"
+  echo "  Make sure you're running this from the ARIA repository root."
+  exit 1
+fi
 
-if [ -d "$ARIA_DIR" ]; then
-  IS_REINSTALL=true
-  echo -e "  ${YELLOW}Detected existing ARIA installation — preserving config files${RESET}"
+# --- Platform selection ---
+# Check if an existing install has a platform marker
+EXISTING_PLATFORM=""
+if [ -f "$TARGET_DIR/_aria/platform" ]; then
+  EXISTING_PLATFORM="$(cat "$TARGET_DIR/_aria/platform" | tr -d '[:space:]')"
+fi
+
+echo -e "  ${BOLD}Select your platform:${RESET}"
+echo ""
+if [ -n "$EXISTING_PLATFORM" ]; then
+  echo -e "  ${DIM}(previously installed: $EXISTING_PLATFORM)${RESET}"
   echo ""
-elif [ -d "$LEGACY_DIR" ]; then
+fi
+echo "    [1] Plane (recommended)"
+echo "    [2] Linear"
+echo ""
+read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE
+echo ""
+echo ""
+
+case "$PLATFORM_CHOICE" in
+  1)
+    PLATFORM="plane"
+    PLATFORM_LABEL="Plane"
+    ;;
+  2)
+    PLATFORM="linear"
+    PLATFORM_LABEL="Linear"
+    ;;
+  *)
+    echo -e "  ${RED}Invalid choice.${RESET} Please run the installer again and select 1 or 2."
+    exit 1
+    ;;
+esac
+
+# Validate platform source exists
+if [ ! -d "$SCRIPT_DIR/src/platforms/$PLATFORM" ]; then
+  echo -e "  ${RED}Error:${RESET} src/platforms/$PLATFORM/ not found in $SCRIPT_DIR"
+  exit 1
+fi
+
+echo -e "  ${GREEN}Platform:${RESET} $PLATFORM_LABEL"
+echo ""
+
+# Detect re-install
+IS_REINSTALL=false
+CORE_DIR="$TARGET_DIR/_aria/core"
+PLATFORM_DIR="$TARGET_DIR/_aria/platform"
+SHARED_DIR="$TARGET_DIR/_aria/shared"
+LEGACY_LINEAR_DIR="$TARGET_DIR/_aria/linear"
+LEGACY_BMAD_DIR="$TARGET_DIR/_bmad/linear"
+
+if [ -d "$CORE_DIR" ]; then
   IS_REINSTALL=true
-  echo -e "  ${YELLOW}Detected legacy BMAD installation — migrating to ARIA${RESET}"
+  echo -e "  ${YELLOW}Detected existing ARIA installation -- preserving config files${RESET}"
+  echo ""
+elif [ -d "$LEGACY_LINEAR_DIR" ]; then
+  IS_REINSTALL=true
+  echo -e "  ${YELLOW}Detected legacy v1.x installation (_aria/linear/) -- migrating${RESET}"
   echo ""
   # Migrate config files from legacy location
-  mkdir -p "$ARIA_DIR"
-  for CONFIG_FILE in module.yaml .linear-key-map.yaml; do
-    if [ -f "$LEGACY_DIR/$CONFIG_FILE" ]; then
-      cp "$LEGACY_DIR/$CONFIG_FILE" "$ARIA_DIR/$CONFIG_FILE"
-      echo -e "  ${GREEN}Migrated:${RESET} _bmad/linear/$CONFIG_FILE -> _aria/linear/$CONFIG_FILE"
+  mkdir -p "$CORE_DIR"
+  mkdir -p "$CORE_DIR/data"
+  for CONFIG_FILE in module.yaml; do
+    if [ -f "$LEGACY_LINEAR_DIR/$CONFIG_FILE" ]; then
+      cp "$LEGACY_LINEAR_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE"
+      echo -e "  ${GREEN}Migrated:${RESET} _aria/linear/$CONFIG_FILE -> _aria/core/$CONFIG_FILE"
     fi
   done
+  if [ -f "$LEGACY_LINEAR_DIR/.linear-key-map.yaml" ]; then
+    cp "$LEGACY_LINEAR_DIR/.linear-key-map.yaml" "$CORE_DIR/data/.key-map.yaml"
+    echo -e "  ${GREEN}Migrated:${RESET} _aria/linear/.linear-key-map.yaml -> _aria/core/data/.key-map.yaml"
+  fi
+  # Clean up legacy directory
+  rm -rf "$LEGACY_LINEAR_DIR"
+  echo -e "  ${GREEN}Removed${RESET} legacy _aria/linear/ directory"
+  echo ""
+elif [ -d "$LEGACY_BMAD_DIR" ]; then
+  IS_REINSTALL=true
+  echo -e "  ${YELLOW}Detected legacy BMAD installation -- migrating to ARIA${RESET}"
+  echo ""
+  # Migrate config files from legacy location
+  mkdir -p "$CORE_DIR"
+  mkdir -p "$CORE_DIR/data"
+  for CONFIG_FILE in module.yaml; do
+    if [ -f "$LEGACY_BMAD_DIR/$CONFIG_FILE" ]; then
+      cp "$LEGACY_BMAD_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE"
+      echo -e "  ${GREEN}Migrated:${RESET} _bmad/linear/$CONFIG_FILE -> _aria/core/$CONFIG_FILE"
+    fi
+  done
+  if [ -f "$LEGACY_BMAD_DIR/.linear-key-map.yaml" ]; then
+    cp "$LEGACY_BMAD_DIR/.linear-key-map.yaml" "$CORE_DIR/data/.key-map.yaml"
+    echo -e "  ${GREEN}Migrated:${RESET} _bmad/linear/.linear-key-map.yaml -> _aria/core/data/.key-map.yaml"
+  fi
   # Clean up legacy directories
   rm -rf "$TARGET_DIR/_bmad"
   echo -e "  ${GREEN}Removed${RESET} legacy _bmad/ directory"
@@ -101,58 +180,74 @@ elif [ -d "$LEGACY_DIR" ]; then
 fi
 
 # Back up user config files before overwriting
-if [ "$IS_REINSTALL" = true ] && [ -d "$ARIA_DIR" ]; then
-  for CONFIG_FILE in module.yaml .linear-key-map.yaml; do
-    if [ -f "$ARIA_DIR/$CONFIG_FILE" ]; then
-      cp "$ARIA_DIR/$CONFIG_FILE" "$ARIA_DIR/$CONFIG_FILE.bak"
+if [ "$IS_REINSTALL" = true ] && [ -d "$CORE_DIR" ]; then
+  for CONFIG_FILE in module.yaml data/.key-map.yaml; do
+    if [ -f "$CORE_DIR/$CONFIG_FILE" ]; then
+      cp "$CORE_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE.bak"
       echo -e "  ${DIM}Backed up: $CONFIG_FILE -> $CONFIG_FILE.bak${RESET}"
     fi
   done
 fi
 
+# Clean up legacy _aria/linear/ if it still exists (migration from v1.x on reinstall)
+if [ -d "$LEGACY_LINEAR_DIR" ]; then
+  rm -rf "$LEGACY_LINEAR_DIR"
+  echo -e "  ${GREEN}Removed${RESET} legacy _aria/linear/ directory"
+fi
+
 # Create target directories
-echo -e "  ${BOLD}[1/6]${RESET} Creating directories..."
-mkdir -p "$ARIA_DIR"
+echo -e "  ${BOLD}[1/7]${RESET} Creating directories..."
+mkdir -p "$CORE_DIR"
+mkdir -p "$PLATFORM_DIR"
 mkdir -p "$SHARED_DIR"
 mkdir -p "$TARGET_DIR/.claude/commands"
 
 # Copy shared content
-echo -e "  ${BOLD}[2/6]${RESET} Installing shared content -> _aria/shared/"
+echo -e "  ${BOLD}[2/7]${RESET} Installing shared content -> _aria/shared/"
 cp -r "$SCRIPT_DIR/src/shared/"* "$SHARED_DIR/"
 
-# Copy Linear module
-echo -e "  ${BOLD}[3/6]${RESET} Installing Linear module -> _aria/linear/"
-cp -r "$SCRIPT_DIR/src/linear/"* "$ARIA_DIR/"
+# Copy core module
+echo -e "  ${BOLD}[3/7]${RESET} Installing core module -> _aria/core/"
+cp -r "$SCRIPT_DIR/src/core/"* "$CORE_DIR/"
+
+# Copy platform-specific content
+echo -e "  ${BOLD}[4/7]${RESET} Installing $PLATFORM_LABEL platform -> _aria/platform/"
+# Clear previous platform content (may be switching platforms)
+rm -rf "$PLATFORM_DIR/"*
+cp -r "$SCRIPT_DIR/src/platforms/$PLATFORM/"* "$PLATFORM_DIR/"
+
+# Write platform marker file
+echo "$PLATFORM" > "$TARGET_DIR/_aria/platform"
 
 # Copy VERSION file
-echo -e "  ${BOLD}[4/6]${RESET} Writing version file..."
+echo -e "  ${BOLD}[5/7]${RESET} Writing version file..."
 if [ -f "$SCRIPT_DIR/VERSION" ]; then
-  cp "$SCRIPT_DIR/VERSION" "$ARIA_DIR/VERSION"
+  cp "$SCRIPT_DIR/VERSION" "$CORE_DIR/VERSION"
 fi
 
 # Restore user config files after copy
-if [ "$IS_REINSTALL" = true ] && [ -d "$ARIA_DIR" ]; then
-  for CONFIG_FILE in module.yaml .linear-key-map.yaml; do
-    if [ -f "$ARIA_DIR/$CONFIG_FILE.bak" ]; then
-      mv "$ARIA_DIR/$CONFIG_FILE.bak" "$ARIA_DIR/$CONFIG_FILE"
+if [ "$IS_REINSTALL" = true ] && [ -d "$CORE_DIR" ]; then
+  for CONFIG_FILE in module.yaml data/.key-map.yaml; do
+    if [ -f "$CORE_DIR/$CONFIG_FILE.bak" ]; then
+      mv "$CORE_DIR/$CONFIG_FILE.bak" "$CORE_DIR/$CONFIG_FILE"
       echo -e "  ${GREEN}Restored:${RESET} $CONFIG_FILE (user config preserved)"
     fi
   done
 fi
 
 # Handle CLAUDE.md — replace ARIA section instead of appending
-echo -e "  ${BOLD}[5/6]${RESET} Installing CLAUDE.md..."
+echo -e "  ${BOLD}[6/7]${RESET} Installing CLAUDE.md..."
 ARIA_MARKER="# ARIA"
 if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
   if grep -q "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md"; then
-    echo -e "         ${DIM}CLAUDE.md already has ARIA section — replacing it${RESET}"
+    echo -e "         ${DIM}CLAUDE.md already has ARIA section -- replacing it${RESET}"
     ARIA_LINE=$(grep -n "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md" | head -1 | cut -d: -f1)
     head -n $((ARIA_LINE - 1)) "$TARGET_DIR/CLAUDE.md" > "$TARGET_DIR/CLAUDE.md.tmp"
     echo "" >> "$TARGET_DIR/CLAUDE.md.tmp"
     cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md.tmp"
     mv "$TARGET_DIR/CLAUDE.md.tmp" "$TARGET_DIR/CLAUDE.md"
   else
-    echo -e "         ${DIM}CLAUDE.md exists — appending ARIA section${RESET}"
+    echo -e "         ${DIM}CLAUDE.md exists -- appending ARIA section${RESET}"
     echo "" >> "$TARGET_DIR/CLAUDE.md"
     cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md"
   fi
@@ -161,7 +256,7 @@ else
 fi
 
 # Copy slash commands (and clean up old commands from previous versions)
-echo -e "  ${BOLD}[6/6]${RESET} Installing slash commands -> .claude/commands/"
+echo -e "  ${BOLD}[7/7]${RESET} Installing slash commands -> .claude/commands/"
 # Remove commands that were consolidated in Phase 3
 for OLD_CMD in aria-attack aria-edges aria-edit-prose aria-edit-struct aria-prd-edit aria-prd-check aria-doc-check aria-explain aria-context aria-review aria-status; do
   rm -f "$TARGET_DIR/.claude/commands/$OLD_CMD.md"
@@ -175,16 +270,23 @@ echo -e "  ${GREEN}${BOLD}Installation complete!${RESET} ${DIM}(v${ARIA_VERSION}
 echo ""
 echo "  Installed:"
 echo "    - Shared content in _aria/shared/ (templates, checklists, data)"
-echo "    - Linear module in _aria/linear/"
+echo "    - Core module in _aria/core/"
+echo "    - $PLATFORM_LABEL platform in _aria/platform/"
+echo "    - Platform marker: _aria/platform ($PLATFORM)"
 echo "    - CLAUDE.md with ARIA context"
 echo "    - $COMMAND_COUNT slash commands in .claude/commands/"
 if [ "$IS_REINSTALL" = true ]; then
-  echo -e "    - ${GREEN}Config files preserved${RESET} (module.yaml, .linear-key-map.yaml)"
+  echo -e "    - ${GREEN}Config files preserved${RESET} (module.yaml, data/.key-map.yaml)"
 fi
 echo ""
 echo -e "  ${BOLD}Next steps:${RESET}"
-echo "    1. Configure the Linear MCP server in .claude/settings.json"
-echo "    2. Run /aria-setup to auto-configure team, statuses, and labels"
+if [ "$PLATFORM" = "linear" ]; then
+  echo "    1. Configure the Linear MCP server in .claude/settings.json"
+  echo "    2. Run /aria-setup to auto-configure team, statuses, and labels"
+elif [ "$PLATFORM" = "plane" ]; then
+  echo "    1. Configure the Plane MCP server in .claude/settings.json"
+  echo "    2. Run /aria-setup to auto-configure workspace, projects, and states"
+fi
 echo "    3. Run /aria-git to configure git integration (optional)"
 echo "    4. Run /aria-doctor to verify your setup"
 echo "    5. Run /aria-help to get started"

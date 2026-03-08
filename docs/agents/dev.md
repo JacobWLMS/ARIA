@@ -19,15 +19,15 @@ Executes approved stories with strict adherence to story details and team standa
 
 | Command | Code | Description |
 |---|---|---|
-| `/aria-dev` | DS | Implement the next story with Linear status tracking |
-| `/aria-cr` | CR | Comprehensive code review with findings posted to Linear |
+| `/aria-dev` | DS | Implement the next story with status tracking |
+| `/aria-cr` | CR | Comprehensive code review with findings posted as comments |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Dev Agent Record | Linear comment on Issue | `aria-agent-dev` |
-| Code Review Results | Linear comment on Issue | `aria-reviewed` |
+| Dev Agent Record | Comment on Work Item | `aria-agent-dev` |
+| Code Review Results | Comment on Work Item | `aria-reviewed` |
 
 ## Git Integration
 
@@ -35,14 +35,14 @@ When `git_enabled` is `true` in module.yaml, Riff also:
 
 1. **Creates a branch** -- `{issue_identifier}/{kebab-summary}`
 2. **Commits and pushes** -- with issue key prefix (e.g., `feat(TEAM-42): implement auth endpoint`)
-3. **Creates a PR** -- draft PR linking back to the Linear issue
+3. **Creates a PR** -- draft PR linking back to the work item
 4. Includes branch name, commit SHA, and PR URL in the Dev Agent Record
 
-Git failures never block Linear operations.
+Git failures never block platform operations.
 
 ## Critical Actions
 
-- Reads the entire story from Linear before any implementation
+- Reads the entire story from the platform before any implementation
 - Executes tasks/subtasks in order -- no skipping, no reordering
 - Marks tasks complete only when both implementation and tests pass
 - Runs full test suite after each task
@@ -54,4 +54,4 @@ Git failures never block Linear operations.
 
 **Phase 4 -- Implementation.** Riff picks up stories prepared by Tempo and implements them with full test coverage.
 
-**Source:** `_aria/linear/agents/dev.agent.yaml`
+**Source:** `_aria/core/agents/dev.agent.yaml`

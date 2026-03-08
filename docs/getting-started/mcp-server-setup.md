@@ -1,8 +1,30 @@
-# Linear MCP Setup
+# MCP Setup
 
-ARIA communicates with Linear through the Linear MCP server. This gives Claude Code access to 19 Linear tools for managing issues, projects, cycles, documents, and more.
+ARIA communicates with your project management platform through MCP servers. Choose the setup for your platform below.
 
-## Configuration
+## Plane
+
+Plane uses the built-in Plane MCP server in Claude Code, providing access to 93 tools for managing work items, epics, cycles, pages, and more.
+
+Add the Plane MCP server to your Claude Code settings. Create or edit `.claude/settings.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "plane": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/plane-mcp-server"],
+      "env": {
+        "PLANE_API_KEY": "plane_api_..."
+      }
+    }
+  }
+}
+```
+
+## Linear
+
+Linear uses the Linear MCP server, providing access to 19 tools for managing issues, projects, cycles, documents, and more.
 
 Add the Linear MCP server to your Claude Code settings. Create or edit `.claude/settings.json` in your project root:
 
@@ -25,28 +47,17 @@ Add the Linear MCP server to your Claude Code settings. Create or edit `.claude/
 
 ## Getting Your API Key
 
-1. Go to [Linear Settings > API](https://linear.app/settings/api)
-2. Click **Create Key**
-3. Give it a descriptive name (e.g., "ARIA Claude Code")
-4. Copy the key and paste it into your settings
+=== "Plane"
+    1. Go to your Plane instance Settings > API Tokens
+    2. Click **Create Token**
+    3. Give it a descriptive name (e.g., "ARIA Claude Code")
+    4. Copy the token and paste it into your settings
 
-## Available Tools
-
-The Linear MCP server provides these tools that ARIA uses:
-
-| Tool | Purpose |
-|---|---|
-| `list_teams` | Discover team name and ID |
-| `save_issue` / `list_issues` / `get_issue` | Create, update, and query stories |
-| `save_project` / `list_projects` / `get_project` | Manage epics |
-| `list_cycles` | Query sprint cycles |
-| `save_milestone` / `list_milestones` | Track releases |
-| `create_document` / `list_documents` / `get_document` | Create and read Linear documents |
-| `save_comment` / `list_comments` | Post and read issue comments |
-| `list_issue_statuses` | Discover workflow states |
-| `list_issue_labels` / `create_issue_label` | Manage labels |
-| `list_users` / `get_user` | User lookup |
-| `create_attachment` / `get_attachment` | File attachments |
+=== "Linear"
+    1. Go to [Linear Settings > API](https://linear.app/settings/api)
+    2. Click **Create Key**
+    3. Give it a descriptive name (e.g., "ARIA Claude Code")
+    4. Copy the key and paste it into your settings
 
 ## Verification
 
@@ -56,4 +67,4 @@ After configuring the server, restart Claude Code and run:
 /aria-setup
 ```
 
-If the MCP server is connected correctly, ARIA will auto-discover your Linear team and configure itself.
+ARIA will detect your platform, auto-discover your team/project, and configure itself.

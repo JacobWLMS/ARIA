@@ -19,16 +19,16 @@ Pragmatic test automation engineer focused on rapid test coverage. Specializes i
 
 | Command | Code | Description |
 |---|---|---|
-| `/aria-cr` | CR | Code review with findings posted to Linear |
+| `/aria-cr` | CR | Code review with findings posted as comments |
 | `/aria-test` | QA | Generate tests for reviewed stories |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Code review findings | Linear comment on Issue | `aria-agent-qa` |
-| Test summary | Linear comment on Issue | `aria-tested` |
-| Test reports | Linear attachment on Issue | `aria-agent-qa` |
+| Code review findings | Comment on Work Item | `aria-agent-qa` |
+| Test summary | Comment on Work Item | `aria-tested` |
+| Test reports | Attachment on Work Item | `aria-agent-qa` |
 
 ## Git Integration
 
@@ -42,4 +42,4 @@ When `git_enabled` is `true`, Pitch also:
 
 **Phase 4 -- Implementation.** Pitch reviews code and generates tests after Riff completes implementation.
 
-**Source:** `_aria/linear/agents/qa.agent.yaml`
+**Source:** `_aria/core/agents/qa.agent.yaml`

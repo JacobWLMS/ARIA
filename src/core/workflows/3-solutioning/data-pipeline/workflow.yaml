@@ -1,0 +1,7 @@
+name: data-pipeline
+description: 'Data pipeline design — ETL/ELT, sources, transforms, scheduling. Output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/3-solutioning/data-pipeline"
+instructions: "{installed_path}/instructions.md"

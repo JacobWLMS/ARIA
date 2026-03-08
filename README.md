@@ -1,8 +1,10 @@
 # ARIA
 
-Linear-native agentic development with musical-themed AI agents.
+Multi-platform agentic development with musical-themed AI agents.
 
-ARIA (Agentic Reasoning & Implementation Architecture) brings 12 AI agent personas to [Linear](https://linear.app). Instead of writing artefacts to local files, agents create and manage Linear Projects (Epics), Issues (Stories), Cycles (Sprints), Milestones (Releases), and Documents (PRDs, architecture docs, UX designs) via Linear MCP tools. Built-in scrum practices include Fibonacci estimation, velocity tracking, sprint capacity planning, and backlog refinement.
+ARIA (Agentic Reasoning & Implementation Architecture) brings 12 AI agent personas to your project management platform. Instead of writing artefacts to local files, agents create and manage epics, stories, sprints, releases, and documents via platform MCP tools. Built-in scrum practices include Fibonacci estimation, velocity tracking, sprint capacity planning, and backlog refinement.
+
+**Supported platforms:** [Plane](https://plane.so) (recommended), [Linear](https://linear.app)
 
 **[Full Documentation](https://jacobwlms.github.io/ARIA/)**
 
@@ -22,20 +24,22 @@ cd ARIA
 ./install.sh /path/to/your/project
 ```
 
-Then: edit `_aria/linear/module.yaml`, set up the [Linear MCP server](https://jacobwlms.github.io/ARIA/getting-started/mcp-server-setup/), run `/aria-setup`, and `/aria-help`.
+The installer will prompt you to select your platform (Plane or Linear), then copy the appropriate files.
+
+Then: edit `_aria/core/module.yaml`, set up the platform MCP server ([Linear](https://jacobwlms.github.io/ARIA/getting-started/mcp-server-setup/) or Plane), run `/aria-setup`, and `/aria-help`.
 
 ## Features
 
 - **36 slash commands** -- type `/aria` in Claude Code and autocomplete to any workflow
 - **12 musical agent personas** -- Cadence, Maestro, Lyric, Opus, Tempo, Riff, Pitch, Solo, Verse, Forte, Coda, Harmony
 - **4-phase scrum workflow** -- Analysis, Planning, Solutioning, Implementation
-- **Linear-native tracking** -- Projects, Issues, Cycles, Milestones, Documents
+- **Multi-platform support** -- Plane and Linear with shared core logic
 - **Scrum ceremonies** -- Fibonacci estimation, velocity tracking, sprint capacity, backlog refinement
 - **Simplified setup** -- 3-4 essential questions, everything else auto-discovered
 - **Workflow inheritance** -- DRY base config with shared includes
 - **Configurable autonomy** -- interactive, balanced, or yolo mode
-- **Automated orchestrator** -- polls Linear state and dispatches agents autonomously
-- **Optional Git/GitHub integration** -- branches, commits, and PRs aligned with Linear issues
+- **Automated orchestrator** -- polls platform state and dispatches agents autonomously
+- **Optional Git/GitHub integration** -- branches, commits, and PRs aligned with platform issues
 - **62 brainstorming techniques** -- comprehensive creative technique library
 - **Structured handoffs** -- mandatory context passing between agents
 
@@ -58,16 +62,12 @@ Type `/aria` and autocomplete. Run `/aria-help` for context-aware guidance.
 
 [Full command reference](https://jacobwlms.github.io/ARIA/reference/slash-commands/)
 
-## Linear ↔ Scrum Mapping
+## Supported Platforms
 
-| Scrum Concept | Linear Entity | ARIA Tool |
-|---|---|---|
-| Epic | Project | `save_project` |
-| Story | Issue | `save_issue` |
-| Story Points | Estimate | `save_issue` with `estimate` |
-| Sprint | Cycle | `list_cycles` |
-| Release | Milestone | `save_milestone` |
-| Dependency | blocks / blockedBy | `save_issue` with relations |
+| Platform | Entity Mapping |
+|---|---|
+| **Plane** | Epics, Work Items (stories), Cycles (sprints), Milestones (releases), Pages (docs) |
+| **Linear** | Projects (epics), Issues (stories), Cycles (sprints), Milestones (releases), Documents (docs) |
 
 ## Links
 
@@ -76,7 +76,7 @@ Type `/aria` and autocomplete. Run `/aria-help` for context-aware guidance.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. ARIA extends the [BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) for Linear environments.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. ARIA extends the [BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) for multi-platform environments.
 
 ## License
 

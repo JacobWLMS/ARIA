@@ -1,0 +1,9 @@
+name: create-story
+description: 'Prepare a story with full dev context, writing to the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/create-story"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/create-story-checklist.md"
+template: "{project-root}/_aria/shared/templates/story-template.md"

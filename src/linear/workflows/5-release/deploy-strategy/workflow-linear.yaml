@@ -1,7 +1,0 @@
-name: deploy-strategy
-description: 'Deployment strategy — blue-green, canary, rolling, rollback planning. Output to Linear Document.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/5-release/deploy-strategy"
-instructions: "{installed_path}/instructions-linear.md"

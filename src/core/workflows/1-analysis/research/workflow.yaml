@@ -1,0 +1,8 @@
+name: research
+description: 'Market, domain, or technical research with output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/1-analysis/research"
+instructions: "{installed_path}/instructions.md"
+template: "{project-root}/_aria/shared/templates/research-template.md"

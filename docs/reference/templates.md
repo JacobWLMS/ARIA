@@ -1,6 +1,6 @@
 # Templates
 
-ARIA includes 16 document templates in `_aria/shared/templates/`. Templates provide consistent structure for Linear Documents and issue descriptions.
+ARIA includes 16 document templates in `_aria/shared/templates/`. Templates provide consistent structure for documents and work item descriptions.
 
 ## Project Templates
 

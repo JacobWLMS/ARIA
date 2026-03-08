@@ -1,6 +1,6 @@
 # Configuration
 
-ARIA is configured through `_aria/linear/module.yaml`. The `/aria-setup` workflow auto-populates most fields.
+ARIA is configured through `_aria/core/module.yaml`. The `/aria-setup` workflow auto-populates most fields.
 
 ## Essential (Asked During Setup)
 
@@ -8,8 +8,9 @@ These are the only fields you need to provide:
 
 | Variable | Description | Example |
 |---|---|---|
+| `platform` | Project management platform | `"plane"` or `"linear"` |
 | `project_name` | Your project name | `"My SaaS App"` |
-| `linear_team_name` | Linear team name (auto-discovered) | `"Engineering"` |
+| `team_name` | Team or project name (auto-discovered) | `"Engineering"` |
 | `user_skill_level` | beginner / intermediate / expert | `"intermediate"` |
 | `git_enabled` | Enable Git/GitHub integration | `"true"` |
 
@@ -19,9 +20,9 @@ These fields are discovered automatically -- do not edit manually:
 
 | Variable | Description | Source |
 |---|---|---|
-| `user_name` | Your display name | git config or Linear profile |
-| `linear_team_id` | Linear team UUID | `list_teams` |
-| `status_names` | Workflow state names | `list_issue_statuses` |
+| `user_name` | Your display name | git config or platform profile |
+| `team_id` | Team/project UUID | Platform discovery |
+| `status_names` | Workflow state names | Platform discovery |
 | `workspace_project_id` | ARIA workspace project ID | Auto-created |
 | `autonomy_level` | interactive / balanced / yolo | Derived from `user_skill_level` |
 
@@ -41,8 +42,8 @@ These have sensible defaults. Override only if needed:
 |---|---|---|
 | `communication_language` | `"English"` | Language for agent communication |
 | `document_output_language` | `"English"` | Language for generated documents |
-| `project_prefix` | `""` | Prefix for Linear artefact titles |
-| `use_cycles` | `"true"` | Whether to use Linear Cycles for sprints |
+| `project_prefix` | `""` | Prefix for artefact titles |
+| `use_cycles` | `"true"` | Whether to use sprint cycles |
 
 ## Git Settings
 
@@ -72,8 +73,8 @@ Configured via `/aria-git`. Only relevant when `git_enabled` is `"true"`:
 
 | Variable | Value | Description |
 |---|---|---|
-| `tracking_system` | `"linear"` | Always "linear" for this module |
-| `key_map_file` | `.linear-key-map.yaml` path | Location of key map |
+| `tracking_system` | `"plane"` or `"linear"` | Matches `platform` setting |
+| `key_map_file` | `.key-map.yaml` path | Location of key map |
 
-!!! note "No Transition IDs"
-    Unlike Jira-based systems, Linear uses state names directly. ARIA sets issue states via `save_issue` with `state: "In Progress"` -- no transition ID discovery needed.
+!!! note "State Transitions"
+    Both Plane and Linear use state names directly. ARIA sets work item states by name -- no transition ID discovery needed (unlike Jira-based systems).

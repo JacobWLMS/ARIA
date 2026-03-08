@@ -1,0 +1,7 @@
+name: security-audit
+description: 'Security audit — dependency scan, code patterns, OWASP Top 10. Findings posted as issue comments.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/3-solutioning/security-audit"
+instructions: "{installed_path}/instructions.md"

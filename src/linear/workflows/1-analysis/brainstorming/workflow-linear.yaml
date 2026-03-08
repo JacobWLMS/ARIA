@@ -1,8 +1,0 @@
-name: brainstorm
-description: 'Generate diverse ideas through interactive brainstorming techniques. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/1-analysis/brainstorming"
-instructions: "{installed_path}/instructions-linear.md"
-# No template — brainstorming output is free-form

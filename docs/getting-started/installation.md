@@ -20,7 +20,8 @@ cd ARIA
 
 | Directory | Contents |
 |---|---|
-| `_aria/linear/` | Agent definitions, workflows, tasks, orchestrator, configuration |
+| `_aria/core/` | Agent definitions, workflows, tasks, orchestrator, configuration |
+| `_aria/platforms/` | Platform-specific task implementations (Plane, Linear) |
 | `_aria/shared/` | Templates, checklists, data files (brainstorming techniques, complexity matrices) |
 | `.claude/commands/` | 27 slash command files (`aria-*.md`) |
 | `CLAUDE.md` | Project instructions with command reference and critical rules |
@@ -29,7 +30,7 @@ cd ARIA
 
 The installer is safe for re-runs. It detects existing installations and:
 
-- **Preserves** your `module.yaml` and `.linear-key-map.yaml` configuration
+- **Preserves** your `module.yaml` and `.key-map.yaml` configuration
 - **Updates** all workflow instructions, templates, and slash commands
 - **Cleans up** old commands from previous versions
 
@@ -47,6 +48,6 @@ This removes the `_aria/` directory, `aria-*` slash commands, and the ARIA secti
 
 If you have a previous BMAD installation (`_bmad/` directory), the installer automatically:
 
-1. Migrates config files from `_bmad/linear/` to `_aria/linear/`
+1. Migrates config files from `_bmad/linear/` to `_aria/core/`
 2. Removes the legacy `_bmad/` directory
 3. Cleans up old `bmad-*` slash commands

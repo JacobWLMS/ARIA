@@ -19,15 +19,15 @@ Solo handles Quick Flow -- from tech spec creation through implementation. Minim
 
 | Command | Code | Description |
 |---|---|---|
-| `/aria-quick` | QS | Create a one-off tech spec as a Linear Issue |
+| `/aria-quick` | QS | Create a one-off tech spec as a work item |
 | `/aria-quick-dev` | QD | Implement a quick-spec story directly |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Tech spec | Linear Issue (description) | `aria-quick-flow` |
-| Implementation | Code + Linear Issue updates | `aria-quick-flow` |
+| Tech spec | Work Item (description) | `aria-quick-flow` |
+| Implementation | Code + Work Item updates | `aria-quick-flow` |
 
 ## When to Use Quick Flow
 
@@ -44,4 +44,4 @@ For larger work that spans multiple stories, use the full workflow starting with
 
 **Anytime.** Solo operates outside the standard phase pipeline.
 
-**Source:** `_aria/linear/agents/quick-flow.agent.yaml`
+**Source:** `_aria/core/agents/quick-flow.agent.yaml`

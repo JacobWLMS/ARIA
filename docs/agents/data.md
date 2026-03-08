@@ -25,16 +25,16 @@ Harmony sees the relationships between data. Designs schemas that are normalized
 | `/aria-pipeline` | DPP | Data pipeline design with scheduling and error handling |
 | `/aria-migrate` | DMG | Data migration plan with rollback and validation |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Key Map ID |
 |---|---|---|
-| Data Model | Linear Document | `documents.data_model` |
-| Data Pipeline | Linear Document | `documents.data_pipeline` |
-| Data Migration | Linear Document | `documents.data_migration` |
+| Data Model | Document | `documents.data_model` |
+| Data Pipeline | Document | `documents.data_pipeline` |
+| Data Migration | Document | `documents.data_migration` |
 
 ## Phase
 
 **Phase 3 -- Solutioning.** Harmony works alongside Opus (Architect) when the project involves significant data modeling. Invoked manually or by handoff from the Architect.
 
-**Source:** `_aria/linear/agents/data.agent.yaml`
+**Source:** `_aria/core/agents/data.agent.yaml`

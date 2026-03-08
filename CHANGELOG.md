@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.0.0 — Multi-Platform Abstraction
+
+### Added
+- **Plane support** — full native MCP integration with 93 Plane tools
+- **Platform abstraction layer** — core task dispatchers delegate to platform-specific implementations
+- **platform.yaml** — per-platform tool mapping and terminology configuration
+- **Work Item Properties** (Plane) — native custom fields replace label workarounds for locks, handoffs, agent tracking
+- **Activity-driven polling** (Plane) — orchestrator uses `list_activities` for efficient state detection
+- **Work Logs** (Plane) — agents log effort for velocity tracking
+- **Intake queue** (Plane) — brainstorming ideas go to triage before backlog
+- **Work Item Types** (Plane) — Story, Tech Spec, Bug, Spike, Review Finding
+- 2 new core tasks: `log-work`, `create-intake`
+
+### Changed
+- **Directory restructure**: `src/linear/` → `src/core/` (platform-agnostic) + `src/platforms/{linear,plane}/` (platform-specific)
+- All `workflow-linear.yaml` → `workflow.yaml`
+- All `instructions-linear.md` → `instructions.md`
+- All Linear MCP tool references in agents/workflows replaced with task invocations
+- `linear_team_name` → `team_name`, `linear_team_id` → `team_id` throughout
+- `install.sh` now prompts for platform selection (Plane or Linear)
+- 17 core task dispatchers bridge agents to platform implementations
+
+### Removed
+- Direct MCP tool references from all core files (moved to platform-specific tasks)
+- `src/linear/` directory (content split into `src/core/` and `src/platforms/linear/`)
+
 ## [1.1.0] - 2026-03-08
 
 ### Added

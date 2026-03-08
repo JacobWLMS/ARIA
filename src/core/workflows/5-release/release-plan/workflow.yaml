@@ -1,0 +1,7 @@
+name: release-plan
+description: 'Release planning — versioning, changelog, milestone management. Output to document and Milestone.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/5-release/release-plan"
+instructions: "{installed_path}/instructions.md"

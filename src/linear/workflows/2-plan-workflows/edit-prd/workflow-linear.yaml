@@ -1,7 +1,0 @@
-name: edit-prd
-description: 'Update an existing PRD on Linear Document based on feedback or new requirements. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/2-plan-workflows/edit-prd"
-instructions: "{installed_path}/instructions-linear.md"

@@ -26,16 +26,16 @@ Certified Scrum Master with deep technical background. Expert in agile ceremonie
 | `/aria-retro` | ER | Sprint retrospective with velocity tracking |
 | `/aria-course` | CC | Mid-implementation course correction |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Sprint plan | Linear Cycle + Issues | `aria-agent-sm` |
-| Enriched stories | Linear Issues (updated) | `aria-agent-sm` |
-| Retrospective | Linear Document | `aria-agent-sm` |
+| Sprint plan | Sprint Cycle + Work Items | `aria-agent-sm` |
+| Enriched stories | Work Items (updated) | `aria-agent-sm` |
+| Retrospective | Document | `aria-agent-sm` |
 
 ## Phase
 
 **Phases 3-4 -- Solutioning & Implementation.** Tempo manages the sprint lifecycle: planning, story preparation, retrospectives, and course corrections.
 
-**Source:** `_aria/linear/agents/sm.agent.yaml`
+**Source:** `_aria/core/agents/sm.agent.yaml`

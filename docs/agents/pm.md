@@ -21,21 +21,21 @@ Product management veteran with 8+ years launching B2B and consumer products. Ex
 | Command | Code | Description |
 |---|---|---|
 | `/aria-prd` | CP | Create, edit, or validate PRD (auto-detects mode) |
-| `/aria-epics` | CE | Create Projects (Epics) and Issues (Stories) in Linear |
+| `/aria-epics` | CE | Create Epics and Stories |
 | `/aria-ready` | IR | Validate implementation readiness |
 | `/aria-course` | CC | Handle mid-implementation course corrections |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| PRD | Linear Document | `aria-agent-pm` |
-| Epics | Linear Projects | `aria-agent-pm` |
-| Stories | Linear Issues (in Projects) | `aria-agent-pm` |
-| Readiness report | Linear Document | `aria-agent-pm` |
+| PRD | Document | `aria-agent-pm` |
+| Epics | Epics | `aria-agent-pm` |
+| Stories | Work Items | `aria-agent-pm` |
+| Readiness report | Document | `aria-agent-pm` |
 
 ## Phase
 
 **Phases 2-3 -- Planning & Solutioning.** Maestro owns the PRD lifecycle and epic/story creation, and validates readiness before implementation begins.
 
-**Source:** `_aria/linear/agents/pm.agent.yaml`
+**Source:** `_aria/core/agents/pm.agent.yaml`

@@ -1,8 +1,0 @@
-name: research
-description: 'Market, domain, or technical research with output to Linear Document. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/1-analysis/research"
-instructions: "{installed_path}/instructions-linear.md"
-template: "{project-root}/_aria/shared/templates/research-template.md"

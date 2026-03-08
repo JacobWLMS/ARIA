@@ -1,8 +1,8 @@
 # ARIA
 
-# ARIA: Agentic Development on Linear
+# ARIA: Multi-Platform Agentic Development
 
-ARIA (Agentic Reasoning & Implementation Architecture) is an opinionated agentic development method built natively on Linear. It follows agile/scrum practices using Linear's native entities — Projects (epics), Issues (stories), Cycles (sprints), Milestones (releases), and Documents (artefacts). All output goes to Linear, never to local files.
+ARIA (Agentic Reasoning & Implementation Architecture) is an opinionated agentic development method with multi-platform support (Linear, Plane). It follows agile/scrum practices using each platform's native entities for epics, stories, sprints, releases, and documents. All output goes to the selected platform, never to local files.
 
 ## Agent System
 
@@ -43,71 +43,59 @@ Type `/aria` in Claude Code and use autocomplete to browse. Run `/aria-help` for
 | `/aria-docs` | DP | Verse (Tech Writer) | Document Project (+ validate) |
 | `/aria-write` | WD | Verse (Tech Writer) | Write Document (+ explain) |
 | `/aria-diagram` | MG | Verse (Tech Writer) | Mermaid Diagram |
-| `/aria-critique` | RV | — | Review: adversarial / edges / prose / structure |
-| `/aria-dash` | PD | — | Project Dashboard |
-| `/aria-party` | PMD | — | Party Mode |
+| `/aria-critique` | RV | -- | Review: adversarial / edges / prose / structure |
+| `/aria-dash` | PD | -- | Project Dashboard |
+| `/aria-party` | PMD | -- | Party Mode |
 | `/aria-go` | ORC | Orchestrator | Auto-dispatch agents |
-| `/aria-setup` | FS | — | Set up Linear team & labels |
-| `/aria-git` | FG | — | Set up Git/GitHub integration |
-| `/aria-doctor` | DC | — | Health check (MCP, config, version) |
-| `/aria-help` | AH | — | Help & next steps |
+| `/aria-setup` | FS | -- | Set up platform team & labels |
+| `/aria-git` | FG | -- | Set up Git/GitHub integration |
+| `/aria-doctor` | DC | -- | Health check (MCP, config, version) |
+| `/aria-help` | AH | -- | Help & next steps |
 
 ## Key Files
 
-- **Agent definitions:** `_aria/linear/agents/*.agent.yaml`
-- **Base critical actions:** `_aria/linear/agents/base-critical-actions.yaml`
-- **Configuration:** `_aria/linear/module.yaml`
-- **Base workflow config:** `_aria/linear/workflows/base-workflow.yaml`
-- **Shared includes:** `_aria/linear/workflows/includes/`
-- **Artefact mapping:** `_aria/linear/artefact-mapping.yaml`
-- **Key map:** `_aria/linear/.linear-key-map.yaml`
-- **Reusable tasks:** `_aria/linear/tasks/`
-- **Workflows:** `_aria/linear/workflows/`
-- **Orchestrator:** `_aria/linear/orchestrator/`
+- **Agent definitions:** `_aria/core/agents/*.agent.yaml`
+- **Base critical actions:** `_aria/core/agents/base-critical-actions.yaml`
+- **Configuration:** `_aria/core/module.yaml`
+- **Base workflow config:** `_aria/core/workflows/base-workflow.yaml`
+- **Shared includes:** `_aria/core/workflows/includes/`
+- **Artefact mapping:** `_aria/core/artefact-mapping.yaml`
+- **Key map:** `_aria/core/data/.key-map.yaml`
+- **Reusable tasks (core):** `_aria/core/tasks/`
+- **Workflows:** `_aria/core/workflows/`
+- **Orchestrator:** `_aria/core/orchestrator/`
+- **Platform-specific tasks:** `_aria/platform/tasks/`
+- **Platform config:** `_aria/platform/platform.yaml`
+- **Platform orchestrator:** `_aria/platform/orchestrator/`
+- **Platform marker:** `_aria/platform` (text file: "linear" or "plane")
 - **Shared templates:** `_aria/shared/templates/`
 - **Shared checklists:** `_aria/shared/checklists/`
-- **Version:** `_aria/linear/VERSION`
-
-## Linear ↔ Scrum Concept Mapping
-
-| Scrum Concept | Linear Entity | ARIA Tool |
-|---|---|---|
-| Epic | Project | `save_project` |
-| Story | Issue (in project) | `save_issue` with `project` |
-| Subtask | Sub-issue | `save_issue` with `parentId` |
-| Story Points | Estimate | `save_issue` with `estimate` |
-| Sprint | Cycle | `list_cycles` |
-| Sprint Capacity | Velocity from retros | Calculated from completed cycle data |
-| Release / Milestone | Milestone | `save_milestone` |
-| Dependency | blocks / blockedBy | `save_issue` with `blocks`/`blockedBy` |
-| Wiki / Artefact | Document | `create_document` |
-| Handoff | Comment + Label | `save_comment` + `save_issue` with label |
-| PR Link | Link attachment | `save_issue` with `links` |
-| Test Report | File attachment | `create_attachment` |
+- **Version:** `_aria/core/VERSION`
 
 ## Scrum Workflow
 
 ```
-Product Brief → PRD → UX Design → Architecture → Epics & Stories
-    ↓
-Sprint Planning (capacity check) → Backlog Refinement (estimation)
-    ↓
-Story Prep → Dev → Code Review → QA → Done
-    ↓
-Sprint Retrospective (velocity tracking) → Next Sprint
+Product Brief -> PRD -> UX Design -> Architecture -> Epics & Stories
+    |
+Sprint Planning (capacity check) -> Backlog Refinement (estimation)
+    |
+Story Prep -> Dev -> Code Review -> QA -> Done
+    |
+Sprint Retrospective (velocity tracking) -> Next Sprint
 ```
 
 ## Critical Rules
 
-1. **All output to Linear** — never write artefacts to local files
-2. **Team name required** — all Linear MCP tool calls need the team name from module.yaml
-3. **Lock before work** — invoke `lock-issue` task before modifying any Linear issue
-4. **State changes are simple** — use `save_issue` with `state` directly (no transition IDs needed)
-5. **Structured handoffs** — invoke `post-handoff` task with mandatory `context_details` (decisions, open questions, artefact refs)
-6. **Read context first** — use `read-linear-context` task; use `handoff_context` type to inherit previous agent's decisions
-7. **Key map** — use `.linear-key-map.yaml` for all ARIA-to-Linear ID lookups
-8. **Estimate stories** — use `save_issue` with `estimate` for Fibonacci story points (1, 2, 3, 5, 8, 13)
-9. **Track dependencies** — use `blocks`/`blockedBy` on `save_issue` for issue relations
-10. **Git is recommended** — git operations gated on `git_enabled`; git failures never block Linear operations
-11. **Autonomy levels** — derived from `user_skill_level` (beginner→interactive, intermediate→balanced, expert→yolo). Course corrections always require approval.
-12. **Workflow inheritance** — all workflow YAMLs inherit from `base-workflow.yaml`; only declare unique fields
+1. **All output to platform** -- never write artefacts to local files
+2. **Platform detection** -- read `_aria/platform` marker file to determine the active platform (linear or plane) and load the corresponding platform.yaml
+3. **Team/workspace required** -- all platform MCP tool calls need the team or workspace name from module.yaml
+4. **Lock before work** -- invoke `lock-issue` task before modifying any issue
+5. **State changes** -- use the platform-appropriate method for state transitions (Linear: `save_issue` with `state`; Plane: state update API)
+6. **Structured handoffs** -- invoke `post-handoff` task with mandatory `context_details` (decisions, open questions, artefact refs)
+7. **Read context first** -- use `read-context` task; use `handoff_context` type to inherit previous agent's decisions
+8. **Key map** -- use `_aria/core/data/.key-map.yaml` for all ARIA-to-platform ID lookups
+9. **Estimate stories** -- use Fibonacci story points (1, 2, 3, 5, 8, 13)
+10. **Track dependencies** -- use platform-appropriate dependency/relation mechanisms
+11. **Git is recommended** -- git operations gated on `git_enabled`; git failures never block platform operations
+12. **Autonomy levels** -- derived from `user_skill_level` (beginner->interactive, intermediate->balanced, expert->yolo). Course corrections always require approval.
+13. **Workflow inheritance** -- all workflow YAMLs inherit from `base-workflow.yaml`; only declare unique fields

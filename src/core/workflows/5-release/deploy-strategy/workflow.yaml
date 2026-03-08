@@ -1,0 +1,7 @@
+name: deploy-strategy
+description: 'Deployment strategy — blue-green, canary, rolling, rollback planning. Output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/5-release/deploy-strategy"
+instructions: "{installed_path}/instructions.md"

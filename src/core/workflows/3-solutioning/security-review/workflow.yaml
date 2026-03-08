@@ -1,0 +1,7 @@
+name: security-review
+description: 'Security architecture review — assess architecture document for security concerns.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/3-solutioning/security-review"
+instructions: "{installed_path}/instructions.md"

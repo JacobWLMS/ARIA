@@ -1,0 +1,8 @@
+name: sprint-planning
+description: 'Plan sprints using sprints.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/sprint-planning"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/sprint-planning-checklist.md"

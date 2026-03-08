@@ -1,0 +1,8 @@
+name: correct-course
+description: 'Assess and execute mid-cycle course corrections via the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/correct-course"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/correct-course-checklist.md"

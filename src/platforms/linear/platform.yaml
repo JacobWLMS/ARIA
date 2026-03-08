@@ -1,0 +1,68 @@
+# ARIA Platform Configuration — Linear
+# Maps generic ARIA operations to Linear MCP tool names.
+
+platform:
+  name: linear
+  display_name: "Linear"
+  mcp_server: "linear-server"
+
+terminology:
+  work_item: "Issue"
+  epic: "Project"
+  sprint: "Cycle"
+  document: "Document"
+  milestone: "Milestone"
+  team: "Team"
+  comment: "Comment"
+
+tools:
+  # Work Items (Issues)
+  create_work_item: "save_issue"
+  update_work_item: "save_issue"
+  get_work_item: "get_issue"
+  list_work_items: "list_issues"
+  search_work_items: "list_issues"
+  # Epics (Projects)
+  create_epic: "save_project"
+  update_epic: "save_project"
+  get_epic: "get_project"
+  list_epics: "list_projects"
+  # Documents
+  create_document: "create_document"
+  update_document: "update_document"
+  get_document: "get_document"
+  list_documents: "list_documents"
+  # Comments
+  add_comment: "save_comment"
+  list_comments: "list_comments"
+  delete_comment: "delete_comment"
+  # Sprints (Cycles)
+  list_sprints: "list_cycles"
+  # Milestones
+  create_milestone: "save_milestone"
+  list_milestones: "list_milestones"
+  # Teams
+  list_teams: "list_teams"
+  # Users
+  list_users: "list_users"
+  # Statuses
+  list_statuses: "list_issue_statuses"
+  # Labels
+  create_label: "create_issue_label"
+  list_labels: "list_issue_labels"
+  # Attachments
+  create_attachment: "create_attachment"
+  # Relations (via save_issue blockedBy/blocks fields)
+  create_relation: "save_issue"
+  # Links (via save_issue links field)
+  create_link: "save_issue"
+
+capabilities:
+  custom_properties: false
+  work_logs: false
+  activities: false
+  intake: false
+  custom_work_item_types: false
+  native_relations: false      # Uses blockedBy/blocks fields on save_issue
+  native_states: false         # Uses list_issue_statuses for discovery
+  native_pages: false          # Documents are project-scoped

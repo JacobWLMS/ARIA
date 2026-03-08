@@ -1,49 +1,49 @@
 # Artefact Mapping
 
-Every artefact ARIA produces is stored in Linear. This mapping shows where each artefact type goes and which MCP tool creates it.
+Every artefact ARIA produces is stored on the platform. This mapping shows where each artefact type goes and which core task creates it.
 
 ## Phase 1 -- Analysis
 
-| Artefact | Linear Entity | MCP Tool | Key Map Entry |
+| Artefact | Entity Type | Core Task | Key Map Entry |
 |---|---|---|---|
-| Product Brief | Document | `create_document` | `documents.brief` |
-| Market Research | Document | `create_document` | `documents.research_market` |
-| Domain Research | Document | `create_document` | `documents.research_domain` |
-| Technical Research | Document | `create_document` | `documents.research_technical` |
-| Brainstorming | Document | `create_document` | `documents.brainstorming` |
-| Project Context | Document | `create_document` | `documents.project_context` |
+| Product Brief | Document | `write-document` | `documents.brief` |
+| Market Research | Document | `write-document` | `documents.research_market` |
+| Domain Research | Document | `write-document` | `documents.research_domain` |
+| Technical Research | Document | `write-document` | `documents.research_technical` |
+| Brainstorming | Document | `write-document` | `documents.brainstorming` |
+| Project Context | Document | `write-document` | `documents.project_context` |
 
 ## Phase 2 -- Planning
 
-| Artefact | Linear Entity | MCP Tool | Key Map Entry |
+| Artefact | Entity Type | Core Task | Key Map Entry |
 |---|---|---|---|
-| PRD | Document | `create_document` | `documents.prd` |
-| UX Design | Document | `create_document` | `documents.ux_design` |
+| PRD | Document | `write-document` | `documents.prd` |
+| UX Design | Document | `write-document` | `documents.ux_design` |
 
 ## Phase 3 -- Solutioning
 
-| Artefact | Linear Entity | MCP Tool | Key Map Entry |
+| Artefact | Entity Type | Core Task | Key Map Entry |
 |---|---|---|---|
-| Architecture | Document | `create_document` | `documents.architecture` |
-| Epics | Projects | `save_project` | `projects.*` |
-| Stories | Issues (in Projects) | `save_issue` | `issues.*` |
-| Story Points | Issue estimate | `save_issue` with `estimate` | -- |
-| Dependencies | Issue relations | `save_issue` with `blocks`/`blockedBy` | -- |
-| Milestones | Milestones | `save_milestone` | `milestones.*` |
-| Readiness Report | Document | `create_document` | `documents.readiness` |
+| Architecture | Document | `write-document` | `documents.architecture` |
+| Epics | Epic | `create-epic` | `projects.*` |
+| Stories | Work Item | `create-work-item` | `issues.*` |
+| Story Points | Work Item estimate | `set-estimate` | -- |
+| Dependencies | Work Item relations | `set-relation` | -- |
+| Milestones | Milestone | `create-milestone` | `milestones.*` |
+| Readiness Report | Document | `write-document` | `documents.readiness` |
 
 ## Phase 4 -- Implementation
 
-| Artefact | Linear Entity | MCP Tool | Key Map Entry |
+| Artefact | Entity Type | Core Task | Key Map Entry |
 |---|---|---|---|
-| Sprint assignments | Issue cycle | `save_issue` with `cycle` | `cycles.*` |
-| Dev records | Issue comments | `save_comment` | -- |
-| Code review findings | Issue comments | `save_comment` | -- |
-| Test summaries | Issue comments | `save_comment` | -- |
-| Test reports | Issue attachments | `create_attachment` | -- |
-| PR links | Issue links | `save_issue` with `links` | -- |
-| Retrospective | Document | `create_document` | `documents.retrospective` |
+| Sprint assignments | Work Item cycle | `assign-to-sprint` | `cycles.*` |
+| Dev records | Work Item comments | `post-comment` | -- |
+| Code review findings | Work Item comments | `post-comment` | -- |
+| Test summaries | Work Item comments | `post-comment` | -- |
+| Test reports | Work Item attachments | `attach-report` | -- |
+| PR links | Work Item links | `link-pr-to-issue` | -- |
+| Retrospective | Document | `write-document` | `documents.retrospective` |
 
 ## Key Map
 
-All created IDs are tracked in `_aria/linear/.linear-key-map.yaml` for cross-referencing between workflows. The key map is auto-populated -- agents look up IDs here instead of re-querying Linear.
+All created IDs are tracked in `_aria/core/.key-map.yaml` for cross-referencing between workflows. The key map is auto-populated -- agents look up IDs here instead of re-querying the platform.

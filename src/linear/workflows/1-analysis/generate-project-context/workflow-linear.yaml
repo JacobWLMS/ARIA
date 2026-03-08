@@ -1,8 +1,0 @@
-name: generate-project-context
-description: 'Scan codebase to create LLM-optimized project context. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/1-analysis/generate-project-context"
-instructions: "{installed_path}/instructions-linear.md"
-template: "{project-root}/_aria/shared/templates/project-context-template.md"

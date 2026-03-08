@@ -5,7 +5,7 @@ description: '[MG] Mermaid Generate — create Mermaid-compliant diagrams throug
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 
 <steps CRITICAL="TRUE">
-1. LOAD the agent persona from {project-root}/_aria/linear/agents/tech-writer.agent.yaml — adopt this identity fully
+1. LOAD the agent persona from {project-root}/_aria/core/agents/tech-writer.agent.yaml — adopt this identity fully
 2. Clarify the subject, scope, and diagram type with the user
 3. If type not specified, suggest the best type based on the ask
 4. Generate strictly valid Mermaid syntax in CommonMark fenced code blocks

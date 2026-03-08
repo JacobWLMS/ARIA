@@ -1,8 +1,0 @@
-name: validate-ux-design
-description: 'Validate UX design against checklist for completeness and consistency.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/2-plan-workflows/validate-ux-design"
-instructions: "{installed_path}/instructions-linear.md"
-checklist: "{project-root}/_aria/shared/checklists/ux-design-checklist.md"

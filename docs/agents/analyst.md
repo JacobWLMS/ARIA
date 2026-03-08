@@ -25,17 +25,17 @@ Senior analyst with deep expertise in market research, competitive analysis, and
 | `/aria-research` | FR | Market, domain, or technical research |
 | `/aria-brief` | CB | Create product brief or generate project context |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Research reports | Linear Document | `aria-agent-analyst` |
-| Product briefs | Linear Document | `aria-agent-analyst` |
-| Brainstorming sessions | Linear Document | `aria-agent-analyst` |
-| Project context | Linear Document | `aria-agent-analyst` |
+| Research reports | Document | `aria-agent-analyst` |
+| Product briefs | Document | `aria-agent-analyst` |
+| Brainstorming sessions | Document | `aria-agent-analyst` |
+| Project context | Document | `aria-agent-analyst` |
 
 ## Phase
 
 **Phase 1 -- Analysis.** Cadence handles all early-stage discovery: research, brainstorming, product briefs, and context generation.
 
-**Source:** `_aria/linear/agents/analyst.agent.yaml`
+**Source:** `_aria/core/agents/analyst.agent.yaml`

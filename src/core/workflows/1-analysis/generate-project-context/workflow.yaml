@@ -1,0 +1,8 @@
+name: generate-project-context
+description: 'Scan codebase to create LLM-optimized project context.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/1-analysis/generate-project-context"
+instructions: "{installed_path}/instructions.md"
+template: "{project-root}/_aria/shared/templates/project-context-template.md"

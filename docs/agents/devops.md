@@ -25,16 +25,16 @@ Coda bridges the gap between development and operations. Automates everything, t
 | `/aria-cicd` | CI | CI/CD pipeline design with quality gates |
 | `/aria-deploy` | DPL | Deployment strategy with rollback procedures |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Key Map ID |
 |---|---|---|
-| Release Plan | Linear Document + Milestone | `documents.release_plan` |
-| CI/CD Design | Linear Document | `documents.cicd_design` |
-| Deployment Strategy | Linear Document | `documents.deploy_strategy` |
+| Release Plan | Document + Milestone | `documents.release_plan` |
+| CI/CD Design | Document | `documents.cicd_design` |
+| Deployment Strategy | Document | `documents.deploy_strategy` |
 
 ## Phase
 
 **Phase 5 -- Release.** Coda works after implementation is complete to plan releases, design CI/CD pipelines, and define deployment strategies. Can also be invoked anytime for CI/CD or deployment design.
 
-**Source:** `_aria/linear/agents/devops.agent.yaml`
+**Source:** `_aria/core/agents/devops.agent.yaml`

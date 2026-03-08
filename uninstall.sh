@@ -30,7 +30,12 @@ fi
 
 # Confirm
 echo -e "  ${YELLOW}This will remove:${RESET}"
-[ -d "$TARGET_DIR/_aria" ] && echo "    - _aria/ directory (workflows, agents, config)"
+[ -d "$TARGET_DIR/_aria/core" ] && echo "    - _aria/core/ directory (agents, workflows, config)"
+[ -d "$TARGET_DIR/_aria/platform" ] && echo "    - _aria/platform/ directory (platform-specific content)"
+[ -f "$TARGET_DIR/_aria/platform" ] && echo "    - _aria/platform marker file"
+[ -d "$TARGET_DIR/_aria/shared" ] && echo "    - _aria/shared/ directory (templates, checklists, data)"
+[ -d "$TARGET_DIR/_aria/linear" ] && echo "    - _aria/linear/ directory (legacy v1.x)"
+[ -d "$TARGET_DIR/_aria" ] && echo "    - _aria/ directory"
 ls "$TARGET_DIR/.claude/commands/aria-"*.md &>/dev/null && echo "    - .claude/commands/aria-*.md (slash commands)"
 grep -q "# ARIA" "$TARGET_DIR/CLAUDE.md" 2>/dev/null && echo "    - ARIA section from CLAUDE.md"
 echo ""
@@ -45,7 +50,7 @@ fi
 
 echo ""
 
-# Remove _aria/ directory
+# Remove _aria/ directory (covers core/, platform/, shared/, and legacy linear/)
 if [ -d "$TARGET_DIR/_aria" ]; then
   rm -rf "$TARGET_DIR/_aria"
   echo -e "  ${GREEN}Removed${RESET} _aria/"

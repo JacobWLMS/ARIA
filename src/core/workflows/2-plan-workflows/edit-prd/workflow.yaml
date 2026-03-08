@@ -1,0 +1,7 @@
+name: edit-prd
+description: 'Update an existing PRD based on feedback or new requirements.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/2-plan-workflows/edit-prd"
+instructions: "{installed_path}/instructions.md"

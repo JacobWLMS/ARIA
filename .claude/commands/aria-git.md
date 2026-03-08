@@ -5,7 +5,7 @@ description: 'Discover Git/GitHub settings and configure integration for ARIA wo
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 
 <steps CRITICAL="TRUE">
-1. READ the git discovery workflow from {project-root}/_aria/shared/tasks/git-operations.md
+1. READ the git discovery workflow from {project-root}/_aria/platform/git-discovery.md
 2. Detect if this is a git repository (git rev-parse --git-dir)
 3. Detect the default branch (git symbolic-ref refs/remotes/origin/HEAD)
 4. Detect the GitHub remote (git remote get-url origin)

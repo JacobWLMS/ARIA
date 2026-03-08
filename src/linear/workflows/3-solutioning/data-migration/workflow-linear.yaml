@@ -1,7 +1,0 @@
-name: data-migration
-description: 'Data migration planning — strategy, rollback, validation. Output to Linear Document.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/3-solutioning/data-migration"
-instructions: "{installed_path}/instructions-linear.md"

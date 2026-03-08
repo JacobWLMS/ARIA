@@ -1,20 +1,20 @@
 # Orchestrator
 
-The orchestrator (`/aria-go`) is an automated dispatch system that polls Linear state and routes work to the correct agent. It is not an agent persona -- it is a system mechanism.
+The orchestrator (`/aria-go`) is an automated dispatch system that polls platform state and routes work to the correct agent. It is not an agent persona -- it is a system mechanism.
 
 ## How It Works
 
 The orchestrator runs a continuous loop:
 
-1. **Poll** -- Query Linear for current project state (documents, projects, issues, cycles, labels)
+1. **Poll** -- Query the platform for current project state (documents, epics, work items, sprints, labels)
 2. **Evaluate** -- Check dispatch rules in priority order against current state
 3. **Dispatch** -- Launch the first matching agent with pre-loaded context
 4. **Wait** -- Monitor for completion (handoff label or state change)
 5. **Repeat** -- Return to step 1
 
-## Linear State Reader
+## State Reader
 
-Before evaluating rules, the orchestrator queries Linear to build a state snapshot:
+Before evaluating rules, the orchestrator queries the platform to build a state snapshot:
 
 | Query | What It Finds |
 |---|---|
@@ -48,7 +48,7 @@ Rules are evaluated in priority order. The first matching rule triggers dispatch
 Before dispatching an agent, the orchestrator pre-loads relevant context:
 
 - Parses the most recent handoff comment for decisions, questions, and artefact references
-- Loads referenced documents from Linear
+- Loads referenced documents from the platform
 - Passes structured context to the dispatched agent
 
 This reduces redundant context discovery by each agent.

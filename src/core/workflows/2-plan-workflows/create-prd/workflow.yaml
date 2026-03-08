@@ -1,0 +1,9 @@
+name: create-prd
+description: 'Create a PRD with output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/2-plan-workflows/create-prd"
+instructions: "{installed_path}/instructions.md"
+template: "{project-root}/_aria/shared/templates/prd-template.md"
+checklist: "{project-root}/_aria/shared/checklists/prd-checklist.md"

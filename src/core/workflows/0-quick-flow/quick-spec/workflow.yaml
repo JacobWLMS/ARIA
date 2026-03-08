@@ -1,0 +1,7 @@
+name: quick-spec
+description: 'One-off tech spec for small tasks, skips full planning. Creates a single work item.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/0-quick-flow/quick-spec"
+instructions: "{installed_path}/instructions.md"

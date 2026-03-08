@@ -2,23 +2,25 @@
 
 ARIA uses reusable task procedures for common operations. Tasks are invoked by workflows and agents, not directly by users.
 
-## Linear Tasks
+## Core Tasks
 
-Located in `_aria/linear/tasks/`:
+Located in `_aria/core/tasks/` (dispatch to platform-specific implementations):
 
 | Task | Purpose |
 |---|---|
-| **lock-issue** | Apply/remove `aria-active` label to prevent concurrent agent work on the same issue |
-| **set-issue-state** | Transition an issue to a new state via `save_issue` with state field |
-| **post-handoff** | Post structured handoff comment with decisions, questions, and artefact refs. Apply handoff label. |
-| **read-linear-context** | Load project context from Linear: PRD, architecture, stories, handoff history |
-| **write-to-linear-doc** | Create or update a Linear Document. Register ID in key map. |
-| **refine-backlog** | List unestimated backlog issues, prompt for Fibonacci estimates, update via `save_issue` |
-| **link-pr-to-issue** | Attach a PR URL to a Linear issue via `save_issue` with `links` field |
-| **attach-report** | Attach file (test report, review findings) to a Linear issue via `create_attachment` |
-| **create-project-epic** | Create a Linear Project (Epic) with standard fields and register in key map |
-| **update-project-dashboard** | Create or update a project status dashboard as a Linear Document |
-| **help** | Context-aware guidance: inspect Linear state and recommend next workflow |
+| **lock-issue** | Prevent concurrent agent work on the same work item (labels on Linear, properties on Plane) |
+| **set-issue-state** | Transition a work item to a new state |
+| **post-handoff** | Post structured handoff comment with decisions, questions, and artefact refs. Signal next agent. |
+| **read-context** | Load project context from the platform: PRD, architecture, stories, handoff history |
+| **write-document** | Create or update a document. Register ID in key map. |
+| **refine-backlog** | List unestimated backlog work items, prompt for Fibonacci estimates, update |
+| **link-pr-to-issue** | Attach a PR URL to a work item |
+| **attach-report** | Attach file (test report, review findings) to a work item |
+| **create-epic** | Create an epic with standard fields and register in key map |
+| **update-project-dashboard** | Create or update a project status dashboard document |
+| **help** | Context-aware guidance: inspect platform state and recommend next workflow |
+| **log-work** | Log effort on a work item for velocity tracking (Plane) |
+| **create-intake** | Submit an idea to the intake/triage queue (Plane) |
 
 ## Review Tasks
 

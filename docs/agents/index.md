@@ -21,11 +21,11 @@ ARIA's 12 agents form an orchestra -- each persona plays a distinct role in the 
 
 ## How Agents Communicate
 
-Agents communicate through Linear, not shared files:
+Agents communicate through the project management platform, not shared files:
 
-- **Handoff labels** -- when an agent completes work, it applies an `aria-handoff-{agent}` label to signal the next agent
-- **Linear comments** -- agents post structured records (dev records, review findings, test summaries) as comments
-- **Agent locking** -- the `aria-active` label prevents concurrent work on the same issue
+- **Handoff signals** -- when an agent completes work, it signals the next agent (labels on Linear, work item properties on Plane)
+- **Comments** -- agents post structured records (dev records, review findings, test summaries) as comments on work items
+- **Agent locking** -- prevents concurrent agents from working on the same work item
 - **Structured context** -- handoff comments carry decisions, open questions, and artefact references
 
 The [orchestrator](../guides/orchestrator.md) uses these signals to automatically dispatch the correct agent.
@@ -42,8 +42,8 @@ These workflows are not tied to a specific agent persona:
 
 ## System Mechanisms
 
-The **Orchestrator** (`/aria-go`) is not an agent persona -- it is a dispatch mechanism that polls Linear state and routes work to the correct agent automatically. See the [Orchestrator Guide](../guides/orchestrator.md).
+The **Orchestrator** (`/aria-go`) is not an agent persona -- it is a dispatch mechanism that polls platform state and routes work to the correct agent automatically. See the [Orchestrator Guide](../guides/orchestrator.md).
 
 ## Agent Definitions
 
-Agent definitions live in `_aria/linear/agents/*.agent.yaml`. Each file specifies the agent's persona, critical actions, and available workflows. There are 12 agent definitions in total.
+Agent definitions live in `_aria/core/agents/*.agent.yaml`. Each file specifies the agent's persona, critical actions, and available workflows. There are 12 agent definitions in total.

@@ -1,0 +1,8 @@
+name: document-project
+description: 'Scan existing project and produce documentation as a platform document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/1-analysis/document-project"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/document-project-checklist.md"

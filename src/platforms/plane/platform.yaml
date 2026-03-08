@@ -1,0 +1,101 @@
+# ARIA Platform Configuration — Plane
+# Maps generic ARIA operations to Plane MCP tool names.
+# Plane has 93 native MCP tools — zero REST fallbacks required.
+
+platform:
+  name: plane
+  display_name: "Plane"
+  mcp_server: "plane-mcp"
+
+terminology:
+  work_item: "Work Item"
+  epic: "Module"
+  sprint: "Cycle"
+  document: "Page"
+  milestone: "Initiative"
+  team: "Project"
+  comment: "Comment"
+  intake: "Intake"
+  work_log: "Work Log"
+  activity: "Activity"
+
+tools:
+  # Work Items
+  create_work_item: "create_work_item"
+  update_work_item: "update_work_item"
+  get_work_item: "retrieve_work_item"
+  list_work_items: "list_work_items"
+  search_work_items: "search_work_items"
+  delete_work_item: "delete_work_item"
+  # Epics (Modules)
+  create_epic: "create_module"
+  update_epic: "update_module"
+  get_epic: "retrieve_module"
+  list_epics: "list_modules"
+  # Documents (Pages — workspace-level)
+  create_document: "create_workspace_page"
+  update_document: "update_workspace_page"
+  get_document: "retrieve_workspace_page"
+  # Documents (Pages — project-level)
+  create_project_document: "create_project_page"
+  get_project_document: "retrieve_project_page"
+  # Comments
+  add_comment: "create_work_item_comment"
+  update_comment: "update_work_item_comment"
+  list_comments: "list_work_item_comments"
+  delete_comment: "delete_work_item_comment"
+  # Sprints (Cycles)
+  create_sprint: "create_cycle"
+  update_sprint: "update_cycle"
+  get_sprint: "retrieve_cycle"
+  list_sprints: "list_cycles"
+  # Milestones (Initiatives)
+  create_milestone: "create_initiative"
+  update_milestone: "update_initiative"
+  get_milestone: "retrieve_initiative"
+  list_milestones: "list_initiatives"
+  # Labels
+  create_label: "create_label"
+  list_labels: "list_labels"
+  retrieve_label: "retrieve_label"
+  # States
+  create_state: "create_state"
+  list_states: "list_states"
+  retrieve_state: "retrieve_state"
+  # Relations
+  create_relation: "create_work_item_relation"
+  list_relations: "list_work_item_relations"
+  remove_relation: "remove_work_item_relation"
+  # Links
+  create_link: "create_work_item_link"
+  update_link: "update_work_item_link"
+  list_links: "list_work_item_links"
+  delete_link: "delete_work_item_link"
+  # Teams (Projects)
+  list_teams: "list_projects"
+  get_team: "retrieve_project"
+  # Epics (top-level)
+  create_top_epic: "create_epic"
+  update_top_epic: "update_epic"
+  list_top_epics: "list_epics"
+  # Plane-only features
+  create_work_item_property: "create_work_item_property"
+  list_work_item_properties: "list_work_item_properties"
+  create_work_item_type: "create_work_item_type"
+  list_work_item_types: "list_work_item_types"
+  create_work_log: "create_work_log"
+  list_work_logs: "list_work_logs"
+  update_work_log: "update_work_log"
+  list_activities: "list_work_item_activities"
+  create_intake: "create_intake_work_item"
+  list_intakes: "list_intake_work_items"
+
+capabilities:
+  custom_properties: true
+  work_logs: true
+  activities: true
+  intake: true
+  custom_work_item_types: true
+  native_relations: true
+  native_states: true
+  native_pages: true

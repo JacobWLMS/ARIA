@@ -1,0 +1,8 @@
+name: threat-model
+description: 'STRIDE-based threat modeling with trust boundaries and mitigations. Output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/3-solutioning/threat-model"
+instructions: "{installed_path}/instructions.md"
+template: "{project-root}/_aria/shared/templates/threat-model-template.md"

@@ -21,14 +21,14 @@ Senior UX Designer with 7+ years creating intuitive experiences across web and m
 |---|---|---|
 | `/aria-ux` | CU | Create UX design specification |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| UX Design spec | Linear Document | `aria-agent-ux` |
+| UX Design spec | Document | `aria-agent-ux` |
 
 ## Phase
 
 **Phase 2 -- Planning.** Lyric creates UX design specifications that inform architecture decisions and implementation.
 
-**Source:** `_aria/linear/agents/ux-designer.agent.yaml`
+**Source:** `_aria/core/agents/ux-designer.agent.yaml`

@@ -1,0 +1,7 @@
+name: sprint-status
+description: 'Show cycle and project progress dashboard from the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/sprint-status"
+instructions: "{installed_path}/instructions.md"

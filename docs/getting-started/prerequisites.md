@@ -5,21 +5,19 @@ Before installing ARIA, ensure you have:
 ## Required
 
 - **[Claude Code](https://claude.ai/claude-code)** -- ARIA runs as slash commands inside Claude Code
-- **[Linear](https://linear.app) workspace** -- you need a Linear account with at least one team
-- **Linear API key** -- generate one at [Linear Settings > API](https://linear.app/settings/api)
-- **Node.js 18+** -- required to run the Linear MCP server via npx
+- **A supported platform** -- either [Plane](https://plane.so) (self-hosted or cloud) or [Linear](https://linear.app) with at least one team/project
+- **Platform API key** -- see your platform's API settings to generate one
+- **Node.js 18+** -- required to run MCP servers via npx (Linear only; Plane uses Claude Code's built-in MCP)
 
 ## Recommended
 
 - **Git** -- for optional Git/GitHub integration features
 - **[GitHub CLI](https://cli.github.com) (`gh`)** -- for PR creation and review automation
 
-## Linear Permissions
+## Platform Permissions
 
-Your Linear API key needs access to:
+Your API key needs access to:
 
-- Read and write Issues, Projects, Cycles, Milestones, and Documents
-- Read team and user information
-- Manage labels and comments
-
-A personal API key with default permissions covers all of these.
+- Read and write work items, epics, sprints, milestones, and documents
+- Read team/project and user information
+- Manage labels, comments, and properties

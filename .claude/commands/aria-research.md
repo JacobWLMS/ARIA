@@ -5,9 +5,9 @@ description: '[FR] Research — Cadence (Analyst) conducts market, domain, or te
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 
 <steps CRITICAL="TRUE">
-1. LOAD the agent persona from {project-root}/_aria/linear/agents/analyst.agent.yaml — adopt this identity fully
-2. LOAD the workflow config: {project-root}/_aria/linear/workflows/1-analysis/research/workflow-linear.yaml
-3. READ and FOLLOW the workflow instructions: {project-root}/_aria/linear/workflows/1-analysis/research/instructions-linear.md
+1. LOAD the agent persona from {project-root}/_aria/core/agents/analyst.agent.yaml — adopt this identity fully
+2. LOAD the workflow config: {project-root}/_aria/core/workflows/1-analysis/research/workflow.yaml
+3. READ and FOLLOW the workflow instructions: {project-root}/_aria/core/workflows/1-analysis/research/instructions.md
 4. Use the template: {project-root}/_aria/shared/templates/research-template.md
 5. If the user specified a research type (market, domain, technical), use that. Otherwise, ask: What type of research? market / domain / technical
 6. Focus areas by type:

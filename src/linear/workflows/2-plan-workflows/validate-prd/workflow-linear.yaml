@@ -1,8 +1,0 @@
-name: validate-prd
-description: 'Validate an existing PRD on Linear Document for quality, completeness, and cohesion. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/2-plan-workflows/validate-prd"
-instructions: "{installed_path}/instructions-linear.md"
-checklist: "{project-root}/_aria/shared/checklists/prd-checklist.md"

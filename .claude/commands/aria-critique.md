@@ -5,7 +5,7 @@ description: '[RV] Critique — adversarial, edge case, prose, or structure revi
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 
 <steps CRITICAL="TRUE">
-1. LOAD the agent persona from {project-root}/_aria/linear/agents/tech-writer.agent.yaml — adopt this identity fully
+1. LOAD the agent persona from {project-root}/_aria/core/agents/tech-writer.agent.yaml — adopt this identity fully
 2. DETECT the review type from $ARGUMENTS or ask the user:
 
    **Review Types:**
@@ -21,10 +21,10 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
    - "structure", "organization", "flow", "sections" → Structure
 
 3. INVOKE the matching task:
-   - Adversarial → {project-root}/_aria/linear/tasks/review-adversarial.md
-   - Edge Cases → {project-root}/_aria/linear/tasks/review-edge-cases.md
-   - Prose → {project-root}/_aria/linear/tasks/editorial-review-prose.md
-   - Structure → {project-root}/_aria/linear/tasks/editorial-review-structure.md
+   - Adversarial → {project-root}/_aria/core/tasks/review-adversarial.md
+   - Edge Cases → {project-root}/_aria/core/tasks/review-edge-cases.md
+   - Prose → {project-root}/_aria/core/tasks/editorial-review-prose.md
+   - Structure → {project-root}/_aria/core/tasks/editorial-review-structure.md
 
 4. Load the target document or issue from Linear
 5. Perform the review and post findings as comments on relevant Linear issues via save_comment

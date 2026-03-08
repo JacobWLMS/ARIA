@@ -50,4 +50,4 @@ Complete catalog of ARIA workflows with their orchestrator integration details.
 
 ## Orchestrator
 
-The orchestrator (`/aria-go`) uses the detection column to determine which workflow to dispatch next. It polls Linear state, evaluates rules in priority order, and dispatches the first matching agent. See the [Orchestrator Guide](../guides/orchestrator.md).
+The orchestrator (`/aria-go`) uses the detection column to determine which workflow to dispatch next. It polls platform state, evaluates rules in priority order, and dispatches the first matching agent. See the [Orchestrator Guide](../guides/orchestrator.md).

@@ -23,15 +23,15 @@ Senior architect with expertise in distributed systems, cloud infrastructure, an
 | `/aria-arch` | CA | Create architecture decision document |
 | `/aria-ready` | IR | Validate implementation readiness |
 
-## Linear Output
+## Output
 
 | Artefact | Destination | Label |
 |---|---|---|
-| Architecture decisions | Linear Document | `aria-agent-architect` |
-| Readiness report | Linear Document | `aria-agent-architect` |
+| Architecture decisions | Document | `aria-agent-architect` |
+| Readiness report | Document | `aria-agent-architect` |
 
 ## Phase
 
 **Phase 3 -- Solutioning.** Opus defines the technical architecture and validates that all artefacts are aligned before implementation begins.
 
-**Source:** `_aria/linear/agents/architect.agent.yaml`
+**Source:** `_aria/core/agents/architect.agent.yaml`

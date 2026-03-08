@@ -1,0 +1,43 @@
+# Base workflow config — inherited by all workflow YAMLs
+# Individual workflows override name/description/author and add unique fields.
+
+# Config source
+config_source: "{project-root}/_aria/core/module.yaml"
+
+# User preferences
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+document_output_language: "{config_source}:document_output_language"
+user_skill_level: "{config_source}:user_skill_level"
+date: system-generated
+
+# Platform-agnostic config
+team_name: "{config_source}:team_name"
+team_id: "{config_source}:team_id"
+platform: "{config_source}:platform"
+key_map_file: "{config_source}:key_map_file"
+agent_label_prefix: "{config_source}:agent_label_prefix"
+status_names: "{config_source}:status_names"
+default_assignee: "{config_source}:default_assignee"
+project_prefix: "{config_source}:project_prefix"
+use_cycles: "{config_source}:use_cycles"
+
+# Platform config
+platform_config: "{project-root}/_aria/platform/platform.yaml"
+
+# Reusable tasks (generic dispatchers)
+context_task: "{project-root}/_aria/core/tasks/read-context.md"
+state_task: "{project-root}/_aria/core/tasks/set-work-item-state.md"
+lock_task: "{project-root}/_aria/core/tasks/lock-work-item.md"
+handoff_task: "{project-root}/_aria/core/tasks/post-handoff.md"
+write_doc_task: "{project-root}/_aria/core/tasks/write-document.md"
+help_task: "{project-root}/_aria/core/tasks/help.md"
+git_task: "{project-root}/_aria/shared/tasks/git-operations.md"
+attach_report_task: "{project-root}/_aria/core/tasks/attach-report.md"
+link_pr_task: "{project-root}/_aria/core/tasks/link-pr-to-work-item.md"
+create_epic_task: "{project-root}/_aria/core/tasks/create-epic.md"
+log_work_task: "{project-root}/_aria/core/tasks/log-work.md"
+create_intake_task: "{project-root}/_aria/core/tasks/create-intake.md"
+
+# Tracking system
+tracking_system: "{config_source}:platform"

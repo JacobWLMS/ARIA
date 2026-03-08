@@ -8,10 +8,10 @@ When installed into a project, ARIA creates this structure:
 
 ```
 _aria/
-├── linear/                          # Linear module
-│   ├── module.yaml                  # Configuration (team, git, autonomy)
-│   ├── .linear-key-map.yaml         # Auto-populated Linear ID lookups
-│   ├── artefact-mapping.yaml        # Where each artefact type goes in Linear
+├── core/                            # Platform-agnostic core
+│   ├── module.yaml                  # Configuration (team, git, autonomy, platform)
+│   ├── .key-map.yaml                # Auto-populated entity ID lookups
+│   ├── artefact-mapping.yaml        # Where each artefact type goes
 │   ├── agents/                      # 12 agent definitions + base critical actions
 │   │   ├── base-critical-actions.yaml
 │   │   ├── analyst.agent.yaml       # Cadence
@@ -38,11 +38,18 @@ _aria/
 │   │   ├── 3-solutioning/
 │   │   ├── 4-implementation/
 │   │   └── 5-release/
-│   ├── tasks/                       # Reusable task procedures
+│   ├── tasks/                       # Core task dispatchers (delegate to platform tasks)
 │   ├── orchestrator/                # State reader + dispatch rules
 │   ├── data/                        # Workflow manifest, key map template
-│   ├── linear-discovery.md          # /aria-setup workflow
+│   ├── discovery.md                 # /aria-setup workflow
 │   └── git-discovery.md             # /aria-git workflow
+├── platforms/                       # Platform-specific implementations
+│   ├── linear/                      # Linear MCP tool wrappers
+│   │   ├── platform.yaml            # Linear tool mapping + terminology
+│   │   └── tasks/                   # Linear-specific task procedures
+│   └── plane/                       # Plane MCP tool wrappers
+│       ├── platform.yaml            # Plane tool mapping + terminology
+│       └── tasks/                   # Plane-specific task procedures
 └── shared/                          # Shared across modules
     ├── templates/                   # 16 document templates
     ├── checklists/                  # 7 validation checklists
@@ -50,11 +57,14 @@ _aria/
     └── tasks/                       # Shared tasks (git operations, elicitation)
 ```
 
+!!! note "Platform Abstraction"
+    Core tasks in `_aria/core/tasks/` are platform-agnostic dispatchers. They read the `platform` setting from `module.yaml` and delegate to the appropriate platform-specific task in `_aria/platforms/{linear,plane}/tasks/`. Agents and workflows never reference MCP tools directly -- they invoke core tasks which handle platform routing.
+
 ## Key Concepts
 
 ### Key Map
 
-`_aria/linear/.linear-key-map.yaml` is an auto-populated lookup file that maps logical names to Linear entity IDs. When an agent creates a Linear Document (e.g., a PRD), it stores the document ID in the key map. Subsequent agents look up that ID instead of re-querying Linear.
+`_aria/core/.key-map.yaml` is an auto-populated lookup file that maps logical names to platform entity IDs. When an agent creates a document (e.g., a PRD), it stores the entity ID in the key map. Subsequent agents look up that ID instead of re-querying the platform.
 
 ### Agent Locking
 
@@ -70,7 +80,7 @@ Handoff comments are structured with mandatory fields:
 
 - **decisions** -- key decisions made during the workflow (at least 1)
 - **open_questions** -- unresolved items for the next agent
-- **artefact_refs** -- Linear entity IDs consulted or created (at least 1)
+- **artefact_refs** -- platform entity IDs consulted or created (at least 1)
 
 ### Workflow Inheritance
 
@@ -90,20 +100,17 @@ Workflow instructions reference these with `{include: path}` directives to avoid
 
 When code review (Pitch) fails a story, it transitions back to In Progress and posts findings. Riff picks up the story again, addresses findings, and re-submits for review. This loop continues until review passes.
 
-## Linear ↔ BMAD Differences
+## Platform ↔ BMAD Differences
 
 ARIA is adapted from the [BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD). Key differences:
 
 | Aspect | BMAD-METHOD | ARIA |
 |---|---|---|
-| Output destination | Local markdown files | Linear entities (Documents, Issues, Projects) |
-| Tracking | Manual or external | Linear-native (states, labels, comments) |
-| Transitions | Jira transition IDs | Linear state names (direct) |
+| Output destination | Local markdown files | Platform entities (Documents, Work Items, Epics) |
+| Tracking | Manual or external | Platform-native (states, labels/properties, comments) |
+| Transitions | Jira transition IDs | Platform state names |
 | Agent names | Human names (Mary, John) | Musical names (Cadence, Maestro) |
-| Epic concept | Jira Epic issue type | Linear Project |
-| Sprint concept | Jira Sprint | Linear Cycle |
-| Story points | Custom field or label | Linear native `estimate` field |
-| Dependencies | Issue links | Linear `blocks`/`blockedBy` relations |
-| Wiki/Docs | Confluence pages | Linear Documents |
-| Handoff mechanism | File-based | Label + structured comment |
+| Platforms | Jira + Confluence | Plane or Linear (selectable) |
+| Wiki/Docs | Confluence pages | Platform documents (Plane pages / Linear documents) |
+| Handoff mechanism | File-based | Label/property + structured comment |
 | Workflow config | Full YAML per workflow | Inherited from base + unique overrides |

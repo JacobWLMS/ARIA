@@ -1,7 +1,0 @@
-name: data-pipeline
-description: 'Data pipeline design — ETL/ELT, sources, transforms, scheduling. Output to Linear Document.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/3-solutioning/data-pipeline"
-instructions: "{installed_path}/instructions-linear.md"

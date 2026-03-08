@@ -1,0 +1,8 @@
+name: code-review
+description: 'Run code review with results posted to the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/code-review"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/code-review-checklist.md"

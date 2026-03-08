@@ -1,0 +1,7 @@
+name: qa-testing
+description: 'Generate tests for reviewed stories with results posted to the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/qa-testing"
+instructions: "{installed_path}/instructions.md"

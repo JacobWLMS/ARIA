@@ -1,0 +1,686 @@
+# ARIA Artefact Output Mapping
+# Authoritative reference for how each ARIA artefact maps to platform operations.
+# Agents consult this file to determine which task to invoke for each output.
+# All output goes exclusively to the platform — no local file writes.
+
+# ============================================================================
+# PHASE 1 — ANALYSIS (Analyst Agent / Cadence)
+# ============================================================================
+
+phase_1_analysis:
+
+  research_report:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Research: {research_type}"
+      content: "{report_body_markdown}"
+      project: "{project_id}"       # optional, link to project if exists
+    labels: []                       # documents do not support labels
+    key_map_id: "documents.research_{type}"
+    notes: "One document per research type (market, domain, technical)"
+
+  product_brief:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Product Brief"
+      content: "{brief_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.brief"
+    notes: "Input document for PRD creation. Created once, updated if revised."
+
+  brainstorming:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Brainstorming: {session_topic}"
+      content: "{brainstorming_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.brainstorming"
+    notes: "Divergent ideation session. Ideas organized by theme/category with convergence picks."
+
+  project_context:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Project Context"
+      content: "{project_context_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.project_context"
+    local_copy: "project-context.md"
+    notes: "Lean LLM-optimized codebase summary. Also saved locally for fast agent access during implementation."
+
+  project_documentation:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Documentation"
+      content: "{documentation_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.documentation"
+    notes: "Brownfield project documentation. Scans existing codebase and produces structured docs."
+
+# ============================================================================
+# PHASE 2 — PLANNING (PM Agent / Maestro + UX Designer / Lyric)
+# ============================================================================
+
+phase_2_planning:
+
+  prd:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - PRD"
+      content: "{prd_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.prd"
+    project_linking:
+      description: "After creating PRD document, link it to each epic's description"
+      task: "tasks/create-epic.md"
+      parameters:
+        id: "{project_id}"
+        description: "{existing_description}\n\n---\n## Related Documents\n- PRD: {document_title}"
+
+  epics:
+    destination: epic
+    description: "Each Epic heading becomes an epic"
+    creation_flow:
+      - step: 1
+        action: "Parse epic headings from markdown"
+        pattern: "## Epic {N}: {title}"
+      - step: 2
+        action: "Create epic"
+        task: "tasks/create-epic.md"
+        parameters:
+          name: "Epic {N}: {title}"
+          description: "{epic_goal_and_fr_coverage}"
+          addTeams: ["{team_id}"]
+          state: "planned"
+          labels: []
+      - step: 3
+        action: "Store project ID in .key-map.yaml"
+        key_map_id: "projects.epic-{N}: {created_project_id}"
+
+  stories:
+    destination: work_item
+    description: "Each Story under an Epic becomes a work item linked to the parent epic"
+    creation_flow:
+      - step: 1
+        action: "Parse story entries from epic section"
+        pattern: "### Story {N}.{M}: {title}"
+      - step: 2
+        action: "Create work item"
+        task: "platform-specific"
+        parameters:
+          title: "Story {N}.{M}: {title}"
+          team: "{team_name}"
+          description: |
+            **User Story:**
+            As a {user_type}, I want {capability}, so that {value_benefit}.
+
+            **Acceptance Criteria:**
+            {acceptance_criteria_given_when_then}
+          project: "{project_id}"
+          state: "Backlog"
+          labels:
+            - "aria-agent-pm"
+    assignee_resolution:
+      condition: "If {default_assignee} is configured (non-empty)"
+      action: "Resolve username via platform API, pass user ID as assignee param"
+      task: "tasks/read-context.md"
+      parameters:
+        query: "{default_assignee}"
+      result_field: "assignee: {resolved_user_id}"
+    project_linking:
+      description: "Work items are linked to epics via the project field"
+      parameter: "project: {parent_project_id}"
+      - step: 3
+        action: "Store issue ID in .key-map.yaml"
+        key_map_id: "issues.{N}-{M}-{kebab_title}: {created_issue_id}"
+
+  prd_validation:
+    destination: work_item_comment
+    description: "Validation findings posted as comments on relevant work items"
+    execution_flow:
+      - step: 1
+        action: "Find PRD document via document query"
+        task: "tasks/read-context.md"
+        parameters:
+          query: "{project_name} - PRD"
+      - step: 2
+        action: "Validate PRD against prd-checklist"
+      - step: 3
+        action: "Post findings as comment on a representative work item"
+        task: "tasks/post-handoff.md"
+      - step: 4
+        action: "Post verdict (PASS/PASS WITH NOTES/NEEDS REVISION)"
+        task: "tasks/post-handoff.md"
+    notes: "Read-only on PRD document content. Findings posted as work item comments."
+
+  prd_edit:
+    destination: document
+    description: "Updates existing PRD document content based on feedback"
+    execution_flow:
+      - step: 1
+        action: "Find PRD document via key map or document list"
+        task: "tasks/read-context.md"
+      - step: 2
+        action: "Load PRD content and any feedback"
+        task: "tasks/read-context.md"
+      - step: 3
+        action: "Make targeted edits to the PRD"
+        task: "tasks/write-document.md"
+    notes: "Preserves PRD structure. Only modifies sections that need updating."
+
+  ux_design:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - UX Design"
+      content: "{ux_design_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.ux"
+    project_linking:
+      description: "Add UX Design reference to each epic's description"
+      task: "tasks/create-epic.md"
+      parameters:
+        id: "{project_id}"
+        description: "{existing_description}\n\n---\n## Related Documents\n- UX Design: {document_title}"
+
+# ============================================================================
+# PHASE 3 — SOLUTIONING (Architect Agent / Opus)
+# ============================================================================
+
+phase_3_solutioning:
+
+  architecture_decision_doc:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Architecture"
+      content: "{architecture_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.architecture"
+    project_linking:
+      description: "Add Architecture reference to relevant epic descriptions"
+      task: "tasks/create-epic.md"
+      parameters:
+        id: "{project_id}"
+        description: "{existing_description}\n\n---\n## Related Documents\n- Architecture: {document_title}"
+
+  readiness_report:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Implementation Readiness Report"
+      content: "{readiness_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.readiness"
+    feedback_mechanism:
+      description: "Posts comments on relevant work items for specific findings"
+      task: "tasks/post-handoff.md"
+      notes: "Creates targeted feedback visible on source work items, enabling tighter feedback loops"
+    notes: "Cross-references PRD, architecture, and epics/work items for completeness check"
+
+  # --- Security Engineer (Forte) ---
+
+  threat_model:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Threat Model"
+      content: "{threat_model_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.threat_model"
+    notes: "STRIDE-based threat analysis. Created after architecture, reviewed by Architect."
+
+  security_audit:
+    destination: work_item_comment
+    description: "Security audit findings posted as structured comments on relevant work items"
+    execution_flow:
+      - step: 1
+        action: "Scan codebase for vulnerability patterns"
+      - step: 2
+        action: "Check dependency manifests for known vulnerabilities"
+      - step: 3
+        action: "Post findings as structured comments (severity, CWE, evidence, fix)"
+        task: "platform-specific"
+    notes: "Each finding includes severity, CWE ID, file:line, evidence, and recommended fix"
+
+  security_review:
+    destination: work_item_comment
+    description: "Security architecture review findings posted as work item comments"
+    execution_flow:
+      - step: 1
+        action: "Load architecture document from platform"
+        task: "tasks/read-context.md"
+      - step: 2
+        action: "Review for auth, data protection, network security, supply chain"
+      - step: 3
+        action: "Post findings as work item comments"
+        task: "platform-specific"
+    notes: "Reviews architecture document for security concerns. Posts findings on relevant work items."
+
+  # --- Data Engineer (Harmony) ---
+
+  data_model:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Data Model"
+      content: "{data_model_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.data_model"
+    notes: "ERD and schema design. Includes Mermaid diagrams, indexes, constraints."
+
+  data_pipeline:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Data Pipeline Design: {pipeline_name}"
+      content: "{pipeline_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.data_pipeline"
+    notes: "ETL/ELT pipeline design with sources, transforms, scheduling."
+
+  data_migration:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Data Migration Plan: {migration_name}"
+      content: "{migration_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.data_migration"
+    notes: "Migration strategy with rollback procedure and data validation."
+
+# ============================================================================
+# PHASE 4 — IMPLEMENTATION (SM / Tempo, Dev / Riff, QA / Pitch)
+# ============================================================================
+
+phase_4_implementation:
+
+  sprint:
+    destination: sprint
+    description: "Sprint planning via platform sprints/cycles"
+    execution_flow:
+      - step: 1
+        action: "Find active sprint"
+        task: "tasks/read-context.md"
+        parameters:
+          teamId: "{team_id}"
+          type: "current"
+      - step: 2
+        action: "Assign work items to the sprint"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          cycle: "{cycle_id}"
+      - step: 3
+        action: "If no current sprint, guide user to create one in the platform UI"
+    notes: "Sprints must be pre-created in the platform. ARIA assigns work items to existing sprints."
+
+  story_preparation:
+    destination: work_item
+    description: "SM prepares story by enriching the work item description with dev context"
+    execution_flow:
+      - step: 1
+        action: "Look up work item from key map"
+        lookup: "issues.{story-key}"
+      - step: 2
+        action: "Update work item description with dev context"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          description: "{enriched_story_description}"
+      - step: 3
+        action: "Add dev notes as comment"
+        task: "platform-specific"
+        parameters:
+          issueId: "{issue_id}"
+          body: "{dev_notes_and_references}"
+      - step: 4
+        action: "Set state to ready"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.todo}"
+
+  story_tasks:
+    destination: work_item
+    description: "Each task in the story becomes a sub-work-item"
+    creation_flow:
+      - step: 1
+        action: "Parse tasks from story content"
+      - step: 2
+        action: "Create sub-work-item for each task"
+        task: "platform-specific"
+        parameters:
+          title: "{task_description}"
+          team: "{team_name}"
+          description: "{task_details_and_ac_refs}"
+          parentId: "{parent_issue_id}"
+          project: "{project_id}"
+          labels:
+            - "aria-agent-sm"
+
+  dev_story_execution:
+    destination: work_item
+    description: "Dev agent transitions work items and posts completion notes"
+    execution_flow:
+      - step: 1
+        action: "Find next work item to implement"
+        task: "tasks/read-context.md"
+        parameters:
+          team: "{team_name}"
+          state: "{status_names.todo}"
+          limit: 1
+          orderBy: "priority"
+      - step: 2
+        action: "Lock the work item"
+        invoke_task: "lock-issue"
+        parameters:
+          issue_id: "{issue_id}"
+          action: "lock"
+      - step: 3
+        action: "Set state to In Progress"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.in_progress}"
+      - step: 4
+        action: "Post completion record as comment"
+        task: "platform-specific"
+        parameters:
+          issueId: "{issue_id}"
+          body: |
+            **Dev Agent Record**
+            - Agent Model: {agent_model}
+            - Files Changed: {file_list}
+            - Completion Notes: {completion_notes}
+      - step: 5
+        action: "Link PR if git_enabled"
+        invoke_task: "link-pr-to-issue"
+        parameters:
+          issue_id: "{issue_id}"
+          pr_url: "{pr_url}"
+          pr_title: "{pr_title}"
+      - step: 6
+        action: "Set state to In Review"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.in_review}"
+      - step: 7
+        action: "Unlock the work item"
+        invoke_task: "lock-issue"
+        parameters:
+          issue_id: "{issue_id}"
+          action: "unlock"
+
+  code_review:
+    destination: work_item_comment
+    description: "Code review findings posted as comment on the work item"
+    execution_flow:
+      - step: 1
+        action: "Post review findings"
+        task: "platform-specific"
+        parameters:
+          issueId: "{issue_id}"
+          body: "{code_review_markdown}"
+      - step: 2
+        action: "If review passes, set state to Done"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.done}"
+      - step: 3
+        action: "If review fails, set state back to In Progress and add review-failed label"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.in_progress}"
+          labels: [{existing_labels}, "aria-review-failed"]
+
+  qa_testing:
+    destination: work_item
+    description: "QA test results posted as comments, reports attached"
+    execution_flow:
+      - step: 1
+        action: "Post test findings as comment"
+        task: "platform-specific"
+        parameters:
+          issueId: "{issue_id}"
+          body: "{qa_findings_markdown}"
+      - step: 2
+        action: "Attach test/coverage reports"
+        invoke_task: "attach-report"
+        parameters:
+          issue_id: "{issue_id}"
+          file_path: "{report_path}"
+          filename: "{report_filename}"
+          content_type: "{content_type}"
+      - step: 3
+        action: "Apply tested label"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          labels: [{existing_labels}, "aria-tested"]
+
+  retrospective:
+    destination: document
+    description: "Project retrospective findings posted to document, summary on epic work items"
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Retrospective: {project_epic_title}"
+      content: "{retrospective_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.retrospective_{project_id}"
+    notes: "Also posts summary comment on representative epic work item and updates epic state to completed if all work items are done"
+
+  correct_course:
+    destination: work_item
+    description: "Course correction changes posted as comments on affected work items"
+    execution_flow:
+      - step: 1
+        action: "Assess current sprint state"
+        task: "tasks/read-context.md"
+        parameters:
+          team: "{team_name}"
+          cycle: "{current_cycle_id}"
+      - step: 2
+        action: "Post Change Proposal as comment on affected work items"
+        task: "platform-specific"
+      - step: 3
+        action: "Create new remediation work items if needed"
+        task: "platform-specific"
+      - step: 4
+        action: "Update existing work item descriptions/ACs"
+        task: "platform-specific"
+
+  quick_spec:
+    destination: work_item
+    description: "Single work item with embedded tech spec — skips epic structure"
+    creation_flow:
+      - step: 1
+        action: "Create work item with tech spec in description"
+        task: "platform-specific"
+        parameters:
+          title: "{spec_title}"
+          team: "{team_name}"
+          description: "{full_tech_spec_markdown}"
+          labels:
+            - "aria-quick"
+    notes: "One-off tasks without full planning. No epic required."
+
+  quick_dev:
+    destination: work_item
+    description: "Implements a quick-spec work item directly — skips code review"
+    execution_flow:
+      - step: 1
+        action: "Find quick-spec work item"
+        task: "tasks/read-context.md"
+        parameters:
+          team: "{team_name}"
+          label: "aria-quick"
+          state: "{status_names.todo}"
+      - step: 2
+        action: "Implement and set state to Done (skips Review)"
+        task: "platform-specific"
+        parameters:
+          id: "{issue_id}"
+          state: "{status_names.done}"
+    notes: "Fast path for one-off tasks. Transitions directly to Done."
+
+# ============================================================================
+# PHASE 5 — RELEASE (DevOps / Coda)
+# ============================================================================
+
+phase_5_release:
+
+  release_plan:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Release Plan: v{version}"
+      content: "{release_plan_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.release_plan"
+    milestone_linking:
+      description: "Create or update a milestone for the release"
+      task: "platform-specific"
+      parameters:
+        name: "v{version}"
+        description: "{release_summary}"
+        targetDate: "{target_date}"
+    notes: "Version planning, changelog, deployment checklist. Links to Milestone."
+
+  cicd_design:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - CI/CD Pipeline Design"
+      content: "{cicd_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.cicd_design"
+    notes: "Pipeline stages, quality gates, environment strategy."
+
+  deploy_strategy:
+    destination: document
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Deployment Strategy"
+      content: "{deploy_body_markdown}"
+      project: "{project_id}"
+    labels: []
+    key_map_id: "documents.deploy_strategy"
+    notes: "Deployment approach (blue-green, canary, rolling), health checks, rollback."
+
+# ============================================================================
+# CROSS-AGENT COMMUNICATION
+# ============================================================================
+
+cross_agent:
+
+  adversarial_review:
+    destination: document_or_work_item
+    description: "Cynical review findings posted as work item comments"
+    task: "tasks/review-adversarial.md"
+    execution_flow:
+      - step: 1
+        action: "Load target (document or work item)"
+        tasks: ["tasks/read-context.md"]
+      - step: 2
+        action: "Review content critically, find 10+ issues"
+      - step: 3
+        action: "Post findings as work item comment"
+        task: "platform-specific"
+    notes: "Can target any document or work item. Invoked standalone or by other workflows."
+
+  editorial_review_prose:
+    destination: work_item_comment
+    description: "Prose quality review posted as work item comment"
+    task: "tasks/editorial-review-prose.md"
+    execution_flow:
+      - step: 1
+        action: "Load document"
+        task: "tasks/read-context.md"
+      - step: 2
+        action: "Review prose clarity, tone, communication"
+      - step: 3
+        action: "Post three-column table (Location/Issue/Suggested Fix) as work item comment"
+        task: "platform-specific"
+
+  editorial_review_structure:
+    destination: work_item_comment
+    description: "Document structure review posted as work item comment"
+    task: "tasks/editorial-review-structure.md"
+    execution_flow:
+      - step: 1
+        action: "Load document"
+        task: "tasks/read-context.md"
+      - step: 2
+        action: "Analyze organization, propose reorganization"
+      - step: 3
+        action: "Post findings with [NEW]/[CUT]/[MOVED]/[MERGED] annotations as work item comment"
+        task: "platform-specific"
+
+  edge_case_review:
+    destination: work_item_comment
+    description: "Edge case findings posted as comment on the relevant work item"
+    task: "tasks/review-edge-cases.md"
+    execution_flow:
+      - step: 1
+        action: "Walk branching paths in referenced code"
+      - step: 2
+        action: "Post findings with file:line references as work item comment"
+        task: "platform-specific"
+    notes: "Method-driven, not attitude-driven. Orthogonal coverage to adversarial review."
+
+  party_mode:
+    destination: document
+    description: "Multi-agent discussion summary optionally posted to document"
+    task: "tasks/write-document.md"
+    parameters:
+      title: "{project_name} - Party Mode: {topic}"
+      content: "{discussion_summary_markdown}"
+    labels: []
+    notes: "Conversation-only by default. Optionally exports summary to document."
+
+  handoff_notification:
+    destination: work_item_comment
+    description: "Structured handoff comment posted on work items when work passes between agents"
+    task: "tasks/post-handoff.md"
+    label_applied: "aria-handoff-{target_agent}"
+    notes: "Orchestrator scans for aria-handoff-* labels to detect pending handoffs"
+
+  lock:
+    destination: work_item_label
+    description: "Agent lock/unlock via label on work items"
+    task: "tasks/lock-issue.md"
+    tasks: ["tasks/read-context.md", "platform-specific", "tasks/post-handoff.md"]
+    label: "{lock_label}"
+    notes: "Prevents multiple agents from working on the same work item simultaneously"
+
+  dashboard:
+    destination: document
+    description: "Project status dashboard as a document"
+    task: "tasks/update-project-dashboard.md"
+    tasks: ["tasks/read-context.md", "tasks/create-epic.md", "tasks/write-document.md"]
+    key_map_id: "documents.dashboard"
+    notes: "Idempotent — updates existing dashboard document if one exists"

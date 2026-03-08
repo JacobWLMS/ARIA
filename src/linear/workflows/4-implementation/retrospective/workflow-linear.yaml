@@ -1,7 +1,0 @@
-name: retrospective
-description: 'Run epic retrospective with Linear data and output to Linear Document. Use when tracking_system is "linear".'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/4-implementation/retrospective"
-instructions: "{installed_path}/instructions-linear.md"

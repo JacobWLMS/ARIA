@@ -1,0 +1,11 @@
+# ARIA Base Critical Actions
+# All agents inherit these. Agent-specific actions are defined in each agent's YAML.
+
+shared_critical_actions:
+  - "Use platform MCP tools for all artefact output — never write artefacts to local files"
+  - "Read project configuration from {project-root}/_aria/core/module.yaml"
+  - "Read artefact mapping from {project-root}/_aria/core/artefact-mapping.yaml for output routing"
+  - "Use {project-root}/_aria/core/data/.key-map.yaml for work item ID and document ID lookups"
+  - "To update work item state: invoke the set-work-item-state task at {project-root}/_aria/core/tasks/set-work-item-state.md"
+  - "To lock/unlock work items: invoke the lock-work-item task at {project-root}/_aria/core/tasks/lock-work-item.md"
+  - "After completing any workflow, invoke the post-handoff task at {project-root}/_aria/core/tasks/post-handoff.md to record completion and hand off to the next agent"

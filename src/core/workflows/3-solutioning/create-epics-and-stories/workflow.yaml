@@ -1,0 +1,17 @@
+name: create-epics-and-stories
+description: 'Create projects (epics) and issues (stories) through collaborative analysis, then output to the platform.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/3-solutioning/create-epics-and-stories"
+instructions: "{installed_path}/steps/step-01-validate-prerequisites.md"
+
+# Step files (executed sequentially)
+step_01: "{installed_path}/steps/step-01-validate-prerequisites.md"
+step_02: "{installed_path}/steps/step-02-design-epics.md"
+step_03: "{installed_path}/steps/step-03-create-stories.md"
+step_04: "{installed_path}/steps/step-04-platform-output.md"
+
+# Shared resources
+epics_template: "{project-root}/_aria/shared/templates/epics-template.md"
+story_template: "{project-root}/_aria/shared/templates/story-template.md"

@@ -1,7 +1,0 @@
-name: ci-cd-design
-description: 'CI/CD pipeline design — stages, triggers, quality gates. Output to Linear Document.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/5-release/ci-cd-design"
-instructions: "{installed_path}/instructions-linear.md"

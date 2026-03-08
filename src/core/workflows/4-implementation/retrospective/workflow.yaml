@@ -1,0 +1,7 @@
+name: retrospective
+description: 'Run epic retrospective with platform data and output to document.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/4-implementation/retrospective"
+instructions: "{installed_path}/instructions.md"

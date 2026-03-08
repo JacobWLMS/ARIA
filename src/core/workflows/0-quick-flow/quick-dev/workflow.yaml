@@ -1,0 +1,8 @@
+name: quick-dev
+description: 'Implement a quick-spec issue directly, skipping code review.'
+author: "ARIA"
+inherits: "{project-root}/_aria/core/workflows/base-workflow.yaml"
+
+installed_path: "{project-root}/_aria/core/workflows/0-quick-flow/quick-dev"
+instructions: "{installed_path}/instructions.md"
+checklist: "{project-root}/_aria/shared/checklists/dev-story-checklist.md"

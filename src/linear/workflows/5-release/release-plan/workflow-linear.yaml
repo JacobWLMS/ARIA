@@ -1,7 +1,0 @@
-name: release-plan
-description: 'Release planning — versioning, changelog, milestone management. Output to Linear Document and Milestone.'
-author: "ARIA"
-inherits: "{project-root}/_aria/linear/workflows/base-workflow.yaml"
-
-installed_path: "{project-root}/_aria/linear/workflows/5-release/release-plan"
-instructions: "{installed_path}/instructions-linear.md"

@@ -7,5 +7,5 @@ Detailed reference documentation for ARIA's configuration, tools, and resources.
 - **[Task Procedures](tasks.md)** -- reusable task procedures
 - **[Templates](templates.md)** -- document templates
 - **[Checklists](checklists.md)** -- validation checklists
-- **[Artefact Mapping](artefact-mapping.md)** -- where each artefact is stored in Linear
+- **[Artefact Mapping](artefact-mapping.md)** -- where each artefact is stored on the platform
 - **[Workflow Manifest](workflow-manifest.md)** -- complete workflow catalog
