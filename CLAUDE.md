@@ -67,7 +67,7 @@ Type `/aria` in Claude Code and use autocomplete to browse. Run `/aria-help` for
 - **Platform-specific tasks:** `_aria/platform/tasks/`
 - **Platform config:** `_aria/platform/platform.yaml`
 - **Platform orchestrator:** `_aria/platform/orchestrator/`
-- **Platform marker:** `_aria/platform` (text file: "linear" or "plane")
+- **Platform marker:** `_aria/.platform` (text file: "linear" or "plane")
 - **Shared templates:** `_aria/shared/templates/`
 - **Shared checklists:** `_aria/shared/checklists/`
 - **Version:** `_aria/core/VERSION`
@@ -87,7 +87,7 @@ Sprint Retrospective (velocity tracking) -> Next Sprint
 ## Critical Rules
 
 1. **All output to platform** -- never write artefacts to local files
-2. **Platform detection** -- read `_aria/platform` marker file to determine the active platform (linear or plane) and load the corresponding platform.yaml
+2. **Platform detection** -- read `_aria/.platform` marker file to determine the active platform (linear or plane) and load the corresponding platform.yaml
 3. **Team/workspace required** -- all platform MCP tool calls need the team or workspace name from module.yaml
 4. **Lock before work** -- invoke `lock-work-item` task before modifying any issue
 5. **State changes** -- use the platform-appropriate method for state transitions (Linear: `save_issue` with `state`; Plane: state update API)

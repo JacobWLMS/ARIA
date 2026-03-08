@@ -5,7 +5,7 @@ description: 'Discover platform team, statuses, and configure labels for your wo
 IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 
 <steps CRITICAL="TRUE">
-1. READ the platform identifier from {project-root}/_aria/platform (e.g., "linear", "jira", "plane")
+1. READ the platform identifier from {project-root}/_aria/.platform (e.g., "linear", "plane")
 2. READ and FOLLOW the platform-specific discovery workflow: {project-root}/_aria/platform/discovery.md
 3. Discover teams via the platform MCP, let user select
 4. Map issue statuses to ARIA abstract statuses

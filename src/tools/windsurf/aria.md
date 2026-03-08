@@ -94,13 +94,13 @@ Read the agent YAML for the persona, then follow the instructions file. All path
 - **Key map:** `_aria/core/data/.key-map.yaml`
 - **Core tasks:** `_aria/core/tasks/`
 - **Platform tasks/config:** `_aria/platform/`
-- **Platform marker:** `_aria/platform` ("linear" or "plane")
+- **Platform marker:** `_aria/.platform` ("linear" or "plane")
 - **Templates/checklists:** `_aria/shared/`
 
 ## Critical Rules
 
 1. All output to platform -- never write artefacts to local files
-2. Read `_aria/platform` marker to determine active platform (linear or plane)
+2. Read `_aria/.platform` marker to determine active platform (linear or plane)
 3. All MCP tool calls need team/workspace name from module.yaml
 4. Invoke `lock-work-item` task before modifying any issue
 5. Invoke `post-handoff` task with `context_details` at workflow completion

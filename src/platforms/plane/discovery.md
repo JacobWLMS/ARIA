@@ -52,7 +52,11 @@ Suggested colors:
 
 ### Step 3 — Create ARIA custom properties
 
-<action>Call `list_work_item_properties` to check for existing ARIA properties</action>
+> **Known issue:** The Plane MCP tools `list_work_item_properties` and `create_work_item_property` have a serialization bug — the API call succeeds but the MCP response fails with `"None is not of type 'string'"`. **Workaround:** If you get this error after calling `create_work_item_property`, the property WAS created successfully. Continue to the next property. For `list_work_item_properties`, if it errors, skip the existence check and create all properties (duplicates will error harmlessly).
+
+> **Important:** Create properties ONE AT A TIME (sequentially, not in parallel). When one parallel MCP call errors, all concurrent calls are cancelled. Always wait for each property creation to complete before starting the next.
+
+<action>Call `list_work_item_properties` to check for existing ARIA properties (if this errors due to the serialization bug, proceed to create all properties)</action>
 
 Create these properties if they don't exist via `create_work_item_property`:
 
@@ -81,7 +85,14 @@ Create these properties if they don't exist via `create_work_item_property`:
 
 <action>Record all property IDs in module.yaml</action>
 
-### Step 4 — Create ARIA work item types
+### Step 4 — Enable and create ARIA work item types
+
+> **Prerequisite:** Work item types must be enabled as a project feature before they can be created. This is off by default in new Plane projects.
+
+<action>Call `get_project_features` to check if work item types are enabled</action>
+<action>If `is_work_item_type_enabled` is false, call `update_project_features` with `is_work_item_type_enabled: true`</action>
+
+> **Important:** Create work item types ONE AT A TIME (sequentially). Same parallel cancellation issue as with properties above.
 
 <action>Call `list_work_item_types` to check for existing types</action>
 

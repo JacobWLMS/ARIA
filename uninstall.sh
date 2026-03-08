@@ -32,7 +32,7 @@ fi
 echo -e "  ${YELLOW}This will remove:${RESET}"
 [ -d "$TARGET_DIR/_aria/core" ] && echo "    - _aria/core/ directory (agents, workflows, config)"
 [ -d "$TARGET_DIR/_aria/platform" ] && echo "    - _aria/platform/ directory (platform-specific content)"
-[ -f "$TARGET_DIR/_aria/platform" ] && echo "    - _aria/platform marker file"
+[ -f "$TARGET_DIR/_aria/.platform" ] && echo "    - _aria/.platform marker file"
 [ -d "$TARGET_DIR/_aria/shared" ] && echo "    - _aria/shared/ directory (templates, checklists, data)"
 [ -d "$TARGET_DIR/_aria/linear" ] && echo "    - _aria/linear/ directory (legacy v1.x)"
 [ -d "$TARGET_DIR/_aria" ] && echo "    - _aria/ directory"

@@ -7,7 +7,7 @@ IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
 <steps CRITICAL="TRUE">
 1. READ the installed ARIA version from {project-root}/_aria/core/VERSION (if missing, report "version unknown")
 
-2. READ the platform identifier from {project-root}/_aria/platform (e.g., "linear", "jira", "plane")
+2. READ the platform identifier from {project-root}/_aria/.platform (e.g., "linear", "plane")
 
 3. READ project configuration from {project-root}/_aria/core/module.yaml
 

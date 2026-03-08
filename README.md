@@ -227,7 +227,7 @@ src/
 └── shared/                  # Templates, checklists, data files
 ```
 
-**How it works:** Agents invoke generic task dispatchers in `core/tasks/`. Each dispatcher reads the platform marker file and delegates to the corresponding implementation in `platforms/{linear,plane}/tasks/`. Platform-specific files contain the actual MCP tool calls.
+**How it works:** Agents invoke generic task dispatchers in `core/tasks/`. Each dispatcher reads the `_aria/.platform` marker file and delegates to the corresponding implementation in `platforms/{linear,plane}/tasks/`. Platform-specific files contain the actual MCP tool calls.
 
 ---
 

@@ -130,8 +130,8 @@ fi
 # --- Platform selection ---
 # Check if an existing install has a platform marker
 EXISTING_PLATFORM=""
-if [ -f "$TARGET_DIR/_aria/platform" ]; then
-  EXISTING_PLATFORM="$(cat "$TARGET_DIR/_aria/platform" | tr -d '[:space:]')"
+if [ -f "$TARGET_DIR/_aria/.platform" ]; then
+  EXISTING_PLATFORM="$(cat "$TARGET_DIR/_aria/.platform" | tr -d '[:space:]')"
 fi
 
 echo -e "  ${BOLD}Select your platform:${RESET}"
@@ -267,7 +267,7 @@ rm -rf "$PLATFORM_DIR/"*
 cp -r "$SCRIPT_DIR/src/platforms/$PLATFORM/"* "$PLATFORM_DIR/"
 
 # Write platform marker file
-echo "$PLATFORM" > "$TARGET_DIR/_aria/platform"
+echo "$PLATFORM" > "$TARGET_DIR/_aria/.platform"
 
 # Copy VERSION file
 echo -e "  ${BOLD}[5/8]${RESET} Writing version file..."
@@ -388,7 +388,7 @@ echo "  Installed:"
 echo "    - Shared content in _aria/shared/ (templates, checklists, data)"
 echo "    - Core module in _aria/core/"
 echo "    - $PLATFORM_LABEL platform in _aria/platform/"
-echo "    - Platform marker: _aria/platform ($PLATFORM)"
+echo "    - Platform marker: _aria/.platform ($PLATFORM)"
 case "$AI_TOOL" in
   claude-code)
     echo "    - CLAUDE.md with ARIA context"
