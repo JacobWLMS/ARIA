@@ -143,7 +143,7 @@ fi
 echo "    [1] Plane (recommended)"
 echo "    [2] Linear"
 echo ""
-read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE
+read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE < /dev/tty
 echo ""
 echo ""
 
