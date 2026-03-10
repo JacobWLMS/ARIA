@@ -1,6 +1,17 @@
-# ARIA
+<div align="center" markdown>
+
+```
+ █████╗ ██████╗ ██╗ █████╗
+██╔══██╗██╔══██╗██║██╔══██╗
+███████║██████╔╝██║███████║
+██╔══██║██╔══██╗██║██╔══██║
+██║  ██║██║  ██║██║██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
+```
 
 **Multi-platform agentic development with musical-themed AI agents.**
+
+</div>
 
 ARIA (Agentic Reasoning & Implementation Architecture) brings 12 AI agent personas to your project management platform. Instead of writing artefacts to local files, agents create and manage Epics, Stories, Sprints, Milestones, Releases, and Documents across Plane or Linear via native MCP tools.
 

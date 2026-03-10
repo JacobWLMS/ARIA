@@ -71,37 +71,6 @@ The AI will clone ARIA, ask you a few setup questions (platform, team name), det
     !!! note
         PowerShell and CMD are not supported for installation. Once installed, ARIA runs entirely through your AI coding tool.
 
-The installer renders a fancy welcome screen, prompts for your platform, and shows progress:
-
-```
-   █████╗ ██████╗ ██╗ █████╗
-  ██╔══██╗██╔══██╗██║██╔══██╗
-  ███████║██████╔╝██║███████║
-  ██╔══██║██╔══██╗██║██╔══██║
-  ██║  ██║██║  ██║██║██║  ██║
-  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
-
-  Agentic Reasoning & Implementation Architecture  v2.0.0
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  ✓  Created directories
-  ✓  Installed shared content → _aria/shared/
-  ✓  Installed core module → _aria/core/
-  ✓  Installed Plane platform → _aria/platform/
-  ✓  Wrote version file (v2.0.0)
-  ✓  Updated CLAUDE.md
-  ✓  Installed 38 slash commands → .claude/commands/
-  ✓  Checked .gitignore
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  ✦ Installation complete!  v2.0.0
-
-  ♪ "The conductor has taken the podium."
-    Happy building! ✦
-```
-
 ## AI Tool Selection
 
 The installer defaults to Claude Code. Use `--tool` to install for a different AI coding tool:
