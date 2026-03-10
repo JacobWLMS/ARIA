@@ -1,12 +1,10 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo.svg">
-  <img alt="ARIA" src="docs/assets/logo.svg" width="480">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo.png">
+  <img alt="ARIA" src="docs/assets/logo.png" width="480">
 </picture>
-
-<br>
 
 Multi-platform agentic development with musical-themed AI agents for [Claude Code](https://claude.ai/claude-code).
 

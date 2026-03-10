@@ -1,6 +1,6 @@
 <div align="center" markdown>
 
-<img alt="ARIA" src="assets/logo.svg" width="480">
+<img alt="ARIA" src="assets/logo.png" width="480">
 
 **Multi-platform agentic development with musical-themed AI agents.**
 
