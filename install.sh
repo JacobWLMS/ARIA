@@ -15,7 +15,9 @@ set -euo pipefail
 #
 # Tools: claude-code (default), cursor, windsurf, cline, all
 
+# ─────────────────────────────────────────────────────
 # Shell compatibility check
+# ─────────────────────────────────────────────────────
 if [ -z "${BASH_VERSION:-}" ]; then
   echo ""
   echo "  Error: ARIA requires a bash-compatible shell."
@@ -35,7 +37,9 @@ REPO_URL="https://github.com/JacobWLMS/ARIA.git"
 CLEANUP_TEMP=""
 AI_TOOL="claude-code"
 
-# Parse arguments — positional arg is target dir, --tool sets AI tool
+# ─────────────────────────────────────────────────────
+# Parse arguments
+# ─────────────────────────────────────────────────────
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -53,7 +57,9 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
-set -- "${POSITIONAL_ARGS[@]}"
+if [[ ${#POSITIONAL_ARGS[@]} -gt 0 ]]; then
+  set -- "${POSITIONAL_ARGS[@]}"
+fi
 
 # Validate tool choice
 case "$AI_TOOL" in
@@ -64,94 +70,216 @@ case "$AI_TOOL" in
     ;;
 esac
 
-# Colors
+# ─────────────────────────────────────────────────────
+# Colors & Symbols
+# ─────────────────────────────────────────────────────
+RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-RED='\033[0;31m'
+CYAN='\033[0;36m'
 BOLD='\033[1m'
 DIM='\033[2m'
+ITALIC='\033[3m'
 RESET='\033[0m'
 
-# Detect if running from a cloned repo or piped from curl
+# Purple → cyan gradient for logo (256-color)
+GRAD1='\033[38;5;135m'
+GRAD2='\033[38;5;141m'
+GRAD3='\033[38;5;147m'
+GRAD4='\033[38;5;153m'
+GRAD5='\033[38;5;159m'
+GRAD6='\033[38;5;123m'
+
+CHECK="${GREEN}✓${RESET}"
+CROSS="${RED}✗${RESET}"
+ARROW="${CYAN}▸${RESET}"
+DIAMOND="${CYAN}◆${RESET}"
+SPARKLE="✦"
+RULE="${DIM}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+
+# Animation delay — only for interactive terminals
+ANIM_DELAY=0
+if [ -t 1 ] && sleep 0.01 2>/dev/null; then
+  ANIM_DELAY=0.035
+fi
+
+# ─────────────────────────────────────────────────────
+# Logo
+# ─────────────────────────────────────────────────────
+print_logo() {
+  local logo_lines=()
+
+  # Try figlet with ANSI Shadow font
+  if command -v figlet &>/dev/null; then
+    local font_found=false
+    for font_dir in "$HOME/.local/share/figlet" /usr/share/figlet/fonts /usr/local/share/figlet/fonts /usr/share/figlet; do
+      if [ -f "$font_dir/ANSI Shadow.flf" ]; then
+        while IFS= read -r line; do
+          logo_lines+=("$line")
+        done < <(figlet -d "$font_dir" -f "ANSI Shadow" "ARIA")
+        font_found=true
+        break
+      fi
+    done
+    if [ "$font_found" = false ]; then
+      while IFS= read -r line; do
+        logo_lines+=("$line")
+      done < <(figlet -f "ANSI Shadow" "ARIA" 2>/dev/null || true)
+    fi
+  fi
+
+  # Fallback to embedded art
+  if [ ${#logo_lines[@]} -eq 0 ]; then
+    logo_lines=(
+      ' █████╗ ██████╗ ██╗ █████╗ '
+      '██╔══██╗██╔══██╗██║██╔══██╗'
+      '███████║██████╔╝██║███████║'
+      '██╔══██║██╔══██╗██║██╔══██║'
+      '██║  ██║██║  ██║██║██║  ██║'
+      '╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝'
+    )
+  fi
+
+  # Strip trailing blank lines
+  while [ ${#logo_lines[@]} -gt 0 ] && [[ "${logo_lines[-1]}" =~ ^[[:space:]]*$ ]]; do
+    unset 'logo_lines[-1]'
+  done
+
+  # Print with gradient color cascade
+  local grads=("$GRAD1" "$GRAD2" "$GRAD3" "$GRAD4" "$GRAD5" "$GRAD6")
+  local num_lines=${#logo_lines[@]}
+
+  for i in "${!logo_lines[@]}"; do
+    local grad_idx=$(( i * ${#grads[@]} / num_lines ))
+    if [ "$grad_idx" -ge ${#grads[@]} ]; then
+      grad_idx=$(( ${#grads[@]} - 1 ))
+    fi
+    echo -e "  ${grads[$grad_idx]}${logo_lines[$i]}${RESET}"
+    if [ "$ANIM_DELAY" != "0" ]; then
+      sleep "$ANIM_DELAY"
+    fi
+  done
+}
+
+# ─────────────────────────────────────────────────────
+# Step helpers
+# ─────────────────────────────────────────────────────
+step_ok() {
+  echo -e "  ${CHECK}  $1"
+}
+
+step_warn() {
+  echo -e "  ${YELLOW}!${RESET}  $1"
+}
+
+step_info() {
+  echo -e "       ${DIM}$1${RESET}"
+}
+
+# ─────────────────────────────────────────────────────
+# Source detection
+# ─────────────────────────────────────────────────────
 if [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 else
   # Piped from curl — need git to clone
   if ! command -v git &>/dev/null; then
-    echo -e "\n  ${RED}Error:${RESET} git is required for pipe-to-shell install."
+    echo -e "\n  ${CROSS} git is required for pipe-to-shell install."
     echo -e "  Install git and try again, or clone the repo manually.\n"
     exit 1
   fi
   SCRIPT_DIR="$(mktemp -d)"
   CLEANUP_TEMP="$SCRIPT_DIR"
   echo ""
-  echo -e "  ${DIM}Downloading ARIA...${RESET}"
+  echo -e "  ${DIM}Cloning ARIA...${RESET}"
   git clone --depth 1 --quiet "$REPO_URL" "$SCRIPT_DIR"
 fi
 
-# Read version from VERSION file
+# Read version
 if [ -f "$SCRIPT_DIR/VERSION" ]; then
-  ARIA_VERSION="$(cat "$SCRIPT_DIR/VERSION" | tr -d '[:space:]')"
+  ARIA_VERSION="$(tr -d '[:space:]' < "$SCRIPT_DIR/VERSION")"
 else
   ARIA_VERSION="dev"
 fi
 
 TARGET_DIR="${1:-.}"
-
-# Resolve to absolute path
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-# Detect self-install: if running from inside the ARIA repo with no target arg,
-# install to the parent directory (the actual project) instead of into ARIA itself
+# Self-install: running from inside the ARIA repo with no target arg
 if [ -z "${1:-}" ] && [ "$TARGET_DIR" = "$SCRIPT_DIR" ]; then
   TARGET_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-  echo -e "  ${YELLOW}Detected: running from inside ARIA repo — installing to parent directory${RESET}"
-  echo ""
 fi
 
-# Cleanup temp dir on exit if we created one
+# Cleanup temp dir on exit
 if [ -n "$CLEANUP_TEMP" ]; then
   trap 'rm -rf "$CLEANUP_TEMP"' EXIT
 fi
 
+# ─────────────────────────────────────────────────────
+# Welcome screen
+# ─────────────────────────────────────────────────────
 echo ""
-echo -e "  ${BOLD}ARIA Installer${RESET} ${DIM}v${ARIA_VERSION}${RESET}"
-echo "  =============="
+print_logo
 echo ""
-echo -e "  Source:  ${DIM}$SCRIPT_DIR${RESET}"
-echo -e "  Target:  ${BOLD}$TARGET_DIR${RESET}"
+echo -e "  ${DIM}${ITALIC}Agentic Reasoning & Implementation Architecture${RESET}  ${DIM}v${ARIA_VERSION}${RESET}"
+echo ""
+echo -e "  ${RULE}"
 echo ""
 
-# Check source has what we need
+# Self-install notice
+if [ -z "${1:-}" ] && [ -n "${BASH_SOURCE[0]:-}" ] && [ -f "${BASH_SOURCE[0]}" ]; then
+  ORIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  if [ "$ORIG_DIR" = "$(cd "$SCRIPT_DIR" && pwd)" ] && [ "$TARGET_DIR" != "$SCRIPT_DIR" ]; then
+    echo -e "  ${YELLOW}◆${RESET} ${YELLOW}Running from ARIA repo — installing to parent directory${RESET}"
+    echo ""
+  fi
+fi
+
+TOOL_LABEL="$AI_TOOL"
+case "$AI_TOOL" in
+  claude-code) TOOL_LABEL="Claude Code" ;;
+  cursor) TOOL_LABEL="Cursor" ;;
+  windsurf) TOOL_LABEL="Windsurf" ;;
+  cline) TOOL_LABEL="Cline" ;;
+  all) TOOL_LABEL="All tools" ;;
+esac
+
+echo -e "  ${DIM}Source${RESET}   $SCRIPT_DIR"
+echo -e "  ${DIM}Target${RESET}   ${BOLD}$TARGET_DIR${RESET}"
+echo -e "  ${DIM}Tool${RESET}     $TOOL_LABEL"
+echo ""
+
+# ─────────────────────────────────────────────────────
+# Validate source
+# ─────────────────────────────────────────────────────
 if [ ! -d "$SCRIPT_DIR/src/core" ]; then
-  echo -e "  ${RED}Error:${RESET} src/core/ not found in $SCRIPT_DIR"
+  echo -e "  ${CROSS} src/core/ not found in $SCRIPT_DIR"
   echo "  Make sure you're running this from the ARIA repository root."
   exit 1
 fi
-
 if [ ! -d "$SCRIPT_DIR/src/platforms" ]; then
-  echo -e "  ${RED}Error:${RESET} src/platforms/ not found in $SCRIPT_DIR"
+  echo -e "  ${CROSS} src/platforms/ not found in $SCRIPT_DIR"
   echo "  Make sure you're running this from the ARIA repository root."
   exit 1
 fi
 
-# --- Platform selection ---
-# Check if an existing install has a platform marker
+# ─────────────────────────────────────────────────────
+# Platform selection
+# ─────────────────────────────────────────────────────
 EXISTING_PLATFORM=""
 if [ -f "$TARGET_DIR/_aria/.platform" ]; then
-  EXISTING_PLATFORM="$(cat "$TARGET_DIR/_aria/.platform" | tr -d '[:space:]')"
+  EXISTING_PLATFORM="$(tr -d '[:space:]' < "$TARGET_DIR/_aria/.platform")"
 fi
 
 echo -e "  ${BOLD}Select your platform:${RESET}"
 echo ""
 if [ -n "$EXISTING_PLATFORM" ]; then
-  echo -e "  ${DIM}(previously installed: $EXISTING_PLATFORM)${RESET}"
+  echo -e "  ${DIM}  Previously installed: $EXISTING_PLATFORM${RESET}"
   echo ""
 fi
-echo "    [1] Plane (recommended)"
-echo "    [2] Linear"
+echo -e "    ${CYAN}1${RESET}  Plane  ${DIM}(recommended)${RESET}"
+echo -e "    ${CYAN}2${RESET}  Linear"
 echo ""
-# If stdin is a terminal, read from it; otherwise (curl | bash) read from /dev/tty
 if [ -t 0 ]; then
   read -p "  Choice (1-2): " -n 1 -r PLATFORM_CHOICE
 else
@@ -161,30 +289,27 @@ echo ""
 echo ""
 
 case "$PLATFORM_CHOICE" in
-  1)
-    PLATFORM="plane"
-    PLATFORM_LABEL="Plane"
-    ;;
-  2)
-    PLATFORM="linear"
-    PLATFORM_LABEL="Linear"
-    ;;
+  1) PLATFORM="plane";  PLATFORM_LABEL="Plane" ;;
+  2) PLATFORM="linear"; PLATFORM_LABEL="Linear" ;;
   *)
-    echo -e "  ${RED}Invalid choice.${RESET} Please run the installer again and select 1 or 2."
+    echo -e "  ${CROSS} Invalid choice. Please run the installer again and select 1 or 2."
     exit 1
     ;;
 esac
 
-# Validate platform source exists
 if [ ! -d "$SCRIPT_DIR/src/platforms/$PLATFORM" ]; then
-  echo -e "  ${RED}Error:${RESET} src/platforms/$PLATFORM/ not found in $SCRIPT_DIR"
+  echo -e "  ${CROSS} src/platforms/$PLATFORM/ not found in $SCRIPT_DIR"
   exit 1
 fi
 
-echo -e "  ${GREEN}Platform:${RESET} $PLATFORM_LABEL"
+echo -e "  ${RULE}"
+echo ""
+echo -e "  Installing ARIA for ${BOLD}${PLATFORM_LABEL}${RESET}..."
 echo ""
 
-# Detect re-install
+# ─────────────────────────────────────────────────────
+# Detect re-install / legacy migration
+# ─────────────────────────────────────────────────────
 IS_REINSTALL=false
 CORE_DIR="$TARGET_DIR/_aria/core"
 PLATFORM_DIR="$TARGET_DIR/_aria/platform"
@@ -194,135 +319,132 @@ LEGACY_BMAD_DIR="$TARGET_DIR/_bmad/linear"
 
 if [ -d "$CORE_DIR" ]; then
   IS_REINSTALL=true
-  echo -e "  ${YELLOW}Detected existing ARIA installation -- preserving config files${RESET}"
-  echo ""
+  step_warn "Existing ARIA installation detected — config will be preserved"
 elif [ -d "$LEGACY_LINEAR_DIR" ]; then
   IS_REINSTALL=true
-  echo -e "  ${YELLOW}Detected legacy v1.x installation (_aria/linear/) -- migrating${RESET}"
-  echo ""
-  # Migrate config files from legacy location
-  mkdir -p "$CORE_DIR"
-  mkdir -p "$CORE_DIR/data"
+  step_warn "Legacy v1.x installation detected — migrating"
+  mkdir -p "$CORE_DIR" "$CORE_DIR/data"
   for CONFIG_FILE in module.yaml; do
     if [ -f "$LEGACY_LINEAR_DIR/$CONFIG_FILE" ]; then
       cp "$LEGACY_LINEAR_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE"
-      echo -e "  ${GREEN}Migrated:${RESET} _aria/linear/$CONFIG_FILE -> _aria/core/$CONFIG_FILE"
+      step_info "Migrated _aria/linear/$CONFIG_FILE → _aria/core/$CONFIG_FILE"
     fi
   done
   if [ -f "$LEGACY_LINEAR_DIR/.linear-key-map.yaml" ]; then
     cp "$LEGACY_LINEAR_DIR/.linear-key-map.yaml" "$CORE_DIR/data/.key-map.yaml"
-    echo -e "  ${GREEN}Migrated:${RESET} _aria/linear/.linear-key-map.yaml -> _aria/core/data/.key-map.yaml"
+    step_info "Migrated .linear-key-map.yaml → _aria/core/data/.key-map.yaml"
   fi
-  # Clean up legacy directory
   rm -rf "$LEGACY_LINEAR_DIR"
-  echo -e "  ${GREEN}Removed${RESET} legacy _aria/linear/ directory"
-  echo ""
+  step_info "Removed legacy _aria/linear/"
 elif [ -d "$LEGACY_BMAD_DIR" ]; then
   IS_REINSTALL=true
-  echo -e "  ${YELLOW}Detected legacy BMAD installation -- migrating to ARIA${RESET}"
-  echo ""
-  # Migrate config files from legacy location
-  mkdir -p "$CORE_DIR"
-  mkdir -p "$CORE_DIR/data"
+  step_warn "Legacy BMAD installation detected — migrating to ARIA"
+  mkdir -p "$CORE_DIR" "$CORE_DIR/data"
   for CONFIG_FILE in module.yaml; do
     if [ -f "$LEGACY_BMAD_DIR/$CONFIG_FILE" ]; then
       cp "$LEGACY_BMAD_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE"
-      echo -e "  ${GREEN}Migrated:${RESET} _bmad/linear/$CONFIG_FILE -> _aria/core/$CONFIG_FILE"
+      step_info "Migrated _bmad/linear/$CONFIG_FILE → _aria/core/$CONFIG_FILE"
     fi
   done
   if [ -f "$LEGACY_BMAD_DIR/.linear-key-map.yaml" ]; then
     cp "$LEGACY_BMAD_DIR/.linear-key-map.yaml" "$CORE_DIR/data/.key-map.yaml"
-    echo -e "  ${GREEN}Migrated:${RESET} _bmad/linear/.linear-key-map.yaml -> _aria/core/data/.key-map.yaml"
+    step_info "Migrated .linear-key-map.yaml → _aria/core/data/.key-map.yaml"
   fi
-  # Clean up legacy directories
   rm -rf "$TARGET_DIR/_bmad"
-  echo -e "  ${GREEN}Removed${RESET} legacy _bmad/ directory"
-  # Clean up legacy commands
+  step_info "Removed legacy _bmad/"
   rm -f "$TARGET_DIR/.claude/commands/bmad-"*.md
-  echo -e "  ${GREEN}Removed${RESET} legacy bmad-* slash commands"
+  step_info "Removed legacy bmad-* slash commands"
+fi
+
+if [ "$IS_REINSTALL" = true ]; then
   echo ""
 fi
 
-# Back up user config files before overwriting
+# ─────────────────────────────────────────────────────
+# Backup config files before overwrite
+# ─────────────────────────────────────────────────────
 if [ "$IS_REINSTALL" = true ] && [ -d "$CORE_DIR" ]; then
   for CONFIG_FILE in module.yaml data/.key-map.yaml; do
     if [ -f "$CORE_DIR/$CONFIG_FILE" ]; then
       cp "$CORE_DIR/$CONFIG_FILE" "$CORE_DIR/$CONFIG_FILE.bak"
-      echo -e "  ${DIM}Backed up: $CONFIG_FILE -> $CONFIG_FILE.bak${RESET}"
     fi
   done
 fi
 
-# Clean up legacy _aria/linear/ if it still exists (migration from v1.x on reinstall)
+# Clean up lingering legacy dir
 if [ -d "$LEGACY_LINEAR_DIR" ]; then
   rm -rf "$LEGACY_LINEAR_DIR"
-  echo -e "  ${GREEN}Removed${RESET} legacy _aria/linear/ directory"
 fi
 
-# Create target directories
-echo -e "  ${BOLD}[1/8]${RESET} Creating directories..."
-mkdir -p "$CORE_DIR"
-mkdir -p "$PLATFORM_DIR"
-mkdir -p "$SHARED_DIR"
+# ─────────────────────────────────────────────────────
+# Installation steps
+# ─────────────────────────────────────────────────────
 
-# Copy shared content
-echo -e "  ${BOLD}[2/8]${RESET} Installing shared content -> _aria/shared/"
+# 1. Create directories
+mkdir -p "$CORE_DIR" "$PLATFORM_DIR" "$SHARED_DIR"
+step_ok "Created directories"
+
+# 2. Shared content
 cp -r "$SCRIPT_DIR/src/shared/"* "$SHARED_DIR/"
+step_ok "Installed shared content ${DIM}→ _aria/shared/${RESET}"
 
-# Copy core module
-echo -e "  ${BOLD}[3/8]${RESET} Installing core module -> _aria/core/"
+# 3. Core module
 cp -r "$SCRIPT_DIR/src/core/"* "$CORE_DIR/"
+step_ok "Installed core module ${DIM}→ _aria/core/${RESET}"
 
-# Copy platform-specific content
-echo -e "  ${BOLD}[4/8]${RESET} Installing $PLATFORM_LABEL platform -> _aria/platform/"
-# Clear previous platform content (may be switching platforms)
+# 4. Platform
 rm -rf "$PLATFORM_DIR/"*
 cp -r "$SCRIPT_DIR/src/platforms/$PLATFORM/"* "$PLATFORM_DIR/"
-
-# Write platform marker file
 echo "$PLATFORM" > "$TARGET_DIR/_aria/.platform"
+step_ok "Installed ${BOLD}$PLATFORM_LABEL${RESET} platform ${DIM}→ _aria/platform/${RESET}"
 
-# Copy VERSION file
-echo -e "  ${BOLD}[5/8]${RESET} Writing version file..."
+# 5. Version file
 if [ -f "$SCRIPT_DIR/VERSION" ]; then
   cp "$SCRIPT_DIR/VERSION" "$CORE_DIR/VERSION"
 fi
+step_ok "Wrote version file ${DIM}(v${ARIA_VERSION})${RESET}"
 
-# Restore user config files after copy
+# 6. Restore config files
 if [ "$IS_REINSTALL" = true ] && [ -d "$CORE_DIR" ]; then
+  RESTORED=false
   for CONFIG_FILE in module.yaml data/.key-map.yaml; do
     if [ -f "$CORE_DIR/$CONFIG_FILE.bak" ]; then
       mv "$CORE_DIR/$CONFIG_FILE.bak" "$CORE_DIR/$CONFIG_FILE"
-      echo -e "  ${GREEN}Restored:${RESET} $CONFIG_FILE (user config preserved)"
+      RESTORED=true
     fi
   done
+  if [ "$RESTORED" = true ]; then
+    step_ok "Restored config files ${DIM}(module.yaml, .key-map.yaml)${RESET}"
+  fi
 fi
 
-# --- AI Tool Config Installation ---
+# ─────────────────────────────────────────────────────
+# AI Tool Config Installation
+# ─────────────────────────────────────────────────────
+COMMAND_COUNT=0
 
 install_claude_code() {
-  # Handle CLAUDE.md — replace ARIA section instead of appending
-  echo -e "  ${BOLD}[6/8]${RESET} Installing CLAUDE.md..."
-  ARIA_MARKER="# ARIA"
+  # CLAUDE.md
+  local ARIA_MARKER="# ARIA"
   if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
     if grep -q "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md"; then
-      echo -e "         ${DIM}CLAUDE.md already has ARIA section -- replacing it${RESET}"
       ARIA_LINE=$(grep -n "$ARIA_MARKER" "$TARGET_DIR/CLAUDE.md" | head -1 | cut -d: -f1)
       head -n $((ARIA_LINE - 1)) "$TARGET_DIR/CLAUDE.md" > "$TARGET_DIR/CLAUDE.md.tmp"
       echo "" >> "$TARGET_DIR/CLAUDE.md.tmp"
       cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md.tmp"
       mv "$TARGET_DIR/CLAUDE.md.tmp" "$TARGET_DIR/CLAUDE.md"
+      step_ok "Updated CLAUDE.md ${DIM}(replaced ARIA section)${RESET}"
     else
-      echo -e "         ${DIM}CLAUDE.md exists -- appending ARIA section${RESET}"
       echo "" >> "$TARGET_DIR/CLAUDE.md"
       cat "$SCRIPT_DIR/CLAUDE.md" >> "$TARGET_DIR/CLAUDE.md"
+      step_ok "Updated CLAUDE.md ${DIM}(appended ARIA section)${RESET}"
     fi
   else
     cp "$SCRIPT_DIR/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+    step_ok "Created CLAUDE.md"
   fi
 
-  # Copy slash commands
-  echo -e "  ${BOLD}[7/8]${RESET} Installing slash commands -> .claude/commands/"
+  # Slash commands
   mkdir -p "$TARGET_DIR/.claude/commands"
   for OLD_CMD in aria-attack aria-edges aria-edit-prose aria-edit-struct aria-prd-edit aria-prd-check aria-doc-check aria-explain aria-context aria-review aria-status; do
     rm -f "$TARGET_DIR/.claude/commands/$OLD_CMD.md"
@@ -331,53 +453,44 @@ install_claude_code() {
     cp "$SCRIPT_DIR/.claude/commands/"*.md "$TARGET_DIR/.claude/commands/"
   fi
   COMMAND_COUNT=$(ls -1 "$TARGET_DIR/.claude/commands/aria-"*.md 2>/dev/null | wc -l)
-  echo -e "         ${DIM}$COMMAND_COUNT commands installed${RESET}"
+  step_ok "Installed ${BOLD}${COMMAND_COUNT}${RESET} slash commands ${DIM}→ .claude/commands/${RESET}"
 }
 
 install_cursor() {
-  echo -e "  ${BOLD}[6/8]${RESET} Installing Cursor rules -> .cursor/rules/"
   mkdir -p "$TARGET_DIR/.cursor/rules"
   if [ -f "$SCRIPT_DIR/src/tools/cursor/aria.mdc" ]; then
     cp "$SCRIPT_DIR/src/tools/cursor/aria.mdc" "$TARGET_DIR/.cursor/rules/aria.mdc"
+    step_ok "Installed Cursor rules ${DIM}→ .cursor/rules/aria.mdc${RESET}"
   else
-    echo -e "         ${YELLOW}Warning: Cursor config not found in source${RESET}"
+    step_warn "Cursor config not found in source"
   fi
 }
 
 install_windsurf() {
-  echo -e "  ${BOLD}[6/8]${RESET} Installing Windsurf rules -> .windsurf/rules/"
   mkdir -p "$TARGET_DIR/.windsurf/rules"
   if [ -f "$SCRIPT_DIR/src/tools/windsurf/aria.md" ]; then
     cp "$SCRIPT_DIR/src/tools/windsurf/aria.md" "$TARGET_DIR/.windsurf/rules/aria.md"
+    step_ok "Installed Windsurf rules ${DIM}→ .windsurf/rules/aria.md${RESET}"
   else
-    echo -e "         ${YELLOW}Warning: Windsurf config not found in source${RESET}"
+    step_warn "Windsurf config not found in source"
   fi
 }
 
 install_cline() {
-  echo -e "  ${BOLD}[6/8]${RESET} Installing Cline rules -> .clinerules/"
   mkdir -p "$TARGET_DIR/.clinerules"
   if [ -f "$SCRIPT_DIR/src/tools/cline/aria.md" ]; then
     cp "$SCRIPT_DIR/src/tools/cline/aria.md" "$TARGET_DIR/.clinerules/aria.md"
+    step_ok "Installed Cline rules ${DIM}→ .clinerules/aria.md${RESET}"
   else
-    echo -e "         ${YELLOW}Warning: Cline config not found in source${RESET}"
+    step_warn "Cline config not found in source"
   fi
 }
 
-# Install tool-specific config
 case "$AI_TOOL" in
-  claude-code)
-    install_claude_code
-    ;;
-  cursor)
-    install_cursor
-    ;;
-  windsurf)
-    install_windsurf
-    ;;
-  cline)
-    install_cline
-    ;;
+  claude-code) install_claude_code ;;
+  cursor)      install_cursor ;;
+  windsurf)    install_windsurf ;;
+  cline)       install_cline ;;
   all)
     install_claude_code
     install_cursor
@@ -386,52 +499,90 @@ case "$AI_TOOL" in
     ;;
 esac
 
-# Update .gitignore for tool-specific directories
-echo -e "  ${BOLD}[8/8]${RESET} Checking .gitignore..."
+# ─────────────────────────────────────────────────────
+# .gitignore
+# ─────────────────────────────────────────────────────
 if [ -f "$TARGET_DIR/.gitignore" ]; then
+  GITIGNORE_UPDATED=false
   for PATTERN in "_aria/core/module.yaml" "_aria/core/data/.key-map.yaml"; do
     if ! grep -q "$PATTERN" "$TARGET_DIR/.gitignore" 2>/dev/null; then
       echo "$PATTERN" >> "$TARGET_DIR/.gitignore"
+      GITIGNORE_UPDATED=true
     fi
   done
+  if [ "$GITIGNORE_UPDATED" = true ]; then
+    step_ok "Updated .gitignore"
+  else
+    step_ok "Checked .gitignore ${DIM}(already configured)${RESET}"
+  fi
+else
+  step_ok "Checked .gitignore ${DIM}(no .gitignore found)${RESET}"
+fi
+
+# ─────────────────────────────────────────────────────
+# Completion
+# ─────────────────────────────────────────────────────
+echo ""
+echo -e "  ${RULE}"
+
+# Brief dramatic pause for interactive terminals
+if [ "$ANIM_DELAY" != "0" ]; then
+  sleep 0.15
 fi
 
 echo ""
-echo -e "  ${GREEN}${BOLD}Installation complete!${RESET} ${DIM}(v${ARIA_VERSION})${RESET}"
+echo -e "  ${GREEN}${BOLD}${SPARKLE} Installation complete!${RESET}  ${DIM}v${ARIA_VERSION}${RESET}"
 echo ""
-echo "  Installed:"
-echo "    - Shared content in _aria/shared/ (templates, checklists, data)"
-echo "    - Core module in _aria/core/"
-echo "    - $PLATFORM_LABEL platform in _aria/platform/"
-echo "    - Platform marker: _aria/.platform ($PLATFORM)"
+
+# Summary
+echo -e "  ${DIM}Installed:${RESET}"
+echo -e "    ${DIAMOND} Core module          ${DIM}_aria/core/${RESET}"
+echo -e "    ${DIAMOND} $PLATFORM_LABEL platform       ${DIM}_aria/platform/${RESET}"
+echo -e "    ${DIAMOND} Shared content       ${DIM}_aria/shared/${RESET}"
 case "$AI_TOOL" in
   claude-code)
-    echo "    - CLAUDE.md with ARIA context"
-    echo "    - $COMMAND_COUNT slash commands in .claude/commands/"
+    echo -e "    ${DIAMOND} CLAUDE.md            ${DIM}ARIA context${RESET}"
+    echo -e "    ${DIAMOND} Slash commands       ${DIM}${COMMAND_COUNT} commands${RESET}"
     ;;
-  cursor)  echo "    - Cursor rules in .cursor/rules/aria.mdc" ;;
-  windsurf) echo "    - Windsurf rules in .windsurf/rules/aria.md" ;;
-  cline)   echo "    - Cline rules in .clinerules/aria.md" ;;
+  cursor)  echo -e "    ${DIAMOND} Cursor rules         ${DIM}.cursor/rules/aria.mdc${RESET}" ;;
+  windsurf) echo -e "    ${DIAMOND} Windsurf rules       ${DIM}.windsurf/rules/aria.md${RESET}" ;;
+  cline)   echo -e "    ${DIAMOND} Cline rules          ${DIM}.clinerules/aria.md${RESET}" ;;
   all)
-    echo "    - CLAUDE.md + $COMMAND_COUNT slash commands (Claude Code)"
-    echo "    - Cursor rules in .cursor/rules/aria.mdc"
-    echo "    - Windsurf rules in .windsurf/rules/aria.md"
-    echo "    - Cline rules in .clinerules/aria.md"
+    echo -e "    ${DIAMOND} CLAUDE.md            ${DIM}ARIA context + ${COMMAND_COUNT} commands${RESET}"
+    echo -e "    ${DIAMOND} Cursor rules         ${DIM}.cursor/rules/aria.mdc${RESET}"
+    echo -e "    ${DIAMOND} Windsurf rules       ${DIM}.windsurf/rules/aria.md${RESET}"
+    echo -e "    ${DIAMOND} Cline rules          ${DIM}.clinerules/aria.md${RESET}"
     ;;
 esac
 if [ "$IS_REINSTALL" = true ]; then
-  echo -e "    - ${GREEN}Config files preserved${RESET} (module.yaml, data/.key-map.yaml)"
+  echo -e "    ${DIAMOND} Config preserved     ${DIM}module.yaml, .key-map.yaml${RESET}"
 fi
+
 echo ""
-echo -e "  ${BOLD}Next steps:${RESET}"
+echo -e "  ${BOLD}Get started:${RESET}"
 if [ "$PLATFORM" = "linear" ]; then
-  echo "    1. Configure the Linear MCP server in your AI tool's settings"
-  echo "    2. Run /aria-setup (Claude Code) or say 'Run ARIA setup' to auto-configure"
+  echo -e "    ${ARROW} Configure the Linear MCP server in your AI tool"
 elif [ "$PLATFORM" = "plane" ]; then
-  echo "    1. Configure the Plane MCP server in your AI tool's settings"
-  echo "    2. Run /aria-setup (Claude Code) or say 'Run ARIA setup' to auto-configure"
+  echo -e "    ${ARROW} Configure the Plane MCP server in your AI tool"
 fi
-echo "    3. Run /aria-git to configure git integration (optional)"
-echo "    4. Run /aria-doctor to verify your setup"
-echo "    5. Run /aria-help to get started"
+echo -e "    ${ARROW} Run ${BOLD}/aria-setup${RESET}  to auto-configure your workspace"
+echo -e "    ${ARROW} Run ${BOLD}/aria-git${RESET}    to configure git integration"
+echo -e "    ${ARROW} Run ${BOLD}/aria-doctor${RESET} to verify everything works"
+echo -e "    ${ARROW} Run ${BOLD}/aria-help${RESET}   when you need guidance"
+
+# Fun closing — random orchestral quote
+QUOTES=(
+  "The conductor has taken the podium."
+  "All instruments are in tune."
+  "The overture begins."
+  "Every great composition starts with a single note."
+  "The orchestra awaits your downbeat."
+  "Your ensemble is assembled."
+  "The stage is set."
+)
+QUOTE="${QUOTES[$((RANDOM % ${#QUOTES[@]}))]}"
+
+echo ""
+echo -e "  ${DIM}♪ \"${QUOTE}\"${RESET}"
+echo -e "  ${DIM}  Happy building! ${SPARKLE}${RESET}"
 echo ""
