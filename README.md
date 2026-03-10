@@ -1,15 +1,12 @@
 <div align="center">
 
-```
- █████╗ ██████╗ ██╗ █████╗
-██╔══██╗██╔══██╗██║██╔══██╗
-███████║██████╔╝██║███████║
-██╔══██║██╔══██╗██║██╔══██║
-██║  ██║██║  ██║██║██║  ██║
-╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo.svg">
+  <img alt="ARIA" src="docs/assets/logo.svg" width="480">
+</picture>
 
-**Agentic Reasoning & Implementation Architecture**
+<br>
 
 Multi-platform agentic development with musical-themed AI agents for [Claude Code](https://claude.ai/claude-code).
 
